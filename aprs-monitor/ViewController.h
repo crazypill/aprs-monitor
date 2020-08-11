@@ -14,7 +14,7 @@
 @property (strong, nonatomic) UIWindow * window;
 @property (weak, nonatomic) IBOutlet MKMapView* mapView;
 
-- (void)plotMessage:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude;
+- (void)plotMessage:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude sender:(NSString*)sender;
 
 @end
 
