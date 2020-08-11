@@ -6,8 +6,9 @@
 //  Copyright © 2020 Alex Lelievre. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "MapViewController.h"
 #import "MapKit/MKMarkerAnnotationView.h"
+#import "Packet.h"
 
 #include "main.h"
 
@@ -15,42 +16,7 @@
 static MapViewController* s_map_controller = nil;
 static bool               s_have_location  = false;
 
-@interface CustomAnnotation : NSObject <MKAnnotation>
 
-@property (nonatomic) CLLocationCoordinate2D coordinate;
-@property (nonatomic, copy, nullable) NSString* title;
-@property (nonatomic, copy, nullable) NSString* subtitle;
-
-- (id)init:(CLLocationCoordinate2D)coordinate;
-@end
-
-
-@implementation CustomAnnotation
-
-- (id)init:(CLLocationCoordinate2D)coordinate
-{
-    self = [super init];
-    
-    if( self )
-        self.coordinate = coordinate;
-    
-//    _title = @"Test";
-//    _subtitle = @"subtitle";
-
-    return self;
-}
-
-@end
-
-
-
-
-@interface CustomAnnotationView : MKAnnotationView
-@end
-
-
-@implementation CustomAnnotationView
-@end
 
 
 
@@ -178,12 +144,11 @@ void map_callback( const char* address, const char* frameData )
     
     
 //    [self.mapView registerClass:[CustomAnnotationView class] forAnnotationViewWithReuseIdentifier:NSStringFromClass( [CustomAnnotation class] )];
-    [self.mapView registerClass:[MKMarkerAnnotationView class] forAnnotationViewWithReuseIdentifier:NSStringFromClass( [CustomAnnotation class] )];
+    [self.mapView registerClass:[MKMarkerAnnotationView class] forAnnotationViewWithReuseIdentifier:NSStringFromClass( [Packet class] )];
 
     // Do any additional setup after loading the view
     init_socket_layer( map_callback );
 }
-
 
 
 - (void)plotMessage:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude sender:(NSString*)sender
@@ -194,8 +159,8 @@ void map_callback( const char* address, const char* frameData )
     
     dispatch_async( dispatch_get_main_queue(), ^{
         CLLocationCoordinate2D coord = CLLocationCoordinate2DMake( latitude, longitude );
-        CustomAnnotation* annotation = [[CustomAnnotation alloc] init: coord];
-        annotation.title = sender;
+        Packet* annotation = [Packet initWithCoordinates:coord];
+        annotation.call = sender;
         [weakself.mapView addAnnotations:@[annotation]];
         
         if( !s_have_location )
@@ -210,7 +175,7 @@ void map_callback( const char* address, const char* frameData )
 
 - (nullable MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
 {
-    MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:NSStringFromClass( [CustomAnnotation class] ) forAnnotation:annotation];
+    MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:NSStringFromClass( [Packet class] ) forAnnotation:annotation];
     
     anno.canShowCallout = true;
     anno.animatesWhenAdded = true;

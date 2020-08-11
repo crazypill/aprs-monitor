@@ -112,10 +112,15 @@
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="QSE-7U-4Ei"/>
                         <barButtonItem title="All" id="BVs-og-Y7K"/>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" title="KISS Monitor" id="jVU-xi-FZF"/>
+                    <navigationItem key="navigationItem" title="KISS Monitor" id="jVU-xi-FZF">
+                        <barButtonItem key="rightBarButtonItem" image="envelope" catalog="system" style="plain" id="Sit-M5-HgY">
+                            <color key="tintColor" systemColor="systemPinkColor" red="1" green="0.1764705882" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="mapView" destination="iIg-Sb-dEy" id="7FJ-du-Z4l"/>
+                        <outlet property="status" destination="Sit-M5-HgY" id="QNM-em-kYb"/>
                         <outlet property="view" destination="ar6-Fd-zen" id="o0u-Hs-3j6"/>
                     </connections>
                 </viewController>
@@ -125,6 +130,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="envelope" catalog="system" width="128" height="93"/>
         <image name="golden_gate" width="609" height="812"/>
     </resources>
 </document>

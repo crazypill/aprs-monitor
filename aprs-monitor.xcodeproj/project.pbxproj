@@ -13,7 +13,6 @@
 		60BAE8C3214ABDD200EE21AA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60BAE8C5214ABDD200EE21AA /* Localizable.strings */; };
 		FA2A20B224E2570E0090A087 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2A20AB24E2570E0090A087 /* AppDelegate.m */; };
 		FA2A20B324E2570E0090A087 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2A20AC24E2570E0090A087 /* main.m */; };
-		FA2A20B424E2570E0090A087 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2A20AE24E2570E0090A087 /* ViewController.m */; };
 		FAA7EAF124E0E47F0016674B /* RemoteTNC.c in Sources */ = {isa = PBXBuildFile; fileRef = FAA7EAF024E0E47F0016674B /* RemoteTNC.c */; };
 		FAA7EB0824E0E64E0016674B /* kiss_frame.c in Sources */ = {isa = PBXBuildFile; fileRef = FAA7EAF624E0E6450016674B /* kiss_frame.c */; };
 		FAA7EB0924E0E64E0016674B /* aprs-is.c in Sources */ = {isa = PBXBuildFile; fileRef = FAA7EAF724E0E6450016674B /* aprs-is.c */; };
@@ -25,6 +24,10 @@
 		FAA7EB0F24E0E64E0016674B /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = FAA7EB0624E0E6470016674B /* main.c */; };
 		FAAD91B824E1B21B0000896D /* tq.c in Sources */ = {isa = PBXBuildFile; fileRef = FAAD91B724E1B21B0000896D /* tq.c */; };
 		FAAD91BB24E1B7680000896D /* dtime_now.c in Sources */ = {isa = PBXBuildFile; fileRef = FAAD91BA24E1B7680000896D /* dtime_now.c */; };
+		FACC8B9724E32FCB007BA389 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FACC8B9124E32FCB007BA389 /* MapViewController.m */; };
+		FACC8B9824E32FCB007BA389 /* Packet.m in Sources */ = {isa = PBXBuildFile; fileRef = FACC8B9324E32FCB007BA389 /* Packet.m */; };
+		FACC8B9924E32FCB007BA389 /* PacketManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FACC8B9624E32FCB007BA389 /* PacketManager.m */; };
+		FACC8B9C24E334BA007BA389 /* ErrorController.m in Sources */ = {isa = PBXBuildFile; fileRef = FACC8B9A24E334BA007BA389 /* ErrorController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,8 +41,6 @@
 		FA2A20AB24E2570E0090A087 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		FA2A20AC24E2570E0090A087 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		FA2A20AD24E2570E0090A087 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		FA2A20AE24E2570E0090A087 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		FA2A20B124E2570E0090A087 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		FAA7EAEE24E0E47F0016674B /* aprs-monitor-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "aprs-monitor-Bridging-Header.h"; sourceTree = "<group>"; };
 		FAA7EAEF24E0E47F0016674B /* RemoteTNC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RemoteTNC.h; sourceTree = "<group>"; };
 		FAA7EAF024E0E47F0016674B /* RemoteTNC.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = RemoteTNC.c; sourceTree = "<group>"; };
@@ -68,6 +69,14 @@
 		FAAD91B724E1B21B0000896D /* tq.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tq.c; sourceTree = "<group>"; };
 		FAAD91B924E1B7680000896D /* dtime_now.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dtime_now.h; sourceTree = "<group>"; };
 		FAAD91BA24E1B7680000896D /* dtime_now.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dtime_now.c; sourceTree = "<group>"; };
+		FACC8B9124E32FCB007BA389 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
+		FACC8B9224E32FCB007BA389 /* PacketManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PacketManager.h; sourceTree = "<group>"; };
+		FACC8B9324E32FCB007BA389 /* Packet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Packet.m; sourceTree = "<group>"; };
+		FACC8B9424E32FCB007BA389 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
+		FACC8B9524E32FCB007BA389 /* Packet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Packet.h; sourceTree = "<group>"; };
+		FACC8B9624E32FCB007BA389 /* PacketManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PacketManager.m; sourceTree = "<group>"; };
+		FACC8B9A24E334BA007BA389 /* ErrorController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ErrorController.m; sourceTree = "<group>"; };
+		FACC8B9B24E334BA007BA389 /* ErrorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ErrorController.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,11 +111,17 @@
 		60898E83213884F3003248F3 /* aprs-monitor */ = {
 			isa = PBXGroup;
 			children = (
+				FA2A20AC24E2570E0090A087 /* main.m */,
+				FACC8B9524E32FCB007BA389 /* Packet.h */,
+				FACC8B9324E32FCB007BA389 /* Packet.m */,
 				FA2A20AD24E2570E0090A087 /* AppDelegate.h */,
 				FA2A20AB24E2570E0090A087 /* AppDelegate.m */,
-				FA2A20AC24E2570E0090A087 /* main.m */,
-				FA2A20B124E2570E0090A087 /* ViewController.h */,
-				FA2A20AE24E2570E0090A087 /* ViewController.m */,
+				FACC8B9B24E334BA007BA389 /* ErrorController.h */,
+				FACC8B9A24E334BA007BA389 /* ErrorController.m */,
+				FACC8B9224E32FCB007BA389 /* PacketManager.h */,
+				FACC8B9624E32FCB007BA389 /* PacketManager.m */,
+				FACC8B9424E32FCB007BA389 /* MapViewController.h */,
+				FACC8B9124E32FCB007BA389 /* MapViewController.m */,
 				60898EB121388719003248F3 /* Resources */,
 			);
 			path = "aprs-monitor";
@@ -239,12 +254,15 @@
 				FAA7EB0C24E0E64E0016674B /* fcs_calc.c in Sources */,
 				FAA7EB0A24E0E64E0016674B /* aprs-wx.c in Sources */,
 				FAA7EB0F24E0E64E0016674B /* main.c in Sources */,
+				FACC8B9924E32FCB007BA389 /* PacketManager.m in Sources */,
 				FAA7EB0D24E0E64E0016674B /* wx_thread.c in Sources */,
 				FAA7EAF124E0E47F0016674B /* RemoteTNC.c in Sources */,
 				FAAD91BB24E1B7680000896D /* dtime_now.c in Sources */,
-				FA2A20B424E2570E0090A087 /* ViewController.m in Sources */,
+				FACC8B9824E32FCB007BA389 /* Packet.m in Sources */,
 				FAA7EB0824E0E64E0016674B /* kiss_frame.c in Sources */,
+				FACC8B9724E32FCB007BA389 /* MapViewController.m in Sources */,
 				FA2A20B324E2570E0090A087 /* main.m in Sources */,
+				FACC8B9C24E334BA007BA389 /* ErrorController.m in Sources */,
 				FAA7EB0E24E0E64E0016674B /* ax25_pad.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
