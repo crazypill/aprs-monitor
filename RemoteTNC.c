@@ -54,6 +54,13 @@
 #define kLogRollInterval       60 * 60 * 24   // (roll the log daily)
 #define kWxWideInterval        60 * 15        // send our weather out to WIDE2-1 every quarter hour
 
+typedef struct
+{
+    frame_callback  callback;
+    status_callback status;
+} ReadThreadInfo;
+
+
 static time_t s_last_log_roll  = 0;
 
 static float s_localOffsetInHg = 0.33f;
@@ -72,6 +79,7 @@ static uint16_t    s_kiss_port    = 8001;
 static uint8_t     s_num_retries  = 10;
 static bool        s_test_mode    = false;
 
+static wx_thread_t  s_read_thread = 0;
 static sig_atomic_t s_read_thread_quit = 0;
 static sig_atomic_t s_queue_busy = 0;
 static sig_atomic_t s_queue_num  = 0;
@@ -264,10 +272,6 @@ uint8_t calculate_crc( uint8_t* data, uint8_t len )
 
 
 #pragma mark -
-
-
-
-#pragma mark -
          
 void log_error( const char* format, ... )
 {
@@ -330,8 +334,11 @@ void log_unix_error( const char* prefix )
 
 #pragma mark -
 
-int init_socket_layer( frame_callback callback )
+int init_socket_layer( frame_callback callback, status_callback status )
 {
+    if( s_read_thread )
+        return EXIT_FAILURE;
+    
     int err = ignoreSIGPIPE();
     if( err == 0 )
     {
@@ -340,9 +347,6 @@ int init_socket_layer( frame_callback callback )
         signal( SIGHUP,  signalHandler );
     }
 
-    if( s_debug )
-        printf( "%s, version %s -- kiss: %s:%d\n", PROGRAM_NAME, VERSION, s_kiss_server, s_kiss_port );
-    
     s_last_log_roll = timeGetTimeSec();
     if( s_logFilePath && !s_logFile )
     {
@@ -361,15 +365,31 @@ int init_socket_layer( frame_callback callback )
         }
     }
 
-    wx_create_thread_detached( tnc_read_thread, callback );
+        
+    ReadThreadInfo* info = (ReadThreadInfo*)malloc( sizeof( ReadThreadInfo ) );
+    if( !info )
+        return EXIT_FAILURE;
+    
+    info->callback = callback;
+    info->status   = status;
 
+    s_read_thread_quit = false;
+    s_read_thread = wx_create_thread_detached( tnc_read_thread, info );
     return EXIT_SUCCESS;
 }
 
 
 int shutdown_socket_layer()
 {
+    if( !s_read_thread )
+        return EXIT_FAILURE;
+
     s_read_thread_quit = true;
+    
+    // wait for thread to exit? -- !!@ need timeout
+    while( s_read_thread )
+        sleep( 1 );
+    
     return EXIT_SUCCESS;
 }
 
@@ -492,25 +512,44 @@ wx_thread_return_t sendToRadioWIDE_thread_entry( void* args )
 
 wx_thread_return_t tnc_read_thread( void* args )
 {
-    int err = 0;
-    frame_callback callback = (frame_callback)args;
-    
-    // connect to direwolf and send data
-    int server_sock = connectToDireWolf();
-    if( server_sock < 0 )
+    if( s_debug )
+        printf( "%s, version %s, kiss: %s:%d, read thread started.\n", PROGRAM_NAME, VERSION, s_kiss_server, s_kiss_port );
+
+    int server_sock = -1;
+    ReadThreadInfo* info = (ReadThreadInfo*)args;
+    if( !info )
     {
-        log_error( "can't connect to direwolf...\n" );
-        err = -1;
+        log_error( "tnc_read_thread: have no data ref...\n" );
         goto exit_gracefully;
     }
 
+    // connect to direwolf and send data
+    server_sock = connectToDireWolf();
+    if( server_sock < 0 )
+    {
+        log_error( "can't connect to direwolf...\n" );
+        goto exit_gracefully;
+    }
+
+    if( info->status )
+        info->status( true );
+
     while( !s_read_thread_quit )
-        read_from_kiss_tnc( server_sock, callback );
+        read_from_kiss_tnc( server_sock, info->callback );
 
 exit_gracefully:
     shutdown( server_sock, 2 );
     close( server_sock );
-
+    
+    if( info->status )
+        info->status( false );
+    
+    free( info );
+    
+    if( s_debug )
+        printf( "tnc_read_thread thread done.\n" );
+    
+    s_read_thread = 0;
     wx_thread_return();
 }
 
@@ -757,7 +796,7 @@ int connectToDireWolf( void )
         }
         else
         {
-            log_unix_error( "connectToDireWolf:connect: " );
+//            log_unix_error( "connectToDireWolf:connect: " );
             shutdown( socket_desc, 2 );
             close( socket_desc );
         }

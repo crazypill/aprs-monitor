@@ -20,6 +20,7 @@ static bool               s_have_location  = false;
 
 
 @interface MapViewController ()
+@property (nonatomic)         bool     thread_running;
 @property (strong, nonatomic) NSTimer* timer;
 @end
 
@@ -96,6 +97,30 @@ void parse_data( NSString* raw_lat, NSString* raw_long, NSString* raw_address )
 
 
 
+void stat_callback( bool running )
+{
+    if( !s_map_controller )
+    {
+        NSLog( @"map_callback: no controller!\n" );
+        return;
+    }
+
+    dispatch_async( dispatch_get_main_queue(), ^{
+        if( running )
+        {
+            s_map_controller.connect.enabled = YES;
+            s_map_controller.connect.title = @"Disconnect";
+        }
+        else
+        {
+            s_map_controller.connect.enabled = YES;
+            s_map_controller.connect.title = @"Connect";
+        }
+
+        s_map_controller.thread_running = running;
+    });
+}
+
 
 void map_callback( const char* address, const char* frameData )
 {
@@ -153,9 +178,6 @@ void map_callback( const char* address, const char* frameData )
     s_map_controller = self;
     
     [self.mapView registerClass:[MKMarkerAnnotationView class] forAnnotationViewWithReuseIdentifier:NSStringFromClass( [Packet class] )];
-
-    // Do any additional setup after loading the view
-    init_socket_layer( map_callback );
 }
 
 
@@ -187,6 +209,21 @@ void map_callback( const char* address, const char* frameData )
     [_timer invalidate];
     _timer = nil;
 }
+
+
+- (IBAction)connectButtonPressed:(id)sender
+{
+    s_map_controller.connect.enabled = NO;  // grey button while connecting or disconnecting...
+    if( !_thread_running )
+    {
+        init_socket_layer( map_callback, stat_callback );
+    }
+    else
+    {
+        shutdown_socket_layer();
+    }
+}
+
 
 - (void)plotMessage:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude sender:(NSString*)sender
 {

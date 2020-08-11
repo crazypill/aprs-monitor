@@ -101,7 +101,9 @@
 #define AX25_MAX_PACKET_LEN ( AX25_MAX_ADDRS * 7 + 2 + 3 + AX25_MAX_INFO_LEN)
 
 
-int  init_socket_layer( frame_callback callback );
+typedef void (*status_callback)( bool thread_running );
+
+int  init_socket_layer( frame_callback callback, status_callback status );
 int  shutdown_socket_layer( void );
 
 bool debug_mode( void );

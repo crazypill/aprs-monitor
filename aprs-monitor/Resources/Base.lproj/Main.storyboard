@@ -113,10 +113,16 @@
                         <barButtonItem title="All" id="BVs-og-Y7K"/>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="KISS Monitor" id="jVU-xi-FZF">
+                        <barButtonItem key="leftBarButtonItem" title="Connect" id="Rgw-9H-VhC">
+                            <connections>
+                                <action selector="connectButtonPressed:" destination="Q2x-WI-wPB" id="41M-Dv-9jO"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" image="envelope" catalog="system" style="plain" id="Sit-M5-HgY"/>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="connect" destination="Rgw-9H-VhC" id="9eC-1c-pgU"/>
                         <outlet property="mapView" destination="iIg-Sb-dEy" id="7FJ-du-Z4l"/>
                         <outlet property="status" destination="Sit-M5-HgY" id="QNM-em-kYb"/>
                         <outlet property="view" destination="ar6-Fd-zen" id="o0u-Hs-3j6"/>

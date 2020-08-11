@@ -14,9 +14,12 @@
 @property (strong, nonatomic)        UIWindow*        window;
 @property (weak, nonatomic) IBOutlet MKMapView*       mapView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem* status;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem* connect;
 
 - (void)blinkMessageButton;
 - (void)plotMessage:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude sender:(NSString*)sender;
+
+- (IBAction)connectButtonPressed:(id)sender;
 
 @end
 
