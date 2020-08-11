@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "kiss_frame.h"
 
 // define this to see incoming weather data from weather sensors...
 //#define TRACE_INCOMING_WX
@@ -22,7 +23,7 @@
 //#define PORT_DEVICE "/dev/cu.usbserial-0001"  // blue usb->serial adapter, use command line interface instead of changing this. this is here to remind me of the port name.
 #define PORT_DEVICE   "/dev/serial0"
 #define PORT_ERROR    -1
-#define PROGRAM_NAME  "folabs-wx-relay"
+#define PROGRAM_NAME  "aprs-monitor"
 #define VERSION       "100"
 
 
@@ -99,7 +100,8 @@
 #define AX25_MAX_INFO_LEN 2048    /* Maximum size for APRS. */
 #define AX25_MAX_PACKET_LEN ( AX25_MAX_ADDRS * 7 + 2 + 3 + AX25_MAX_INFO_LEN)
 
-int  init_socket_layer( void );
+
+int  init_socket_layer( frame_callback callback );
 bool debug_mode( void );
 void log_error( const char* format, ... );
 void log_unix_error( const char* prefix );

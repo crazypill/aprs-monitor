@@ -89,7 +89,7 @@ static wx_thread_return_t tnc_read_thread( void* args );
 static int  connectToDireWolf( void );
 static int  sendToRadio( const char* p, bool wide );    // wide = send out to WIDE2-1 instead of TCPIP*
 static int  send_to_kiss_tnc( int chan, int cmd, char *data, int dlen );
-static int  read_from_kiss_tnc( int server_sock );
+static int  read_from_kiss_tnc( int server_sock, frame_callback callback );
 
 static void        queue_packet( const char* packetData );
 static const char* queue_get_next_packet( void );
@@ -330,7 +330,7 @@ void log_unix_error( const char* prefix )
 
 #pragma mark -
 
-int init_socket_layer( void )
+int init_socket_layer( frame_callback callback )
 {
     int err = ignoreSIGPIPE();
     if( err == 0 )
@@ -341,7 +341,7 @@ int init_socket_layer( void )
     }
 
     if( s_debug )
-        printf( "%s, version %s -- pressure offset: %0.2f InHg, interior temp offset: %0.2f °C, kiss: %s:%d\n", PROGRAM_NAME, VERSION, s_localOffsetInHg, s_localTempErrorC, s_kiss_server, s_kiss_port );
+        printf( "%s, version %s -- kiss: %s:%d\n", PROGRAM_NAME, VERSION, s_kiss_server, s_kiss_port );
     
     s_last_log_roll = timeGetTimeSec();
     if( s_logFilePath && !s_logFile )
@@ -357,11 +357,11 @@ int init_socket_layer( void )
             struct tm tm = *localtime(&t);
             
             if( s_logFile )
-                fprintf( s_logFile, "%d-%02d-%02d %02d:%02d:%02d: %s, version %s -- pressure offset: %0.2f InHg, interior temp offset: %0.2f °C, kiss: %s:%d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, PROGRAM_NAME, VERSION, s_localOffsetInHg, s_localTempErrorC, s_kiss_server, s_kiss_port );
+                fprintf( s_logFile, "%d-%02d-%02d %02d:%02d:%02d: %s, version %s -- kiss: %s:%d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, PROGRAM_NAME, VERSION, s_kiss_server, s_kiss_port );
         }
     }
 
-    wx_create_thread_detached( tnc_read_thread, NULL );
+    wx_create_thread_detached( tnc_read_thread, callback );
 
     return EXIT_SUCCESS;
 }
@@ -487,7 +487,8 @@ wx_thread_return_t sendToRadioWIDE_thread_entry( void* args )
 wx_thread_return_t tnc_read_thread( void* args )
 {
     int err = 0;
-
+    frame_callback callback = (frame_callback)args;
+    
     // connect to direwolf and send data
     int server_sock = connectToDireWolf();
     if( server_sock < 0 )
@@ -498,7 +499,7 @@ wx_thread_return_t tnc_read_thread( void* args )
     }
 
     while( !s_read_thread_quit )
-        read_from_kiss_tnc( server_sock );
+        read_from_kiss_tnc( server_sock, callback );
 
 exit_gracefully:
     shutdown( server_sock, 2 );
@@ -639,8 +640,13 @@ exit_gracefully:
 }
 
 
+void callback( const char* data, int length )
+{
+    log_error( "callback: %d\n", length );
+}
 
-int read_from_kiss_tnc( int server_sock )
+
+int read_from_kiss_tnc( int server_sock, frame_callback callback )
 {
     uint8_t raw_buffer[BUFSIZE] = {};
     ssize_t bytesRead = recv( server_sock, raw_buffer, BUFSIZE, 0 );
@@ -663,7 +669,7 @@ int read_from_kiss_tnc( int server_sock )
           // It says "from KISS client application" because it was written
           // on the assumption it was being used in only one direction.
           // Not worried enough about it to do anything at this time.
-          kiss_rec_byte( &kstate, raw_buffer[j], false, 0, NULL );
+          kiss_rec_byte( &kstate, raw_buffer[j], false, 0, NULL, callback );
         }
     }
     

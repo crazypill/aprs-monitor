@@ -3,4 +3,5 @@
 //
 
 #include "RemoteTNC.h"
+#include "kiss_frame.h"
 #include "main.h"

@@ -1,6 +1,9 @@
 
 /* kiss_frame.h */
 
+#ifndef _H_kiss_frame
+#define _H_kiss_frame
+
 #ifndef KISSUTIL
 #include "audio.h"		/* for struct audio_s */
 #endif
@@ -22,6 +25,8 @@
 #define XKISS_CMD_POLL		14	// Not supported.
 #define KISS_CMD_END_KISS	15
 
+
+typedef void (*frame_callback)( const char* address, const char* frameData );
 
 
 /*
@@ -70,12 +75,14 @@ int kiss_encapsulate (unsigned char *in, int ilen, unsigned char *out);
 
 int kiss_unwrap (unsigned char *in, int ilen, unsigned char *out);
 
-void kiss_rec_byte (kiss_frame_t *kf, unsigned char ch, int debug, int client, void (*sendfun)(int,int,unsigned char*,int,int));
+void kiss_rec_byte (kiss_frame_t *kf, unsigned char ch, int debug, int client, void (*sendfun)(int,int,unsigned char*,int,int), frame_callback callback);
 
 typedef enum fromto_e { FROM_CLIENT=0, TO_CLIENT=1 } fromto_t;
 
-void kiss_process_msg (unsigned char *kiss_msg, int kiss_len, int debug, int client, void (*sendfun)(int,int,unsigned char*,int,int));
+void kiss_process_msg (unsigned char *kiss_msg, int kiss_len, int debug, int client, void (*sendfun)(int,int,unsigned char*,int,int), frame_callback callback);
 
 void kiss_debug_print (fromto_t fromto, char *special, unsigned char *pmsg, int msg_len);
+
+#endif /* !_H_kiss_frame */
 
 /* end kiss_frame.h */

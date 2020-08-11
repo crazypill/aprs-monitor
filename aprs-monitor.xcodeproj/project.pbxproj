@@ -7,18 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		60898E85213884F3003248F3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60898E84213884F3003248F3 /* AppDelegate.swift */; };
-		60898E87213884F3003248F3 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60898E86213884F3003248F3 /* MapViewController.swift */; };
 		60898E8A213884F3003248F3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 60898E88213884F3003248F3 /* Main.storyboard */; };
 		60898E8C213884F4003248F3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 60898E8B213884F4003248F3 /* Assets.xcassets */; };
 		60898E8F213884F4003248F3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 60898E8D213884F4003248F3 /* LaunchScreen.storyboard */; };
-		60898EB621388A92003248F3 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60898EB521388A92003248F3 /* DetailViewController.swift */; };
-		60898EB821388B56003248F3 /* BridgeAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60898EB721388B56003248F3 /* BridgeAnnotation.swift */; };
-		60898EBC2138912F003248F3 /* FerryBuildingAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60898EBB2138912F003248F3 /* FerryBuildingAnnotation.swift */; };
-		60898EBE21389213003248F3 /* SanFranciscoAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60898EBD21389213003248F3 /* SanFranciscoAnnotation.swift */; };
-		60898EC02138A21A003248F3 /* CustomAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60898EBF2138A21A003248F3 /* CustomAnnotation.swift */; };
-		60898EC22138A391003248F3 /* CustomAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60898EC12138A391003248F3 /* CustomAnnotationView.swift */; };
 		60BAE8C3214ABDD200EE21AA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60BAE8C5214ABDD200EE21AA /* Localizable.strings */; };
+		FA2A20B224E2570E0090A087 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2A20AB24E2570E0090A087 /* AppDelegate.m */; };
+		FA2A20B324E2570E0090A087 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2A20AC24E2570E0090A087 /* main.m */; };
+		FA2A20B424E2570E0090A087 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2A20AE24E2570E0090A087 /* ViewController.m */; };
 		FAA7EAF124E0E47F0016674B /* RemoteTNC.c in Sources */ = {isa = PBXBuildFile; fileRef = FAA7EAF024E0E47F0016674B /* RemoteTNC.c */; };
 		FAA7EB0824E0E64E0016674B /* kiss_frame.c in Sources */ = {isa = PBXBuildFile; fileRef = FAA7EAF624E0E6450016674B /* kiss_frame.c */; };
 		FAA7EB0924E0E64E0016674B /* aprs-is.c in Sources */ = {isa = PBXBuildFile; fileRef = FAA7EAF724E0E6450016674B /* aprs-is.c */; };
@@ -34,20 +29,17 @@
 
 /* Begin PBXFileReference section */
 		60898E81213884F3003248F3 /* aprs-monitor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "aprs-monitor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		60898E84213884F3003248F3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		60898E86213884F3003248F3 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		60898E89213884F3003248F3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		60898E8B213884F4003248F3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		60898E8E213884F4003248F3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		60898E90213884F4003248F3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		60898EB521388A92003248F3 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
-		60898EB721388B56003248F3 /* BridgeAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeAnnotation.swift; sourceTree = "<group>"; };
-		60898EBB2138912F003248F3 /* FerryBuildingAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FerryBuildingAnnotation.swift; sourceTree = "<group>"; };
-		60898EBD21389213003248F3 /* SanFranciscoAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SanFranciscoAnnotation.swift; sourceTree = "<group>"; };
-		60898EBF2138A21A003248F3 /* CustomAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAnnotation.swift; sourceTree = "<group>"; };
-		60898EC12138A391003248F3 /* CustomAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAnnotationView.swift; sourceTree = "<group>"; };
 		60BAE8C4214ABDD200EE21AA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		85E2B56085E2B23000000001 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		FA2A20AB24E2570E0090A087 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		FA2A20AC24E2570E0090A087 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		FA2A20AD24E2570E0090A087 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		FA2A20AE24E2570E0090A087 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		FA2A20B124E2570E0090A087 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		FAA7EAEE24E0E47F0016674B /* aprs-monitor-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "aprs-monitor-Bridging-Header.h"; sourceTree = "<group>"; };
 		FAA7EAEF24E0E47F0016674B /* RemoteTNC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RemoteTNC.h; sourceTree = "<group>"; };
 		FAA7EAF024E0E47F0016674B /* RemoteTNC.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = RemoteTNC.c; sourceTree = "<group>"; };
@@ -89,17 +81,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		60398FD62139F777005C2A51 /* Annotations */ = {
-			isa = PBXGroup;
-			children = (
-				60898EB721388B56003248F3 /* BridgeAnnotation.swift */,
-				60898EBF2138A21A003248F3 /* CustomAnnotation.swift */,
-				60898EBB2138912F003248F3 /* FerryBuildingAnnotation.swift */,
-				60898EBD21389213003248F3 /* SanFranciscoAnnotation.swift */,
-			);
-			path = Annotations;
-			sourceTree = "<group>";
-		};
 		60898E78213884F3003248F3 = {
 			isa = PBXGroup;
 			children = (
@@ -121,11 +102,11 @@
 		60898E83213884F3003248F3 /* aprs-monitor */ = {
 			isa = PBXGroup;
 			children = (
-				60398FD62139F777005C2A51 /* Annotations */,
-				60898E84213884F3003248F3 /* AppDelegate.swift */,
-				60898EC12138A391003248F3 /* CustomAnnotationView.swift */,
-				60898EB521388A92003248F3 /* DetailViewController.swift */,
-				60898E86213884F3003248F3 /* MapViewController.swift */,
+				FA2A20AD24E2570E0090A087 /* AppDelegate.h */,
+				FA2A20AB24E2570E0090A087 /* AppDelegate.m */,
+				FA2A20AC24E2570E0090A087 /* main.m */,
+				FA2A20B124E2570E0090A087 /* ViewController.h */,
+				FA2A20AE24E2570E0090A087 /* ViewController.m */,
 				60898EB121388719003248F3 /* Resources */,
 			);
 			path = "aprs-monitor";
@@ -251,24 +232,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				60898EB621388A92003248F3 /* DetailViewController.swift in Sources */,
-				60898E87213884F3003248F3 /* MapViewController.swift in Sources */,
 				FAA7EB0B24E0E64E0016674B /* stubs.c in Sources */,
 				FAA7EB0924E0E64E0016674B /* aprs-is.c in Sources */,
+				FA2A20B224E2570E0090A087 /* AppDelegate.m in Sources */,
 				FAAD91B824E1B21B0000896D /* tq.c in Sources */,
-				60898E85213884F3003248F3 /* AppDelegate.swift in Sources */,
 				FAA7EB0C24E0E64E0016674B /* fcs_calc.c in Sources */,
 				FAA7EB0A24E0E64E0016674B /* aprs-wx.c in Sources */,
-				60898EB821388B56003248F3 /* BridgeAnnotation.swift in Sources */,
 				FAA7EB0F24E0E64E0016674B /* main.c in Sources */,
 				FAA7EB0D24E0E64E0016674B /* wx_thread.c in Sources */,
-				60898EBE21389213003248F3 /* SanFranciscoAnnotation.swift in Sources */,
 				FAA7EAF124E0E47F0016674B /* RemoteTNC.c in Sources */,
 				FAAD91BB24E1B7680000896D /* dtime_now.c in Sources */,
-				60898EC02138A21A003248F3 /* CustomAnnotation.swift in Sources */,
+				FA2A20B424E2570E0090A087 /* ViewController.m in Sources */,
 				FAA7EB0824E0E64E0016674B /* kiss_frame.c in Sources */,
-				60898EC22138A391003248F3 /* CustomAnnotationView.swift in Sources */,
-				60898EBC2138912F003248F3 /* FerryBuildingAnnotation.swift in Sources */,
+				FA2A20B324E2570E0090A087 /* main.m in Sources */,
 				FAA7EB0E24E0E64E0016674B /* ax25_pad.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -344,10 +320,6 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -427,7 +399,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
 					"$(inherited)",
 					KISSUTIL,
 				);

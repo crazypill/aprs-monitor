@@ -386,7 +386,7 @@ int kiss_unwrap (unsigned char *in, int ilen, unsigned char *out)
 
 
 //#ifndef KISSUTIL
-void kiss_rec_byte (kiss_frame_t *kf, unsigned char ch, int debug, int client, void (*sendfun)(int,int,unsigned char*,int,int))
+void kiss_rec_byte (kiss_frame_t *kf, unsigned char ch, int debug, int client, void (*sendfun)(int,int,unsigned char*,int,int), frame_callback callback)
 {
 
 	//dw_printf ("kiss_frame ( %c %02x ) \n", ch, ch);
@@ -478,7 +478,7 @@ void kiss_rec_byte (kiss_frame_t *kf, unsigned char ch, int debug, int client, v
 	        hex_dump (unwrapped+1, ulen-1);
 	      }
 
-	      kiss_process_msg (unwrapped, ulen, debug, client, sendfun);
+	      kiss_process_msg (unwrapped, ulen, debug, client, sendfun, callback);
 
 	      kf->state = KS_SEARCHING;
 	      return;
@@ -531,7 +531,7 @@ void kiss_rec_byte (kiss_frame_t *kf, unsigned char ch, int debug, int client, v
 
 // This is used only by the TNC sided.
 
-void kiss_process_msg (unsigned char *kiss_msg, int kiss_len, int debug, int client, void (*sendfun)(int,int,unsigned char*,int,int))
+void kiss_process_msg (unsigned char *kiss_msg, int kiss_len, int debug, int client, void (*sendfun)(int,int,unsigned char*,int,int), frame_callback callback)
 {
 	int port;
 	int cmd;
@@ -574,13 +574,20 @@ void kiss_process_msg (unsigned char *kiss_msg, int kiss_len, int debug, int cli
 
               text_color_set(DW_COLOR_REC);
 
-              dw_printf ("%s %s", prefix, addrs);        // [channel] Addresses followed by :
+                char buf[1024] = {}; // form TNC2 style string
+                sprintf( buf, "%s%s", addrs, pinfo );
 
-              // Safe print will replace any unprintable characters with
-              // hexadecimal representation.
-
-              ax25_safe_print ((char *)pinfo, info_len, 0);
-              dw_printf ("\n");
+//              dw_printf ("%s %s", prefix, addrs);        // [channel] Addresses followed by :
+//
+//              // Safe print will replace any unprintable characters with
+//              // hexadecimal representation.
+//
+//              ax25_safe_print ((char *)pinfo, info_len, 0);
+//              dw_printf ("\n");
+                
+              if( callback )
+                callback( (const char *)addrs, (const char *)pinfo );
+                
               ax25_delete (pp);
             }
             break;
