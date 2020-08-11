@@ -21,7 +21,6 @@
 		FAA7EB0C24E0E64E0016674B /* fcs_calc.c in Sources */ = {isa = PBXBuildFile; fileRef = FAA7EAFF24E0E6470016674B /* fcs_calc.c */; };
 		FAA7EB0D24E0E64E0016674B /* wx_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = FAA7EB0024E0E6470016674B /* wx_thread.c */; };
 		FAA7EB0E24E0E64E0016674B /* ax25_pad.c in Sources */ = {isa = PBXBuildFile; fileRef = FAA7EB0524E0E6470016674B /* ax25_pad.c */; };
-		FAA7EB0F24E0E64E0016674B /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = FAA7EB0624E0E6470016674B /* main.c */; };
 		FAAD91B824E1B21B0000896D /* tq.c in Sources */ = {isa = PBXBuildFile; fileRef = FAAD91B724E1B21B0000896D /* tq.c */; };
 		FAAD91BB24E1B7680000896D /* dtime_now.c in Sources */ = {isa = PBXBuildFile; fileRef = FAAD91BA24E1B7680000896D /* dtime_now.c */; };
 		FACC8B9724E32FCB007BA389 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FACC8B9124E32FCB007BA389 /* MapViewController.m */; };
@@ -44,7 +43,6 @@
 		FAA7EAEE24E0E47F0016674B /* aprs-monitor-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "aprs-monitor-Bridging-Header.h"; sourceTree = "<group>"; };
 		FAA7EAEF24E0E47F0016674B /* RemoteTNC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RemoteTNC.h; sourceTree = "<group>"; };
 		FAA7EAF024E0E47F0016674B /* RemoteTNC.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = RemoteTNC.c; sourceTree = "<group>"; };
-		FAA7EAF224E0E6450016674B /* main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		FAA7EAF324E0E6450016674B /* wx_thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wx_thread.h; sourceTree = "<group>"; };
 		FAA7EAF424E0E6450016674B /* xmit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xmit.h; sourceTree = "<group>"; };
 		FAA7EAF524E0E6450016674B /* textcolor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = textcolor.h; sourceTree = "<group>"; };
@@ -64,7 +62,6 @@
 		FAA7EB0324E0E6470016674B /* fcs_calc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fcs_calc.h; sourceTree = "<group>"; };
 		FAA7EB0424E0E6470016674B /* latlong.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = latlong.h; sourceTree = "<group>"; };
 		FAA7EB0524E0E6470016674B /* ax25_pad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ax25_pad.c; sourceTree = "<group>"; };
-		FAA7EB0624E0E6470016674B /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		FAA7EB0724E0E6470016674B /* ax25_pad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ax25_pad.h; sourceTree = "<group>"; };
 		FAAD91B724E1B21B0000896D /* tq.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tq.c; sourceTree = "<group>"; };
 		FAAD91B924E1B7680000896D /* dtime_now.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dtime_now.h; sourceTree = "<group>"; };
@@ -158,8 +155,6 @@
 				FAA7EAF624E0E6450016674B /* kiss_frame.c */,
 				FAA7EAF924E0E6450016674B /* kiss_frame.h */,
 				FAA7EB0424E0E6470016674B /* latlong.h */,
-				FAA7EB0624E0E6470016674B /* main.c */,
-				FAA7EAF224E0E6450016674B /* main.h */,
 				FAA7EAFD24E0E6470016674B /* stubs.c */,
 				FAA7EAF524E0E6450016674B /* textcolor.h */,
 				FAA7EAF824E0E6450016674B /* tq.h */,
@@ -253,7 +248,6 @@
 				FAAD91B824E1B21B0000896D /* tq.c in Sources */,
 				FAA7EB0C24E0E64E0016674B /* fcs_calc.c in Sources */,
 				FAA7EB0A24E0E64E0016674B /* aprs-wx.c in Sources */,
-				FAA7EB0F24E0E64E0016674B /* main.c in Sources */,
 				FACC8B9924E32FCB007BA389 /* PacketManager.m in Sources */,
 				FAA7EB0D24E0E64E0016674B /* wx_thread.c in Sources */,
 				FAA7EAF124E0E47F0016674B /* RemoteTNC.c in Sources */,

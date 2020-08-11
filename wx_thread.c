@@ -8,7 +8,7 @@
 
 
 #include "wx_thread.h"
-#include "main.h"
+#include "RemoteTNC.h"
 
 #include <stdlib.h>
 #include <stdio.h>

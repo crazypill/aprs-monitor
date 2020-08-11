@@ -10,7 +10,7 @@
 #import "MapKit/MKMarkerAnnotationView.h"
 #import "Packet.h"
 
-#include "main.h"
+#include "RemoteTNC.h"
 
 
 static MapViewController* s_map_controller = nil;
@@ -152,8 +152,6 @@ void map_callback( const char* address, const char* frameData )
     
     s_map_controller = self;
     
-    
-//    [self.mapView registerClass:[CustomAnnotationView class] forAnnotationViewWithReuseIdentifier:NSStringFromClass( [CustomAnnotation class] )];
     [self.mapView registerClass:[MKMarkerAnnotationView class] forAnnotationViewWithReuseIdentifier:NSStringFromClass( [Packet class] )];
 
     // Do any additional setup after loading the view
