@@ -54,6 +54,73 @@ static bool               s_have_location  = false;
 
 
 
+CLLocationDegrees convertToDegrees( NSString* aprsPosition )
+{
+    if( !aprsPosition )
+        return 0.0;
+    
+    int degrees = 0;
+    int minutes = 0;
+    float hundredthsMinutes = 0;
+    
+    // check for latitude vs longitude
+    if( aprsPosition.length == 7 )
+    {
+        degrees = [aprsPosition substringWithRange:NSMakeRange( 0, 2 )].intValue;
+        minutes = [aprsPosition substringWithRange:NSMakeRange( 2, 2 )].intValue;
+        hundredthsMinutes = [aprsPosition substringWithRange:NSMakeRange( 4, 3 )].floatValue;
+    }
+    else
+    {
+        degrees = [aprsPosition substringWithRange:NSMakeRange( 0, 3 )].intValue;
+        minutes = [aprsPosition substringWithRange:NSMakeRange( 3, 2 )].intValue;
+        hundredthsMinutes = [aprsPosition substringWithRange:NSMakeRange( 5, 3 )].floatValue;
+    }
+    
+    // convert to seconds
+    int seconds = hundredthsMinutes * 60.0f;
+    
+    float fraction = ((seconds / 60.0f) + minutes) / 60.0f;
+    return degrees + fraction;
+}
+
+
+void parse_data( NSString* raw_lat, NSString* raw_long, NSString* raw_address )
+{
+    NSString* latitude = [raw_lat substringWithRange:NSMakeRange( 0, raw_lat.length - 1 )];
+    if( latitude.length == 7 )
+    {
+        char n = [raw_lat characterAtIndex:7];
+
+        NSString* longitude = [raw_long substringWithRange:NSMakeRange( 0, raw_long.length - 1 )];
+        if( longitude.length >= 8 )
+        {
+            char w = [raw_long characterAtIndex:8];
+
+            CLLocationDegrees lat = convertToDegrees( latitude );
+            CLLocationDegrees lng = convertToDegrees( longitude );
+            
+            if( s_map_controller && lng > 1 )
+            {
+                // flip sign to deal with East vs West
+                if( w == 'W' || w == 'w' )
+                    lng = -lng;
+
+                if( n != 'N' && n != 'n' )
+                    lat = -lat;
+
+                // get sender
+                NSArray* addressComponents = [raw_address componentsSeparatedByString:@">"];
+                NSString* address = nil;
+                if( addressComponents.count >= 1 )
+                    address = addressComponents.firstObject;
+                
+                [s_map_controller plotMessage:lat longitude:lng sender:address];
+            }
+        }
+    }
+}
+
 
 
 
@@ -73,40 +140,7 @@ void map_callback( const char* address, const char* frameData )
         
         if( listItems.count >= 2 )
         {
-            NSString* raw      = listItems[0];
-            NSRange   trim     = NSMakeRange( 0, raw.length - 1 );
-            NSString* latitude = [raw substringWithRange:trim];
-            char n = 0;
-            if( latitude.length >= 7 )
-                n = [raw characterAtIndex:7];
-
-            raw      = listItems[1];
-            trim     = NSMakeRange( 0, raw.length - 1 );
-            NSString* longitude = [raw substringWithRange:trim];
-            char w = 0;
-            if( longitude.length >= 8 )
-                w = [raw characterAtIndex:8];
-
-            CLLocationDegrees lat = latitude.doubleValue / 100;
-            CLLocationDegrees lng = longitude.doubleValue / 100;
-            
-            if( s_map_controller && lng > 1 )
-            {
-                // flip sign to deal with East vs West
-                if( w == 'W' || w == 'w' )
-                    lng = -lng;
-
-                if( n != 'N' && n != 'n' )
-                    lat = -lat;
-
-                // get sender
-                NSArray* addressComponents = [[NSString stringWithUTF8String:address] componentsSeparatedByString:@">"];
-                NSString* addr = nil;
-                if( addressComponents.count >= 1 )
-                    addr = addressComponents.firstObject;
-                
-                [s_map_controller plotMessage:lat longitude:lng sender:addr];
-            }
+            parse_data( listItems[0], listItems[1], [NSString stringWithUTF8String:address] );
         }
     }
 
@@ -120,40 +154,7 @@ void map_callback( const char* address, const char* frameData )
         
         if( listItems.count >= 3 )
         {
-            NSString* raw      = listItems[1];
-            NSRange   trim     = NSMakeRange( 0, raw.length - 1 );
-            NSString* latitude = [raw substringWithRange:trim];
-            char n = 0;
-            if( latitude.length >= 7 )
-                n = [raw characterAtIndex:7];
-
-            raw      = listItems[2];
-            trim     = NSMakeRange( 0, raw.length - 1 );
-            NSString* longitude = [raw substringWithRange:trim];
-            char w = 0;
-            if( longitude.length >= 8 )
-                w = [raw characterAtIndex:8];
-
-            CLLocationDegrees lat = latitude.doubleValue / 100;
-            CLLocationDegrees lng = longitude.doubleValue / 100;
-            
-            if( s_map_controller && lng > 1 )
-            {
-                // flip sign to deal with East vs West
-                if( w == 'W' || w == 'w' )
-                    lng = -lng;
-
-                if( n != 'N' && n != 'n' )
-                    lat = -lat;
-
-                // get sender
-                NSArray* addressComponents = [[NSString stringWithUTF8String:address] componentsSeparatedByString:@">"];
-                NSString* addr = nil;
-                if( addressComponents.count >= 1 )
-                    addr = addressComponents.firstObject;
-
-                [s_map_controller plotMessage:lat longitude:lng sender:addr];
-            }
+            parse_data( listItems[1], listItems[2], [NSString stringWithUTF8String:address] );
         }
     }
 }
@@ -192,7 +193,7 @@ void map_callback( const char* address, const char* frameData )
     __weak MapViewController* weakself = self;
     
     dispatch_async( dispatch_get_main_queue(), ^{
-        CLLocationCoordinate2D coord = {.latitude = latitude, .longitude = longitude };
+        CLLocationCoordinate2D coord = CLLocationCoordinate2DMake( latitude, longitude );
         CustomAnnotation* annotation = [[CustomAnnotation alloc] init: coord];
         annotation.title = sender;
         [weakself.mapView addAnnotations:@[annotation]];

@@ -105,32 +105,12 @@
                         <viewLayoutGuide key="safeArea" id="A2x-cY-S2p"/>
                     </view>
                     <toolbarItems>
-                        <barButtonItem title="Bridge" id="dyZ-Ro-lkR">
-                            <connections>
-                                <action selector="showOnlyBridgeAnnotation:" destination="Q2x-WI-wPB" id="AeF-8O-lQ5"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem title="City" id="5Gn-kw-07Q">
-                            <connections>
-                                <action selector="showOnlySanFranciscoAnnotation:" destination="Q2x-WI-wPB" id="d5o-hB-dkf"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem title="Ferry" id="im6-Qc-sCL">
-                            <connections>
-                                <action selector="showOnlyFerryBuildingAnnotation:" destination="Q2x-WI-wPB" id="Xaq-ju-WpT"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem title="Flowers" id="rvl-Iy-U0L">
-                            <connections>
-                                <action selector="showOnlyFlowerAnnotation:" destination="Q2x-WI-wPB" id="WXP-1g-udQ"/>
-                            </connections>
-                        </barButtonItem>
+                        <barButtonItem title="Position" id="dyZ-Ro-lkR"/>
+                        <barButtonItem title="Weather" id="5Gn-kw-07Q"/>
+                        <barButtonItem title="Status" id="im6-Qc-sCL"/>
+                        <barButtonItem title="Object" id="rvl-Iy-U0L"/>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="QSE-7U-4Ei"/>
-                        <barButtonItem title="All" id="BVs-og-Y7K">
-                            <connections>
-                                <action selector="showAllAnnotations:" destination="Q2x-WI-wPB" id="gVQ-YK-9N5"/>
-                            </connections>
-                        </barButtonItem>
+                        <barButtonItem title="All" id="BVs-og-Y7K"/>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="KISS Monitor" id="jVU-xi-FZF"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
