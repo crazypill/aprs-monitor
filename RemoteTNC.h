@@ -102,6 +102,8 @@
 
 
 int  init_socket_layer( frame_callback callback );
+int  shutdown_socket_layer( void );
+
 bool debug_mode( void );
 void log_error( const char* format, ... );
 void log_unix_error( const char* prefix );

@@ -367,6 +367,12 @@ int init_socket_layer( frame_callback callback )
 }
 
 
+int shutdown_socket_layer()
+{
+    s_read_thread_quit = true;
+    return EXIT_SUCCESS;
+}
+
 
 #pragma mark -
 
