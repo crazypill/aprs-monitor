@@ -113,9 +113,7 @@
                         <barButtonItem title="All" id="BVs-og-Y7K"/>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="KISS Monitor" id="jVU-xi-FZF">
-                        <barButtonItem key="rightBarButtonItem" image="envelope" catalog="system" style="plain" id="Sit-M5-HgY">
-                            <color key="tintColor" systemColor="systemPinkColor" red="1" green="0.1764705882" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" image="envelope" catalog="system" style="plain" id="Sit-M5-HgY"/>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>

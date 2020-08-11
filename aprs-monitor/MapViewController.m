@@ -19,6 +19,12 @@ static bool               s_have_location  = false;
 
 
 
+@interface MapViewController ()
+@property (strong, nonatomic) NSTimer* timer;
+@end
+
+
+
 
 CLLocationDegrees convertToDegrees( NSString* aprsPosition )
 {
@@ -93,7 +99,15 @@ void parse_data( NSString* raw_lat, NSString* raw_long, NSString* raw_address )
 
 void map_callback( const char* address, const char* frameData )
 {
+    if( !s_map_controller )
+    {
+        NSLog( @"map_callback: no controller!\n" );
+        return;
+    }
+
     NSLog( @"%s%s\n", address, frameData );
+    
+    [s_map_controller blinkMessageButton];
     
     NSString* info = [NSString stringWithUTF8String:frameData];
     
@@ -126,11 +140,7 @@ void map_callback( const char* address, const char* frameData )
 }
 
 
-
-
-@interface MapViewController ()
-
-@end
+#pragma mark -
 
 
 
@@ -150,6 +160,35 @@ void map_callback( const char* address, const char* frameData )
     init_socket_layer( map_callback );
 }
 
+
+- (void)blinkMessageButton
+{
+    __weak MapViewController* weakself = self;
+
+    dispatch_async( dispatch_get_main_queue(), ^{
+        // kill any existing timer, we will reset it
+        if( weakself.timer )
+        {
+            weakself.status.tintColor = [UIColor systemBlueColor];
+            [weakself.timer invalidate];
+            weakself.timer = nil;
+        }
+        
+        // change to red, timer will set to blue
+        weakself.status.tintColor = [UIColor redColor];
+
+        // set timer to turn off status light after a tiny bit
+         weakself.timer = [NSTimer scheduledTimerWithTimeInterval:0.6 target:weakself selector:@selector(restoreMessageButton) userInfo:nil repeats:NO];
+    });
+}
+
+
+- (void)restoreMessageButton
+{
+    _status.tintColor = [UIColor systemBlueColor];
+    [_timer invalidate];
+    _timer = nil;
+}
 
 - (void)plotMessage:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude sender:(NSString*)sender
 {
