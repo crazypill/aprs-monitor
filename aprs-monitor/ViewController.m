@@ -11,6 +11,47 @@
 #include "main.h"
 
 
+static MapViewController* s_map_controller = nil;
+
+
+@interface CustomAnnotation : NSObject <MKAnnotation>
+
+@property (nonatomic) CLLocationCoordinate2D coordinate;
+
+- (id)init:(CLLocationCoordinate2D)coordinate;
+@end
+
+
+@implementation CustomAnnotation
+
+- (id)init:(CLLocationCoordinate2D)coordinate
+{
+    self = [super init];
+    
+    if( self )
+        self.coordinate = coordinate;
+        
+    return self;
+}
+
+@end
+
+
+
+
+@interface CustomAnnotationView : MKAnnotationView
+@end
+
+
+@implementation CustomAnnotationView
+@end
+
+
+
+
+
+
+
 void map_callback( const char* address, const char* frameData )
 {
     NSLog( @"%s%s\n", address, frameData );
@@ -35,11 +76,14 @@ void map_callback( const char* address, const char* frameData )
             NSString* longitude = [raw substringWithRange:trim];
             char w = [raw characterAtIndex:raw.length - 1];
 
-            CLLocationDegrees lat = latitude.doubleValue;
-            CLLocationDegrees lng = longitude.doubleValue;
+            CLLocationDegrees lat = latitude.doubleValue / 100;
+            CLLocationDegrees lng = longitude.doubleValue / 100;
             
-            if( lng > 1 )
-                NSLog( @"lat: %0.5f%c, %0.5f%c\n", lat / 100, n, lng / 100, w );
+            if( s_map_controller && lng > 1 )
+            {
+//                NSLog( @"lat: %0.4f%c, %0.4f%c\n", lat, n, lng, w );
+                [s_map_controller plotMessage:lat longitude:lng];
+            }
         }
     }
 
@@ -62,15 +106,19 @@ void map_callback( const char* address, const char* frameData )
             NSString* longitude = [raw substringWithRange:trim];
             char w = [raw characterAtIndex:raw.length - 1];
 
-            CLLocationDegrees lat = latitude.doubleValue;
-            CLLocationDegrees lng = longitude.doubleValue;
+            CLLocationDegrees lat = latitude.doubleValue / 100;
+            CLLocationDegrees lng = longitude.doubleValue / 100;
             
-            if( lng > 1 )
-                NSLog( @"lat: %0.5f%c, %0.5f%c\n", lat / 100, n, lng / 100, w );
+            if( s_map_controller && lng > 1 )
+            {
+//                NSLog( @"lat: %0.4f%c, %0.4f%c\n", lat, n, lng, w );
+                [s_map_controller plotMessage:lat longitude:lng];
+            }
         }
     }
-
 }
+
+
 
 
 @interface MapViewController ()
@@ -85,9 +133,30 @@ void map_callback( const char* address, const char* frameData )
 {
     [super viewDidLoad];
     
+    s_map_controller = self;
+    
+     [self.mapView registerClass:[CustomAnnotationView class] forAnnotationViewWithReuseIdentifier:NSStringFromClass( [CustomAnnotation class] )];
+
     // Do any additional setup after loading the view
     init_socket_layer( map_callback );
 }
 
+
+
+- (void)plotMessage:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude
+{
+    NSLog( @"plotMessage lat: %0.4f, %0.4f\n", latitude, longitude );
+    
+    CLLocationCoordinate2D coord = {.latitude = latitude, .longitude = longitude };
+    CustomAnnotation* annotation = [[CustomAnnotation alloc] init: coord];
+    
+    [_mapView addAnnotations:@[annotation]];
+}
+
+
+- (nullable MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
+{
+    return [mapView dequeueReusableAnnotationViewWithIdentifier:NSStringFromClass( [CustomAnnotation class] ) forAnnotation:annotation];
+}
 
 @end

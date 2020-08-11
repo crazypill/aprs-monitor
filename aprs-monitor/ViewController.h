@@ -9,10 +9,12 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MKMapView.h>
 
-@interface MapViewController : UIViewController
+@interface MapViewController : UIViewController <MKMapViewDelegate>
 
 @property (strong, nonatomic) UIWindow * window;
 @property (weak, nonatomic) IBOutlet MKMapView* mapView;
+
+- (void)plotMessage:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude;
 
 @end
 
