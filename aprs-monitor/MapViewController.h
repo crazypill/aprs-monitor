@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MKMapView.h>
 
+#import "Packet.h"
+
+
 @interface MapViewController : UIViewController <MKMapViewDelegate>
 
 @property (strong, nonatomic)        UIWindow*        window;
@@ -17,7 +20,8 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem* connect;
 
 - (void)blinkMessageButton;
-- (void)plotMessage:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude sender:(NSString*)sender;
+- (void)plotMessage:(const Packet*)packet;
+//- (void)plotMessage:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude sender:(NSString*)sender;
 
 - (IBAction)connectButtonPressed:(id)sender;
 

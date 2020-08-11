@@ -9,10 +9,16 @@
 #import <MapKit/MKMapView.h>
 
 
+enum
+{
+    kPacketFlag_CoordinatesValid = 1 << 0
+};
+
 
 @interface Packet : NSObject <MKAnnotation, NSCoding, NSCopying>
 
-@property (nonatomic) CLLocationCoordinate2D coordinate;
+@property (nonatomic) uint8_t                             flags;
+@property (nonatomic) CLLocationCoordinate2D              coordinate;
 @property (nonatomic, readonly, copy, nullable) NSString* title;
 @property (nonatomic, readonly, copy, nullable) NSString* subtitle;
 
@@ -24,7 +30,7 @@
 @property (nonatomic, copy, nullable) NSDate*   timeStamp;
 
 + (_Nullable id)initWithCoordinates:(CLLocationCoordinate2D)coordinate;
-+ (_Nullable id)initWithRaw:(NSString*)rawstring;
++ (_Nullable id)initWithRaw:(const char* _Nullable)rawstringUTF8 address:(const char* _Nullable)rawaddressUTF8;
 
 @end
 

@@ -8,9 +8,9 @@
 
 #import "MapViewController.h"
 #import "MapKit/MKMarkerAnnotationView.h"
-#import "Packet.h"
 
 #include "RemoteTNC.h"
+#include "PacketManager.h"
 
 
 static MapViewController* s_map_controller = nil;
@@ -24,75 +24,6 @@ static bool               s_have_location  = false;
 @property (strong, nonatomic) NSTimer* timer;
 @end
 
-
-
-
-CLLocationDegrees convertToDegrees( NSString* aprsPosition )
-{
-    if( !aprsPosition )
-        return 0.0;
-    
-    int degrees = 0;
-    int minutes = 0;
-    float hundredthsMinutes = 0;
-    
-    // check for latitude vs longitude
-    if( aprsPosition.length == 7 )
-    {
-        degrees = [aprsPosition substringWithRange:NSMakeRange( 0, 2 )].intValue;
-        minutes = [aprsPosition substringWithRange:NSMakeRange( 2, 2 )].intValue;
-        hundredthsMinutes = [aprsPosition substringWithRange:NSMakeRange( 4, 3 )].floatValue;
-    }
-    else
-    {
-        degrees = [aprsPosition substringWithRange:NSMakeRange( 0, 3 )].intValue;
-        minutes = [aprsPosition substringWithRange:NSMakeRange( 3, 2 )].intValue;
-        hundredthsMinutes = [aprsPosition substringWithRange:NSMakeRange( 5, 3 )].floatValue;
-    }
-    
-    // convert to seconds
-    int seconds = hundredthsMinutes * 60.0f;
-    
-    float fraction = ((seconds / 60.0f) + minutes) / 60.0f;
-    return degrees + fraction;
-}
-
-
-void parse_data( NSString* raw_lat, NSString* raw_long, NSString* raw_address )
-{
-    NSString* latitude = [raw_lat substringWithRange:NSMakeRange( 0, raw_lat.length - 1 )];
-    if( latitude.length == 7 )
-    {
-        char n = [raw_lat characterAtIndex:7];
-
-        NSString* longitude = [raw_long substringWithRange:NSMakeRange( 0, raw_long.length - 1 )];
-        if( longitude.length >= 8 )
-        {
-            char w = [raw_long characterAtIndex:8];
-
-            CLLocationDegrees lat = convertToDegrees( latitude );
-            CLLocationDegrees lng = convertToDegrees( longitude );
-            
-            if( s_map_controller && lng > 1 )
-            {
-                // flip sign to deal with East vs West
-                if( w == 'W' || w == 'w' )
-                    lng = -lng;
-
-                if( n != 'N' && n != 'n' )
-                    lat = -lat;
-
-                // get sender
-                NSArray* addressComponents = [raw_address componentsSeparatedByString:@">"];
-                NSString* address = nil;
-                if( addressComponents.count >= 1 )
-                    address = addressComponents.firstObject;
-                
-                [s_map_controller plotMessage:lat longitude:lng sender:address];
-            }
-        }
-    }
-}
 
 
 
@@ -134,32 +65,16 @@ void map_callback( const char* address, const char* frameData )
     
     [s_map_controller blinkMessageButton];
     
-    NSString* info = [NSString stringWithUTF8String:frameData];
-    
-    // positions without timestamps
-    if( [info characterAtIndex:0]  == '!' || [info characterAtIndex:0]  == '=' )
+    // create packet
+    PacketManager* pm = [PacketManager shared];
+    if( pm )
     {
-        NSString* data = [info substringFromIndex:1];
-        NSArray* listItems = [data componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"z/\\>_"]];
-//        NSLog( @"%@\n", listItems );
-        
-        if( listItems.count >= 2 )
+        Packet* pkt = [Packet initWithRaw:frameData address:address];
+        if( pkt )
         {
-            parse_data( listItems[0], listItems[1], [NSString stringWithUTF8String:address] );
-        }
-    }
-
-
-    // positions with timestamps
-    if( [info characterAtIndex:0]  == '@' || [info characterAtIndex:0]  == '/' )
-    {
-        NSString* data = [info substringFromIndex:1];
-        NSArray* listItems = [data componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"z/\\>_"]];
-//        NSLog( @"%@\n", listItems );
-        
-        if( listItems.count >= 3 )
-        {
-            parse_data( listItems[1], listItems[2], [NSString stringWithUTF8String:address] );
+            [pm addItem:pkt];
+            if( s_map_controller && (pkt.flags & kPacketFlag_CoordinatesValid) )
+                [s_map_controller plotMessage:pkt];
         }
     }
 }
@@ -225,26 +140,22 @@ void map_callback( const char* address, const char* frameData )
 }
 
 
-- (void)plotMessage:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude sender:(NSString*)sender
+- (void)plotMessage:(const Packet*)packet
 {
-    NSLog( @"plotMessage %@: %0.4f, %0.4f\n", sender, latitude, longitude );
-    
     __weak MapViewController* weakself = self;
     
     dispatch_async( dispatch_get_main_queue(), ^{
-        CLLocationCoordinate2D coord = CLLocationCoordinate2DMake( latitude, longitude );
-        Packet* annotation = [Packet initWithCoordinates:coord];
-        annotation.call = sender;
-        [weakself.mapView addAnnotations:@[annotation]];
+        [weakself.mapView addAnnotations:@[packet]];
         
         if( !s_have_location )
         {
             MKCoordinateSpan span = MKCoordinateSpanMake( 0.15, 0.15 );
-            [weakself.mapView setRegion: MKCoordinateRegionMake( coord, span) animated: true];
+            [weakself.mapView setRegion:MKCoordinateRegionMake( packet.coordinate, span ) animated: true];
             s_have_location = true;
         }
     });
 }
+
 
 
 - (nullable MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
