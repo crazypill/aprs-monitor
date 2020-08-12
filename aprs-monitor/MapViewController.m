@@ -98,12 +98,16 @@ void map_callback( packet_t packet )
 {
     [super viewDidLoad];
     
-    s_map_controller = self;
-    
     [PacketManager shared].documentUpdatedBlock = ^{ [[NSNotificationCenter defaultCenter] postNotificationName:@"NewPacket" object:nil]; };        // !!@ remove literals
     
     [self.mapView registerClass:[MKMarkerAnnotationView class] forAnnotationViewWithReuseIdentifier:NSStringFromClass( [Packet class] )];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:@"appResigning" object:nil];       // !!@ remove literals
+
+    if( !s_map_controller )
+    {
+        s_map_controller = self;
+        [self connectButtonPressed:nil];    // when we start, automatically connect !!@
+    }
 }
 
 

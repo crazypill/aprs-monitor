@@ -25,6 +25,8 @@
     [encoder encodeObject:_info      forKey:@"info"];
     [encoder encodeObject:_type      forKey:@"type"];
     [encoder encodeObject:_symbol    forKey:@"symbol"];
+    [encoder encodeObject:_comment   forKey:@"comment"];
+    [encoder encodeObject:_weather   forKey:@"weather"];
     [encoder encodeObject:_timeStamp forKey:@"timeStamp"];
 }
 
@@ -42,9 +44,29 @@
         _info      = [decoder decodeObjectForKey:@"info"];
         _type      = [decoder decodeObjectForKey:@"type"];
         _symbol    = [decoder decodeObjectForKey:@"symbol"];
+        _comment   = [decoder decodeObjectForKey:@"comment"];
+        _weather   = [decoder decodeObjectForKey:@"weather"];
         _timeStamp = [decoder decodeObjectForKey:@"timeStamp"];
     }
     return self;
+}
+
+
+- (id)copyWithZone:(NSZone*)zone
+{
+    Packet* pkt = [[self class] allocWithZone:zone];
+
+    pkt.coordinate = _coordinate;
+    pkt.flags      = _flags;
+    pkt.call       = [_call copyWithZone:zone];
+    pkt.address    = [_address copyWithZone:zone];
+    pkt.info       = [_info copyWithZone:zone];
+    pkt.type       = [_type copyWithZone:zone];
+    pkt.symbol     = [_symbol copyWithZone:zone];
+    pkt.comment    = [_comment copyWithZone:zone];
+    pkt.weather    = [_weather copyWithZone:zone];
+    pkt.timeStamp  = [_timeStamp copyWithZone:zone];
+    return pkt;
 }
 
 
@@ -89,9 +111,46 @@
     if( info_len )
     {
         NSLog( @"%s%s\n", addrs, pinfo );
-        
+
         decode_aprs_t decode_state = {};
-        decode_aprs( &decode_state, packet, false );
+        decode_aprs( &decode_state, packet, true );
+        
+        us.call    = [NSString stringWithUTF8String:decode_state.g_src];
+        us.address = [NSString stringWithUTF8String:addrs];
+        us.type    = [NSString stringWithUTF8String:decode_state.g_msg_type];
+        us.info    = [NSString stringWithUTF8String:(const char*)pinfo];
+        us.comment = [NSString stringWithUTF8String:decode_state.g_comment];
+        us.weather = [NSString stringWithUTF8String:decode_state.g_weather];
+
+        // ok let's do some transcribing...
+        if( decode_state.g_lat != G_UNKNOWN && decode_state.g_lon != G_UNKNOWN )
+        {
+            us.coordinate = CLLocationCoordinate2DMake( decode_state.g_lat, decode_state.g_lon );
+            us.flags |= kPacketFlag_CoordinatesValid;
+        }
+
+           
+//        A->g_symbol_table = '/';    /* Default to primary table. */
+//        A->g_symbol_code = ' ';        /* What should we have for default symbol? */
+//
+//        A->g_speed_mph = G_UNKNOWN;
+//        A->g_course = G_UNKNOWN;
+//
+//        A->g_power = G_UNKNOWN;
+//        A->g_height = G_UNKNOWN;
+//        A->g_gain = G_UNKNOWN;
+//
+//        A->g_range = G_UNKNOWN;
+//        A->g_altitude_ft = G_UNKNOWN;
+//        A->g_freq = G_UNKNOWN;
+//        A->g_tone = G_UNKNOWN;
+//        A->g_dcs = G_UNKNOWN;
+//        A->g_offset = G_UNKNOWN;
+//
+//        A->g_footprint_lat = G_UNKNOWN;
+//        A->g_footprint_lon = G_UNKNOWN;
+//        A->g_footprint_radius = G_UNKNOWN;
+
     }
     
     return us;
@@ -109,20 +168,6 @@
 
 
 
-- (id)copyWithZone:(NSZone*)zone
-{
-    Packet* pkt = [[self class] allocWithZone:zone];
-
-    pkt.coordinate = _coordinate;
-    pkt.flags      = _flags;
-    pkt.call       = [_call copyWithZone:zone];
-    pkt.address    = [_address copyWithZone:zone];
-    pkt.info       = [_info copyWithZone:zone];
-    pkt.type       = [_type copyWithZone:zone];
-    pkt.symbol     = [_symbol copyWithZone:zone];
-    pkt.timeStamp  = [_timeStamp copyWithZone:zone];
-    return pkt;
-}
 
 
 - (NSString*)title
@@ -133,7 +178,10 @@
 
 - (NSString*)subtitle
 {
-    return _address;
+    if( _weather.length )
+        return _weather;
+
+    return [NSString stringWithFormat:@"%@ -> %@",  _type, _comment.length ? _comment : _address];
 }
 
 

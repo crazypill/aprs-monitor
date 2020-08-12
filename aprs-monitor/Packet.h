@@ -29,6 +29,8 @@ enum
 @property (nonatomic, copy, nullable) NSString* info;
 @property (nonatomic, copy, nullable) NSString* type;
 @property (nonatomic, copy, nullable) NSString* symbol;
+@property (nonatomic, copy, nullable) NSString* comment;
+@property (nonatomic, copy, nullable) NSString* weather;
 @property (nonatomic, copy, nullable) NSDate*   timeStamp;
 
 + (_Nullable id)initWithCoordinates:(CLLocationCoordinate2D)coordinate;
