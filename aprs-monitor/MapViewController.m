@@ -53,30 +53,46 @@ void stat_callback( bool running )
 }
 
 
-void map_callback( const char* address, const char* frameData )
+void map_callback( packet_t packet )
 {
     if( !s_map_controller )
     {
         NSLog( @"map_callback: no controller!\n" );
         return;
     }
-
-    NSLog( @"%s%s\n", address, frameData );
     
-    [s_map_controller blinkMessageButton];
-    
-    // create packet
-    PacketManager* pm = [PacketManager shared];
-    if( pm )
+    if( !packet )
     {
-        Packet* pkt = [Packet initWithRaw:frameData address:address];
-        if( pkt )
+        NSLog( @"map_callback: no iput packet!\n" );
+        return;
+    }
+    
+    char           addrs[AX25_MAX_ADDRS*AX25_MAX_ADDR_LEN] = {};    // Like source>dest,digi,...,digi:
+    unsigned char* pinfo = NULL;
+
+    ax25_format_addrs( packet, addrs );
+
+    int info_len = ax25_get_info( packet, &pinfo );
+    if( info_len )
+    {
+        NSLog( @"%s%s\n", addrs, pinfo );
+        
+        [s_map_controller blinkMessageButton];
+        
+        // create packet
+        PacketManager* pm = [PacketManager shared];
+        if( pm )
         {
-            [pm addItem:pkt];
-            if( s_map_controller && (pkt.flags & kPacketFlag_CoordinatesValid) )
-                [s_map_controller plotMessage:pkt];
+            Packet* pkt = [Packet initWithRaw:(const char*)pinfo address:addrs];
+            if( pkt )
+            {
+                [pm addItem:pkt];
+                if( s_map_controller && (pkt.flags & kPacketFlag_CoordinatesValid) )
+                    [s_map_controller plotMessage:pkt];
+            }
         }
     }
+    ax25_delete( packet );
 }
 
 
@@ -119,8 +135,8 @@ void map_callback( const char* address, const char* frameData )
             weakself.timer = nil;
         }
         
-        // change to red, timer will set to blue
-        weakself.status.tintColor = [UIColor redColor];
+        // change to green, timer will set to blue
+        weakself.status.tintColor = [UIColor greenColor];
 
         // set timer to turn off status light after a tiny bit
          weakself.timer = [NSTimer scheduledTimerWithTimeInterval:0.6 target:weakself selector:@selector(restoreMessageButton) userInfo:nil repeats:NO];

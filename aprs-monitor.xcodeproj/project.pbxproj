@@ -28,6 +28,13 @@
 		FACC8B9924E32FCB007BA389 /* PacketManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FACC8B9624E32FCB007BA389 /* PacketManager.m */; };
 		FACC8B9C24E334BA007BA389 /* ErrorController.m in Sources */ = {isa = PBXBuildFile; fileRef = FACC8B9A24E334BA007BA389 /* ErrorController.m */; };
 		FACC8B9F24E35F3B007BA389 /* PacketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FACC8B9E24E35F3B007BA389 /* PacketViewController.m */; };
+		FACC8BA224E38872007BA389 /* decode_aprs.c in Sources */ = {isa = PBXBuildFile; fileRef = FACC8BA024E38872007BA389 /* decode_aprs.c */; };
+		FACC8BA524E3889A007BA389 /* symbols.c in Sources */ = {isa = PBXBuildFile; fileRef = FACC8BA324E3889A007BA389 /* symbols.c */; };
+		FACC8BAD24E3894C007BA389 /* telemetry.c in Sources */ = {isa = PBXBuildFile; fileRef = FACC8BA924E3894B007BA389 /* telemetry.c */; };
+		FACC8BAE24E3894C007BA389 /* dwgpsnmea.c in Sources */ = {isa = PBXBuildFile; fileRef = FACC8BAA24E3894B007BA389 /* dwgpsnmea.c */; };
+		FACC8BB124E38978007BA389 /* dwgps.c in Sources */ = {isa = PBXBuildFile; fileRef = FACC8BB024E38978007BA389 /* dwgps.c */; };
+		FACC8BC924E38AC6007BA389 /* dwgpsd.c in Sources */ = {isa = PBXBuildFile; fileRef = FACC8BC724E38AC6007BA389 /* dwgpsd.c */; };
+		FACC8BD724E38DBD007BA389 /* latlong.c in Sources */ = {isa = PBXBuildFile; fileRef = FACC8BD624E38DBD007BA389 /* latlong.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -77,6 +84,19 @@
 		FACC8B9B24E334BA007BA389 /* ErrorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ErrorController.h; sourceTree = "<group>"; };
 		FACC8B9D24E35F3B007BA389 /* PacketViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PacketViewController.h; sourceTree = "<group>"; };
 		FACC8B9E24E35F3B007BA389 /* PacketViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PacketViewController.m; sourceTree = "<group>"; };
+		FACC8BA024E38872007BA389 /* decode_aprs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = decode_aprs.c; sourceTree = "<group>"; };
+		FACC8BA124E38872007BA389 /* decode_aprs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = decode_aprs.h; sourceTree = "<group>"; };
+		FACC8BA324E3889A007BA389 /* symbols.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = symbols.c; sourceTree = "<group>"; };
+		FACC8BA424E3889A007BA389 /* symbols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = symbols.h; sourceTree = "<group>"; };
+		FACC8BA924E3894B007BA389 /* telemetry.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = telemetry.c; sourceTree = "<group>"; };
+		FACC8BAA24E3894B007BA389 /* dwgpsnmea.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dwgpsnmea.c; sourceTree = "<group>"; };
+		FACC8BAB24E3894B007BA389 /* dwgpsnmea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dwgpsnmea.h; sourceTree = "<group>"; };
+		FACC8BAC24E3894C007BA389 /* telemetry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = telemetry.h; sourceTree = "<group>"; };
+		FACC8BAF24E38978007BA389 /* dwgps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dwgps.h; sourceTree = "<group>"; };
+		FACC8BB024E38978007BA389 /* dwgps.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dwgps.c; sourceTree = "<group>"; };
+		FACC8BC724E38AC6007BA389 /* dwgpsd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dwgpsd.c; sourceTree = "<group>"; };
+		FACC8BC824E38AC6007BA389 /* dwgpsd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dwgpsd.h; sourceTree = "<group>"; };
+		FACC8BD624E38DBD007BA389 /* latlong.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = latlong.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -160,6 +180,7 @@
 				FAA7EAF624E0E6450016674B /* kiss_frame.c */,
 				FAA7EAF924E0E6450016674B /* kiss_frame.h */,
 				FAA7EB0424E0E6470016674B /* latlong.h */,
+				FACC8BD624E38DBD007BA389 /* latlong.c */,
 				FAA7EAFD24E0E6470016674B /* stubs.c */,
 				FAA7EAF524E0E6450016674B /* textcolor.h */,
 				FAA7EAF824E0E6450016674B /* tq.h */,
@@ -170,6 +191,18 @@
 				FAA7EAF424E0E6450016674B /* xmit.h */,
 				FAAD91BA24E1B7680000896D /* dtime_now.c */,
 				FAAD91B924E1B7680000896D /* dtime_now.h */,
+				FACC8BA024E38872007BA389 /* decode_aprs.c */,
+				FACC8BA124E38872007BA389 /* decode_aprs.h */,
+				FACC8BA324E3889A007BA389 /* symbols.c */,
+				FACC8BA424E3889A007BA389 /* symbols.h */,
+				FACC8BAA24E3894B007BA389 /* dwgpsnmea.c */,
+				FACC8BAB24E3894B007BA389 /* dwgpsnmea.h */,
+				FACC8BA924E3894B007BA389 /* telemetry.c */,
+				FACC8BAC24E3894C007BA389 /* telemetry.h */,
+				FACC8BB024E38978007BA389 /* dwgps.c */,
+				FACC8BAF24E38978007BA389 /* dwgps.h */,
+				FACC8BC724E38AC6007BA389 /* dwgpsd.c */,
+				FACC8BC824E38AC6007BA389 /* dwgpsd.h */,
 			);
 			name = "C code";
 			sourceTree = "<group>";
@@ -249,19 +282,26 @@
 			files = (
 				FAA7EB0B24E0E64E0016674B /* stubs.c in Sources */,
 				FAA7EB0924E0E64E0016674B /* aprs-is.c in Sources */,
+				FACC8BAE24E3894C007BA389 /* dwgpsnmea.c in Sources */,
+				FACC8BB124E38978007BA389 /* dwgps.c in Sources */,
 				FA2A20B224E2570E0090A087 /* AppDelegate.m in Sources */,
 				FAAD91B824E1B21B0000896D /* tq.c in Sources */,
 				FAA7EB0C24E0E64E0016674B /* fcs_calc.c in Sources */,
 				FAA7EB0A24E0E64E0016674B /* aprs-wx.c in Sources */,
+				FACC8BA524E3889A007BA389 /* symbols.c in Sources */,
 				FACC8B9924E32FCB007BA389 /* PacketManager.m in Sources */,
 				FAA7EB0D24E0E64E0016674B /* wx_thread.c in Sources */,
+				FACC8BD724E38DBD007BA389 /* latlong.c in Sources */,
 				FAA7EAF124E0E47F0016674B /* RemoteTNC.c in Sources */,
 				FAAD91BB24E1B7680000896D /* dtime_now.c in Sources */,
+				FACC8BC924E38AC6007BA389 /* dwgpsd.c in Sources */,
 				FACC8B9824E32FCB007BA389 /* Packet.m in Sources */,
 				FAA7EB0824E0E64E0016674B /* kiss_frame.c in Sources */,
 				FACC8B9F24E35F3B007BA389 /* PacketViewController.m in Sources */,
 				FACC8B9724E32FCB007BA389 /* MapViewController.m in Sources */,
 				FA2A20B324E2570E0090A087 /* main.m in Sources */,
+				FACC8BAD24E3894C007BA389 /* telemetry.c in Sources */,
+				FACC8BA224E38872007BA389 /* decode_aprs.c in Sources */,
 				FACC8B9C24E334BA007BA389 /* ErrorController.m in Sources */,
 				FAA7EB0E24E0E64E0016674B /* ax25_pad.c in Sources */,
 			);

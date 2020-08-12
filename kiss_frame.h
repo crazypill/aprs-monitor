@@ -8,6 +8,8 @@
 #include "audio.h"		/* for struct audio_s */
 #endif
 
+#include "ax25_pad.h"
+
 /*
  * The first byte of a KISS frame has:
  *	channel in upper nybble.
@@ -26,7 +28,7 @@
 #define KISS_CMD_END_KISS	15
 
 
-typedef void (*frame_callback)( const char* address, const char* frameData );
+typedef void (*frame_callback)( packet_t packetData );
 
 
 /*

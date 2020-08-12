@@ -88,7 +88,6 @@
 #include <assert.h>
 #include <string.h>
 
-#include "ax25_pad.h"
 #include "textcolor.h"
 #include "kiss_frame.h"
 #include "tq.h"
@@ -559,23 +558,20 @@ void kiss_process_msg (unsigned char *kiss_msg, int kiss_len, int debug, int cli
               unsigned char *pinfo;
               int info_len;
 
-              if (strlen(timestamp_format) > 0) {
-                  char ts[100];
-                  timestamp_user_format (ts, sizeof(ts), timestamp_format);
-                  snprintf (prefix, sizeof(prefix), "[%d %s]", 0, ts);
-              }
-              else {
-                snprintf (prefix, sizeof(prefix), "[%d]", 0);
-              }
+//              if (strlen(timestamp_format) > 0) {
+//                  char ts[100];
+//                  timestamp_user_format (ts, sizeof(ts), timestamp_format);
+//                  snprintf (prefix, sizeof(prefix), "[%d %s]", 0, ts);
+//              }
+//              else {
+//                snprintf (prefix, sizeof(prefix), "[%d]", 0);
+//              }
 
               ax25_format_addrs (pp, addrs);
 
               info_len = ax25_get_info (pp, &pinfo);
 
               text_color_set(DW_COLOR_REC);
-
-                char buf[1024] = {}; // form TNC2 style string
-                sprintf( buf, "%s%s", addrs, pinfo );
 
 //              dw_printf ("%s %s", prefix, addrs);        // [channel] Addresses followed by :
 //
@@ -586,9 +582,9 @@ void kiss_process_msg (unsigned char *kiss_msg, int kiss_len, int debug, int cli
 //              dw_printf ("\n");
                 
               if( callback )
-                callback( (const char *)addrs, (const char *)pinfo );
-                
-              ax25_delete (pp);
+                  callback( pp );   // callback must delete packet
+              else
+                  ax25_delete (pp);
             }
             break;
 
