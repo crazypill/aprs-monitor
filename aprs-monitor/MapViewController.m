@@ -15,6 +15,8 @@
 #include "decode_aprs.h"  // Direwolf
 
 
+#define kBlinkColor [UIColor redColor]
+
 static MapViewController* s_map_controller = nil;
 static bool               s_have_location  = false;
 
@@ -131,8 +133,8 @@ void map_callback( packet_t packet )
             weakself.timer = nil;
         }
         
-        // change to green, timer will set to blue
-        weakself.status.tintColor = [UIColor greenColor];
+        // change to highlited color, timer will set to blue later
+        weakself.status.tintColor = kBlinkColor;
 
         // set timer to turn off status light after a tiny bit
          weakself.timer = [NSTimer scheduledTimerWithTimeInterval:0.6 target:weakself selector:@selector(restoreMessageButton) userInfo:nil repeats:NO];
@@ -188,23 +190,19 @@ void map_callback( packet_t packet )
     anno.canShowCallout = true;
     anno.animatesWhenAdded = true;
     
+    anno.displayPriority = MKFeatureDisplayPriorityRequired;
+    anno.titleVisibility = MKFeatureVisibilityAdaptive;
+    
     if( [pkt.symbol isEqualToString:@"_"] )
     {
         anno.markerTintColor = [UIColor blueColor];
-        anno.glyphImage = [UIImage systemImageNamed:@"thermometer"];
-
-        // Offset the flag annotation so that the flag pole rests on the map coordinate.  !!@ baseline alignment and sizing needed !!@
-//        SymbolConfiguration //(scale: .small)
-
-        
+        anno.glyphImage = [UIImage systemImageNamed:@"thermometer" withConfiguration:[UIImageSymbolConfiguration configurationWithScale:UIImageSymbolScaleLarge]];
         anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:anno.glyphImage];
-        
-//        CGPoint offset = CGPointMake( anno.glyphImage.size.width / 2, -(anno.glyphImage.size.height / 2) );
-//        anno.centerOffset = offset;
     }
     else
     {
         anno.markerTintColor = [UIColor colorNamed:@"internationalOrange"];
+        anno.glyphImage = nil;
         
         // Offset the flag annotation so that the flag pole rests on the map coordinate.
         UIImage* image = [UIImage imageNamed:@"flag"];

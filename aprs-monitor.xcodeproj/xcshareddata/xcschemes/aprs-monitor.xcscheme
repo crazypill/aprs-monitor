@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "60898E80213884F3003248F3"
-               BuildableName = "aprs-monitor.app"
+               BuildableName = "APRS Monitor.app"
                BlueprintName = "aprs-monitor"
                ReferencedContainer = "container:aprs-monitor.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "60898E80213884F3003248F3"
-            BuildableName = "aprs-monitor.app"
+            BuildableName = "APRS Monitor.app"
             BlueprintName = "aprs-monitor"
             ReferencedContainer = "container:aprs-monitor.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "60898E80213884F3003248F3"
-            BuildableName = "aprs-monitor.app"
+            BuildableName = "APRS Monitor.app"
             BlueprintName = "aprs-monitor"
             ReferencedContainer = "container:aprs-monitor.xcodeproj">
          </BuildableReference>
