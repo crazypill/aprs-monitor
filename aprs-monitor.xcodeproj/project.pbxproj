@@ -31,7 +31,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		60898E81213884F3003248F3 /* aprs-monitor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "aprs-monitor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		60898E81213884F3003248F3 /* APRS Monitor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "APRS Monitor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		60898E89213884F3003248F3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		60898E8B213884F4003248F3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		60898E8E213884F4003248F3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -103,7 +103,7 @@
 		60898E82213884F3003248F3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				60898E81213884F3003248F3 /* aprs-monitor.app */,
+				60898E81213884F3003248F3 /* APRS Monitor.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -191,7 +191,7 @@
 			);
 			name = "aprs-monitor";
 			productName = "aprs-monitor";
-			productReference = 60898E81213884F3003248F3 /* aprs-monitor.app */;
+			productReference = 60898E81213884F3003248F3 /* APRS Monitor.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -427,7 +427,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.folabs.aprs-monitor";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "APRS Monitor";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "aprs-monitor-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -451,7 +451,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.folabs.aprs-monitor";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "APRS Monitor";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "aprs-monitor-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

@@ -63,9 +63,6 @@ typedef struct
 
 static time_t s_last_log_roll  = 0;
 
-static float s_localOffsetInHg = 0.33f;
-static float s_localTempErrorC = 2.033333333333333;
-
 static bool s_debug = true;
 
 static const char* s_logFilePath = NULL;
