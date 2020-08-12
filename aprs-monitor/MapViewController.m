@@ -182,19 +182,37 @@ void map_callback( packet_t packet )
 
 - (nullable MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
 {
+    Packet* pkt = (Packet*)annotation;
     MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:NSStringFromClass( [Packet class] ) forAnnotation:annotation];
     
     anno.canShowCallout = true;
     anno.animatesWhenAdded = true;
-    anno.markerTintColor = [UIColor colorNamed:@"internationalOrange"];
     
-    // Provide the left image icon for the annotation.
-    UIImage* image = [UIImage imageNamed:@"flag"];
-    anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:image];
+    if( [pkt.symbol isEqualToString:@"_"] )
+    {
+        anno.markerTintColor = [UIColor blueColor];
+        anno.glyphImage = [UIImage systemImageNamed:@"thermometer"];
+
+        // Offset the flag annotation so that the flag pole rests on the map coordinate.  !!@ baseline alignment and sizing needed !!@
+//        SymbolConfiguration //(scale: .small)
+
+        
+        anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:anno.glyphImage];
+        
+//        CGPoint offset = CGPointMake( anno.glyphImage.size.width / 2, -(anno.glyphImage.size.height / 2) );
+//        anno.centerOffset = offset;
+    }
+    else
+    {
+        anno.markerTintColor = [UIColor colorNamed:@"internationalOrange"];
+        
+        // Offset the flag annotation so that the flag pole rests on the map coordinate.
+        UIImage* image = [UIImage imageNamed:@"flag"];
+        anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:image];
+        CGPoint offset = CGPointMake( image.size.width / 2, -(image.size.height / 2) );
+        anno.centerOffset = offset;
+    }
     
-    // Offset the flag annotation so that the flag pole rests on the map coordinate.
-    CGPoint offset = CGPointMake( image.size.width / 2, -(image.size.height / 2) );
-    anno.centerOffset = offset;
     return anno;
 }
 
