@@ -229,6 +229,16 @@ static PacketManager* s_shared = NULL;
 }
 
 
+- (void)removeAllItemsAndNotify:(BOOL)notify
+{
+    [_items removeAllObjects];
+    [_document updateChangeCount:UIDocumentChangeDone];
+    
+    if( notify && _documentUpdatedBlock )
+        _documentUpdatedBlock();
+}
+
+
 @end
 
 // EOF

@@ -61,6 +61,9 @@
 }
 
 
+#pragma mark -
+
+
 - (void)newPacketArrived:(id)sender
 {
     dispatch_async( dispatch_get_main_queue(), ^{
@@ -69,7 +72,21 @@
 }
 
 
-#pragma mark - Table view data source
+- (IBAction)trashButtonPressed:(id)sender
+{
+    UIAlertController* actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    __weak PacketViewController* pvc = self;
+
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+        [pvc.pm removeAllItemsAndNotify:YES];
+    }]];
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+
+    [self presentViewController:actionSheet animated:YES completion:nil];
+}
+
+
+#pragma mark -
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;

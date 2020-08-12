@@ -120,7 +120,7 @@
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" image="envelope" catalog="system" style="plain" id="Sit-M5-HgY">
                             <connections>
-                                <segue destination="Sbp-zo-ean" kind="presentation" id="akv-UM-ywG"/>
+                                <segue destination="Xm5-VB-jnp" kind="presentation" id="akv-UM-ywG"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -136,7 +136,7 @@
             </objects>
             <point key="canvasLocation" x="46" y="-188"/>
         </scene>
-        <!--Packet View Controller-->
+        <!--Raw Packets-->
         <scene sceneID="Drg-ni-PKU">
             <objects>
                 <tableViewController id="Sbp-zo-ean" customClass="PacketViewController" sceneMemberID="viewController">
@@ -208,8 +208,33 @@
                             <outlet property="delegate" destination="Sbp-zo-ean" id="fYo-UO-9QS"/>
                         </connections>
                     </tableView>
+                    <navigationItem key="navigationItem" title="Raw Packets" id="wgT-Zo-gUV">
+                        <barButtonItem key="leftBarButtonItem" systemItem="trash" id="Cdd-j7-tW6">
+                            <connections>
+                                <action selector="trashButtonPressed:" destination="Sbp-zo-ean" id="t8J-i3-qPf"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="agX-8A-jbM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2213.5999999999999" y="-176.60098522167488"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="tAV-IV-5sn">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Xm5-VB-jnp" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="6i9-kQ-FoP">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="56"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Sbp-zo-ean" kind="relationship" relationship="rootViewController" id="P8N-ML-2jB"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0HN-ao-mnu" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1271.2" y="-176.60098522167488"/>
         </scene>

@@ -41,6 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)markItemEdited:(id __nullable)entry;
 - (void)addItem:(id)showitem;
 - (void)removeItemAtIndex:(NSInteger)index andNotify:(BOOL)notify;
+- (void)removeAllItemsAndNotify:(BOOL)notify;
 
 @end
 
