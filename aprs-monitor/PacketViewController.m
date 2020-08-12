@@ -43,6 +43,9 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newPacketArrived:) name:@"NewPacket" object:nil];
 
+    // I think this helps... not sure...
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    self.tableView.estimatedRowHeight = 97.0;
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
