@@ -73,6 +73,32 @@
 }
 
 
+
++ (_Nullable id)initWithPacket_t:(packet_t)packet
+{
+    Packet* us = [[Packet alloc] init];
+    if( !us )
+        return nil;
+
+    char           addrs[AX25_MAX_ADDRS*AX25_MAX_ADDR_LEN] = {};    // Like source>dest,digi,...,digi:
+    unsigned char* pinfo = NULL;
+
+    ax25_format_addrs( packet, addrs );
+
+    int info_len = ax25_get_info( packet, &pinfo );
+    if( info_len )
+    {
+        NSLog( @"%s%s\n", addrs, pinfo );
+        
+        decode_aprs_t decode_state = {};
+        decode_aprs( &decode_state, packet, false );
+    }
+    
+    return us;
+}
+
+
+
 - (_Nullable id)init
 {
     self = [super init];

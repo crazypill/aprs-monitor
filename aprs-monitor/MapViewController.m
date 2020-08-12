@@ -12,6 +12,8 @@
 #include "RemoteTNC.h"
 #include "PacketManager.h"
 
+#include "decode_aprs.h"  // Direwolf
+
 
 static MapViewController* s_map_controller = nil;
 static bool               s_have_location  = false;
@@ -67,31 +69,21 @@ void map_callback( packet_t packet )
         return;
     }
     
-    char           addrs[AX25_MAX_ADDRS*AX25_MAX_ADDR_LEN] = {};    // Like source>dest,digi,...,digi:
-    unsigned char* pinfo = NULL;
-
-    ax25_format_addrs( packet, addrs );
-
-    int info_len = ax25_get_info( packet, &pinfo );
-    if( info_len )
+    [s_map_controller blinkMessageButton];
+    
+    // create packet
+    PacketManager* pm = [PacketManager shared];
+    if( pm )
     {
-        NSLog( @"%s%s\n", addrs, pinfo );
-        
-        [s_map_controller blinkMessageButton];
-        
-        // create packet
-        PacketManager* pm = [PacketManager shared];
-        if( pm )
+        Packet* pkt = [Packet initWithPacket_t:packet];
+        if( pkt )
         {
-            Packet* pkt = [Packet initWithRaw:(const char*)pinfo address:addrs];
-            if( pkt )
-            {
-                [pm addItem:pkt];
-                if( s_map_controller && (pkt.flags & kPacketFlag_CoordinatesValid) )
-                    [s_map_controller plotMessage:pkt];
-            }
+            [pm addItem:pkt];
+            if( s_map_controller && (pkt.flags & kPacketFlag_CoordinatesValid) )
+                [s_map_controller plotMessage:pkt];
         }
     }
+
     ax25_delete( packet );
 }
 

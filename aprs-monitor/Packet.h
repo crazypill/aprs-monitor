@@ -8,6 +8,8 @@
 #import <UIKit/UIKit.h>
 #import <MapKit/MKMapView.h>
 
+#include "decode_aprs.h"  // Direwolf
+
 
 enum
 {
@@ -31,6 +33,7 @@ enum
 
 + (_Nullable id)initWithCoordinates:(CLLocationCoordinate2D)coordinate;
 + (_Nullable id)initWithRaw:(const char* _Nullable)rawstringUTF8 address:(const char* _Nullable)rawaddressUTF8;
++ (_Nullable id)initWithPacket_t:(packet_t _Nullable)packet;
 
 @end
 
