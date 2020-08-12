@@ -27,6 +27,7 @@
 		FACC8B9824E32FCB007BA389 /* Packet.m in Sources */ = {isa = PBXBuildFile; fileRef = FACC8B9324E32FCB007BA389 /* Packet.m */; };
 		FACC8B9924E32FCB007BA389 /* PacketManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FACC8B9624E32FCB007BA389 /* PacketManager.m */; };
 		FACC8B9C24E334BA007BA389 /* ErrorController.m in Sources */ = {isa = PBXBuildFile; fileRef = FACC8B9A24E334BA007BA389 /* ErrorController.m */; };
+		FACC8B9F24E35F3B007BA389 /* PacketViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FACC8B9E24E35F3B007BA389 /* PacketViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -74,6 +75,8 @@
 		FACC8B9624E32FCB007BA389 /* PacketManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PacketManager.m; sourceTree = "<group>"; };
 		FACC8B9A24E334BA007BA389 /* ErrorController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ErrorController.m; sourceTree = "<group>"; };
 		FACC8B9B24E334BA007BA389 /* ErrorController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ErrorController.h; sourceTree = "<group>"; };
+		FACC8B9D24E35F3B007BA389 /* PacketViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PacketViewController.h; sourceTree = "<group>"; };
+		FACC8B9E24E35F3B007BA389 /* PacketViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PacketViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,6 +122,8 @@
 				FACC8B9624E32FCB007BA389 /* PacketManager.m */,
 				FACC8B9424E32FCB007BA389 /* MapViewController.h */,
 				FACC8B9124E32FCB007BA389 /* MapViewController.m */,
+				FACC8B9D24E35F3B007BA389 /* PacketViewController.h */,
+				FACC8B9E24E35F3B007BA389 /* PacketViewController.m */,
 				60898EB121388719003248F3 /* Resources */,
 			);
 			path = "aprs-monitor";
@@ -254,6 +259,7 @@
 				FAAD91BB24E1B7680000896D /* dtime_now.c in Sources */,
 				FACC8B9824E32FCB007BA389 /* Packet.m in Sources */,
 				FAA7EB0824E0E64E0016674B /* kiss_frame.c in Sources */,
+				FACC8B9F24E35F3B007BA389 /* PacketViewController.m in Sources */,
 				FACC8B9724E32FCB007BA389 /* MapViewController.m in Sources */,
 				FA2A20B324E2570E0090A087 /* main.m in Sources */,
 				FACC8B9C24E334BA007BA389 /* ErrorController.m in Sources */,

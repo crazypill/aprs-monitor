@@ -92,6 +92,8 @@ void map_callback( const char* address, const char* frameData )
     
     s_map_controller = self;
     
+    [PacketManager shared].documentUpdatedBlock = ^{ [[NSNotificationCenter defaultCenter] postNotificationName:@"NewPacket" object:nil]; };
+    
     [self.mapView registerClass:[MKMarkerAnnotationView class] forAnnotationViewWithReuseIdentifier:NSStringFromClass( [Packet class] )];
 }
 

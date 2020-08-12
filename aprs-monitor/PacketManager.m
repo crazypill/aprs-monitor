@@ -67,6 +67,14 @@ static PacketManager* s_shared = NULL;
 }
 
 
+- (id)init
+{
+    self = [super init];
+    [self openDocument];
+    return self;
+}
+
+
 - (void)openDocument
 {
     __weak PacketManager* weakself = self;
@@ -166,19 +174,19 @@ static PacketManager* s_shared = NULL;
 
 - (NSString*)documentFileName
 {
-    return @"GenericMeetingDocument";
+    return @"PacketList";
 }
 
 
 - (NSString*)documentPath
 {
-    return [[PacketManager applicationDocumentsDirectory] stringByAppendingString:@"GenericMeetingDocument"];
+    return [[PacketManager applicationDocumentsDirectory] stringByAppendingString:@"/PacketList"];
 }
 
 
 - (NSString*)documentType
 {
-    return @"Meeting";
+    return @"PacketList";
 }
 
 
