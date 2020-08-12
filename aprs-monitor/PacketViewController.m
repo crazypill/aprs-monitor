@@ -36,7 +36,7 @@
     _dateFormatter.doesRelativeDateFormatting = YES;
     
     _timeFormatter = [[NSDateFormatter alloc] init];
-    _timeFormatter.timeStyle = NSDateFormatterShortStyle;
+    _timeFormatter.timeStyle = NSDateFormatterMediumStyle;
     _timeFormatter.dateStyle = NSDateFormatterNoStyle;
     _timeFormatter.locale    = [NSLocale currentLocale];
 
