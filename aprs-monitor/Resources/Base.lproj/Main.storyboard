@@ -86,7 +86,7 @@
                 <viewController storyboardIdentifier="MapViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Q2x-WI-wPB" userLabel="MainViewController" customClass="MapViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ar6-Fd-zen">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="iIg-Sb-dEy">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
@@ -95,7 +95,7 @@
                                 </connections>
                             </mapView>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="iIg-Sb-dEy" firstAttribute="trailing" secondItem="A2x-cY-S2p" secondAttribute="trailing" id="CrE-IM-y0b"/>
                             <constraint firstAttribute="bottom" secondItem="iIg-Sb-dEy" secondAttribute="bottom" id="DlW-eg-axl"/>
@@ -183,17 +183,16 @@
                                     <constraints>
                                         <constraint firstItem="MGN-g8-Y4n" firstAttribute="trailing" secondItem="caN-Nm-stI" secondAttribute="trailingMargin" id="5Op-W8-UUe"/>
                                         <constraint firstItem="dgx-R7-hyI" firstAttribute="width" secondItem="MGN-g8-Y4n" secondAttribute="width" id="5jt-oz-sqA"/>
-                                        <constraint firstItem="dgx-R7-hyI" firstAttribute="centerX" secondItem="caN-Nm-stI" secondAttribute="centerX" id="DQd-Vd-542"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="kcZ-A8-jZK" secondAttribute="trailing" id="Ct1-c3-dJK"/>
                                         <constraint firstItem="kcZ-A8-jZK" firstAttribute="top" secondItem="dgx-R7-hyI" secondAttribute="bottom" constant="6" id="F8K-6o-gC2"/>
                                         <constraint firstAttribute="bottom" secondItem="kcZ-A8-jZK" secondAttribute="bottom" constant="11" id="Lwg-vG-szB"/>
                                         <constraint firstItem="dgx-R7-hyI" firstAttribute="top" secondItem="MGN-g8-Y4n" secondAttribute="bottom" constant="6" id="U9x-2A-NKr"/>
-                                        <constraint firstItem="MGN-g8-Y4n" firstAttribute="centerX" secondItem="caN-Nm-stI" secondAttribute="centerX" id="WCB-aG-c5k"/>
                                         <constraint firstItem="MGN-g8-Y4n" firstAttribute="top" secondItem="caN-Nm-stI" secondAttribute="top" constant="11" id="Xhe-G4-ivq"/>
                                         <constraint firstItem="dgx-R7-hyI" firstAttribute="trailing" secondItem="caN-Nm-stI" secondAttribute="trailingMargin" id="ZOg-Mg-xUG"/>
                                         <constraint firstItem="dgx-R7-hyI" firstAttribute="leading" secondItem="caN-Nm-stI" secondAttribute="leadingMargin" id="gXJ-fk-p0H"/>
-                                        <constraint firstItem="kcZ-A8-jZK" firstAttribute="centerX" secondItem="caN-Nm-stI" secondAttribute="centerX" id="h26-JT-r9f"/>
+                                        <constraint firstItem="kcZ-A8-jZK" firstAttribute="width" secondItem="dgx-R7-hyI" secondAttribute="width" id="pBS-Kp-Dr4"/>
+                                        <constraint firstItem="kcZ-A8-jZK" firstAttribute="leading" secondItem="caN-Nm-stI" secondAttribute="leadingMargin" id="wCb-xM-yve"/>
                                         <constraint firstItem="MGN-g8-Y4n" firstAttribute="leading" secondItem="caN-Nm-stI" secondAttribute="leadingMargin" id="yEJ-43-hB4"/>
-                                        <constraint firstItem="kcZ-A8-jZK" firstAttribute="width" secondItem="dgx-R7-hyI" secondAttribute="width" multiplier="0.0699708" constant="319" id="zoa-BD-EHr"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
@@ -218,7 +217,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="agX-8A-jbM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2213.5999999999999" y="-176.60098522167488"/>
+            <point key="canvasLocation" x="2212" y="-177.33990147783251"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="tAV-IV-5sn">
