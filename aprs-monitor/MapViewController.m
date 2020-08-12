@@ -92,9 +92,17 @@ void map_callback( const char* address, const char* frameData )
     
     s_map_controller = self;
     
-    [PacketManager shared].documentUpdatedBlock = ^{ [[NSNotificationCenter defaultCenter] postNotificationName:@"NewPacket" object:nil]; };
+    [PacketManager shared].documentUpdatedBlock = ^{ [[NSNotificationCenter defaultCenter] postNotificationName:@"NewPacket" object:nil]; };        // !!@ remove literals
     
     [self.mapView registerClass:[MKMarkerAnnotationView class] forAnnotationViewWithReuseIdentifier:NSStringFromClass( [Packet class] )];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:@"appResigning" object:nil];       // !!@ remove literals
+}
+
+
+- (void)applicationWillResignActive:(UIApplication *)application
+{
+    if( _thread_running )
+        shutdown_socket_layer();
 }
 
 
