@@ -11,11 +11,14 @@
 
 #include "RemoteTNC.h"
 #include "PacketManager.h"
+#include "SymbolTable.h"
 
 #include "decode_aprs.h"  // Direwolf
 
 
 #define kBlinkColor [UIColor redColor]
+
+
 
 static MapViewController* s_map_controller = nil;
 static bool               s_have_location  = false;
@@ -193,11 +196,24 @@ void map_callback( packet_t packet )
     anno.displayPriority = MKFeatureDisplayPriorityRequired;
     anno.titleVisibility = MKFeatureVisibilityAdaptive;
     
-    if( [pkt.symbol isEqualToString:@"_"] )
+    
+    SymbolEntry* sym = getSymbolEntry( pkt.symbol );
+    if( sym )
     {
-        anno.markerTintColor = [UIColor blueColor];
-        anno.glyphImage = [UIImage systemImageNamed:@"thermometer" withConfiguration:[UIImageSymbolConfiguration configurationWithScale:UIImageSymbolScaleLarge]];
+        if( sym->emoji && sym->glyph )
+        {
+            anno.glyphImage = emojiToImage( sym->glyph );
+        }
+        else
+        {
+            // okay if this returns nil
+            anno.glyphImage = [UIImage systemImageNamed:sym->glyph withConfiguration:[UIImageSymbolConfiguration configurationWithScale:UIImageSymbolScaleLarge]];
+        }
+        
         anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:anno.glyphImage];
+
+        // get color specs too...
+        anno.markerTintColor = [UIColor colorWithRed:sym->red green:sym->grn blue:sym->blu alpha:1.0f];
     }
     else
     {
@@ -207,10 +223,8 @@ void map_callback( packet_t packet )
         // Offset the flag annotation so that the flag pole rests on the map coordinate.
         UIImage* image = [UIImage imageNamed:@"flag"];
         anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:image];
-        CGPoint offset = CGPointMake( image.size.width / 2, -(image.size.height / 2) );
-        anno.centerOffset = offset;
     }
-    
+   
     return anno;
 }
 

@@ -115,13 +115,14 @@
         decode_aprs_t decode_state = {};
         decode_aprs( &decode_state, packet, true );
         
+        // http://www.aprs.org/symbols/symbols-new.txt
         us.call    = [NSString stringWithUTF8String:decode_state.g_src];
         us.address = [NSString stringWithUTF8String:addrs];
         us.type    = [NSString stringWithUTF8String:decode_state.g_msg_type];
         us.info    = [NSString stringWithUTF8String:(const char*)pinfo];
         us.comment = [NSString stringWithUTF8String:decode_state.g_comment];
         us.weather = [NSString stringWithUTF8String:decode_state.g_weather];
-        us.symbol  = [NSString stringWithFormat:@"%c",decode_state.g_symbol_code];
+        us.symbol  = [NSString stringWithFormat:@"%c%c",decode_state.g_symbol_table,decode_state.g_symbol_code];
         
         // ok let's do some transcribing...
         if( decode_state.g_lat != G_UNKNOWN && decode_state.g_lon != G_UNKNOWN )
