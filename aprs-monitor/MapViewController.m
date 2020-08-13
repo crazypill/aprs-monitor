@@ -105,7 +105,9 @@ void map_callback( packet_t packet )
     
     [PacketManager shared].documentUpdatedBlock = ^{ [[NSNotificationCenter defaultCenter] postNotificationName:@"NewPacket" object:nil]; };        // !!@ remove literals
     
-    [self.mapView registerClass:[MKMarkerAnnotationView class] forAnnotationViewWithReuseIdentifier:NSStringFromClass( [Packet class] )];
+    [self.mapView registerClass:[MKMarkerAnnotationView class] forAnnotationViewWithReuseIdentifier:@"marker.pin"];
+    [self.mapView registerClass:[MKAnnotationView class] forAnnotationViewWithReuseIdentifier:@"generic.pin"];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:@"appResigning" object:nil];       // !!@ remove literals
 
     if( !s_map_controller )
@@ -188,44 +190,60 @@ void map_callback( packet_t packet )
 - (nullable MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
 {
     Packet* pkt = (Packet*)annotation;
-    MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:NSStringFromClass( [Packet class] ) forAnnotation:annotation];
     
-    anno.canShowCallout = true;
-    anno.animatesWhenAdded = true;
-    
-    anno.displayPriority = MKFeatureDisplayPriorityRequired;
-    anno.titleVisibility = MKFeatureVisibilityAdaptive;
-    
-    
-    SymbolEntry* sym = getSymbolEntry( pkt.symbol );
+    const SymbolEntry* sym = getSymbolEntry( pkt.symbol );
     if( sym )
     {
+
         if( sym->emoji && sym->glyph )
         {
-            anno.glyphImage = emojiToImage( sym->glyph );
+            MKAnnotationView* anno = (MKAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:@"generic.pin" forAnnotation:annotation];
+
+            anno.canShowCallout  = true;
+            anno.displayPriority = MKFeatureDisplayPriorityRequired;
+            anno.image = emojiToImage( sym->glyph );
+            anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:anno.image];
+            return anno;
         }
         else
         {
+            MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:@"marker.pin" forAnnotation:annotation];
+            
+            anno.canShowCallout = true;
+            anno.animatesWhenAdded = true;
+            
+            anno.displayPriority = MKFeatureDisplayPriorityRequired;
+            anno.titleVisibility = MKFeatureVisibilityAdaptive;
+            anno.markerTintColor = [UIColor colorWithRed:sym->red green:sym->grn blue:sym->blu alpha:1.0f];
+            anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:anno.glyphImage];
+
             // okay if this returns nil
             anno.glyphImage = [UIImage systemImageNamed:sym->glyph withConfiguration:[UIImageSymbolConfiguration configurationWithScale:UIImageSymbolScaleLarge]];
+            anno.image = nil;
+            return anno;
         }
-        
-        anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:anno.glyphImage];
-
-        // get color specs too...
-        anno.markerTintColor = [UIColor colorWithRed:sym->red green:sym->grn blue:sym->blu alpha:1.0f];
     }
     else
     {
+        MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:@"marker.pin" forAnnotation:annotation];
+        
+        anno.canShowCallout = true;
+        anno.animatesWhenAdded = true;
+        
+        anno.displayPriority = MKFeatureDisplayPriorityRequired;
+        anno.titleVisibility = MKFeatureVisibilityAdaptive;
+
         anno.markerTintColor = [UIColor colorNamed:@"internationalOrange"];
         anno.glyphImage = nil;
-        
+        anno.image = nil;
+
         // Offset the flag annotation so that the flag pole rests on the map coordinate.
         UIImage* image = [UIImage imageNamed:@"flag"];
         anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:image];
+        return anno;
     }
    
-    return anno;
+    return nil;
 }
 
 @end
