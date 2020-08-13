@@ -23,13 +23,11 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    
 }
 
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"appResigning" object:application]; // !!@ remove literals
 }
 
 

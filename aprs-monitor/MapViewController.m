@@ -108,7 +108,9 @@ void map_callback( packet_t packet )
     [self.mapView registerClass:[MKMarkerAnnotationView class] forAnnotationViewWithReuseIdentifier:@"marker.pin"];
     [self.mapView registerClass:[MKAnnotationView class] forAnnotationViewWithReuseIdentifier:@"generic.pin"];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:@"appResigning" object:nil];       // !!@ remove literals
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
 
     if( !s_map_controller )
     {
@@ -118,11 +120,19 @@ void map_callback( packet_t packet )
 }
 
 
-- (void)applicationWillResignActive:(UIApplication *)application
+- (void)applicationDidEnterBackground:(UIApplication*)application
 {
     if( _thread_running )
         shutdown_socket_layer();
 }
+
+
+- (void)applicationWillEnterForeground:(UIApplication*)application
+{
+    // reconnect automatically...
+    [self connectButtonPressed:nil];
+}
+
 
 
 - (void)blinkMessageButton
@@ -204,60 +214,45 @@ void map_callback( packet_t packet )
 - (nullable MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
 {
     Packet* pkt = (Packet*)annotation;
+    MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:@"marker.pin" forAnnotation:annotation];
+
+    anno.canShowCallout  = true;
+    anno.animatesWhenAdded = true;
     
+    anno.displayPriority = MKFeatureDisplayPriorityRequired;
+    anno.titleVisibility = MKFeatureVisibilityAdaptive;
+
     const SymbolEntry* sym = getSymbolEntry( pkt.symbol );
     if( sym )
     {
-
         if( sym->emoji && sym->glyph )
         {
-            MKAnnotationView* anno = (MKAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:@"generic.pin" forAnnotation:annotation];
-
-            anno.canShowCallout  = true;
-            anno.displayPriority = MKFeatureDisplayPriorityRequired;
-            anno.image = emojiToImage( sym->glyph );
-            anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:anno.image];
-            return anno;
+            anno.markerTintColor = [UIColor colorWithRed:0.7 green:0.7 blue:0.7 alpha:0.8f]; // !!@ important, set to clear so we don't see it!!
+            anno.glyphImage      = nil;
+            anno.glyphText       = sym->glyph;
+            anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:emojiToImage( sym->glyph )];
         }
         else
         {
-            MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:@"marker.pin" forAnnotation:annotation];
-            
-            anno.canShowCallout = true;
-            anno.animatesWhenAdded = true;
-            
-            anno.displayPriority = MKFeatureDisplayPriorityRequired;
-            anno.titleVisibility = MKFeatureVisibilityAdaptive;
-            anno.markerTintColor = [UIColor colorWithRed:sym->red green:sym->grn blue:sym->blu alpha:1.0f];
+            anno.markerTintColor = [UIColor colorWithRed:sym->red green:sym->grn blue:sym->blu alpha:0.8f];
+            anno.glyphImage      = [UIImage systemImageNamed:sym->glyph withConfiguration:[UIImageSymbolConfiguration configurationWithScale:UIImageSymbolScaleLarge]];
+            anno.glyphText       = nil;
             anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:anno.glyphImage];
-
-            // okay if this returns nil
-            anno.glyphImage = [UIImage systemImageNamed:sym->glyph withConfiguration:[UIImageSymbolConfiguration configurationWithScale:UIImageSymbolScaleLarge]];
-            anno.image = nil;
-            return anno;
         }
     }
     else
     {
-        MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:@"marker.pin" forAnnotation:annotation];
-        
-        anno.canShowCallout = true;
-        anno.animatesWhenAdded = true;
-        
-        anno.displayPriority = MKFeatureDisplayPriorityRequired;
-        anno.titleVisibility = MKFeatureVisibilityAdaptive;
-
+        // generic marker case...
         anno.markerTintColor = [UIColor colorNamed:@"internationalOrange"];
         anno.glyphImage = nil;
-        anno.image = nil;
+        anno.glyphText  = nil;
 
         // Offset the flag annotation so that the flag pole rests on the map coordinate.
-        UIImage* image = [UIImage imageNamed:@"flag"];
+        UIImage* image = [UIImage imageNamed:@"flag"];  // !!@ change this from sample code to something meaningful
         anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:image];
-        return anno;
     }
    
-    return nil;
+    return anno;
 }
 
 @end
