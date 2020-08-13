@@ -112,7 +112,7 @@
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="QSE-7U-4Ei"/>
                         <barButtonItem title="All" id="BVs-og-Y7K"/>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" title="KISS Monitor" id="jVU-xi-FZF">
+                    <navigationItem key="navigationItem" title="Monitor" id="jVU-xi-FZF">
                         <barButtonItem key="leftBarButtonItem" title="Connect" id="Rgw-9H-VhC">
                             <connections>
                                 <action selector="connectButtonPressed:" destination="Q2x-WI-wPB" id="41M-Dv-9jO"/>
