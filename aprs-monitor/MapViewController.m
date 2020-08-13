@@ -174,6 +174,20 @@ void map_callback( packet_t packet )
     __weak MapViewController* weakself = self;
     
     dispatch_async( dispatch_get_main_queue(), ^{
+        
+        // first look to see if we already have a position plotted for this exact call sign...
+        NSInteger index = [weakself.mapView.annotations indexOfObjectPassingTest:^BOOL ( __kindof Packet* _Nonnull pkt, NSUInteger idx, BOOL* stop ) {
+            return [pkt.call isEqualToString:packet.call];
+        }];
+        
+        if( index != NSNotFound )
+        {
+            // yank the old one, we will stick a new one in its place
+            [weakself.mapView removeAnnotation:[weakself.mapView.annotations objectAtIndex:index]];
+            
+            // note: for moving objects, we should be updating the paths here I think !!@
+        }
+        
         [weakself.mapView addAnnotations:@[packet]];
         
         if( !s_have_location )
