@@ -282,8 +282,7 @@ void map_callback( packet_t packet )
         anno.glyphImage = nil;
         anno.glyphText  = nil;
 
-        // Offset the flag annotation so that the flag pole rests on the map coordinate.
-        UIImage* image = [UIImage imageNamed:@"flag"];  // !!@ change this from sample code to something meaningful
+        UIImage* image = emojiToImage( @"📍" );
         anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:image];
     }
    
