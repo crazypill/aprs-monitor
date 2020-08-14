@@ -270,10 +270,14 @@ void map_callback( packet_t packet )
         else
         {
             anno.markerTintColor = [UIColor colorWithRed:sym->red green:sym->grn blue:sym->blu alpha:sym->alpha];
-            anno.glyphImage      = [UIImage systemImageNamed:sym->glyph withConfiguration:[UIImageSymbolConfiguration configurationWithScale:UIImageSymbolScaleLarge]];
+            anno.glyphImage      = sym->glyph ? [UIImage systemImageNamed:sym->glyph withConfiguration:[UIImageSymbolConfiguration configurationWithScale:UIImageSymbolScaleLarge]] : nil;
             anno.glyphText       = nil;
             anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:anno.glyphImage];
         }
+        
+        // see if we need to replace the callout image... we do this for wind only...
+        if( pkt.flags & kPacketFlag_Weather )
+            anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:[pkt getWindIndicatorIcon:CGRectMake( 0, 0,  40, 40 )]];
     }
     else
     {

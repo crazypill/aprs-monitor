@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) void (^documentUpdatedBlock)( void );
 
 + (PacketManager*)shared;
-+ (NSString*)applicationDocumentsDirectory;
++ (NSString* _Nullable)applicationDocumentsDirectory;
 
 // required overrides
 - (NSString*)documentFileName;

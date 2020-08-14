@@ -70,31 +70,6 @@
 }
 
 
-+ (_Nullable id)initWithCoordinates:(CLLocationCoordinate2D)coordinate
-{
-    Packet* us = [[Packet alloc] init];
-    if( us )
-    {
-        us.coordinate = coordinate;
-        us.flags |= kPacketFlag_CoordinatesValid;
-    }
-    
-    return us;
-}
-
-
-+ (_Nullable id)initWithRaw:(const char*)rawstring address:(const char*)rawaddress
-{
-    Packet* us = [[Packet alloc] init];
-    
-    // this is where we would do all the parsing of the raw and stuff it into the appropriate fields...
-    if( us )
-        [us parse:rawstring address:rawaddress];
-    
-    return us;
-}
-
-
 
 + (_Nullable id)initWithPacket_t:(packet_t)packet
 {
@@ -125,34 +100,22 @@
         us.symbol  = [NSString stringWithFormat:@"%c%c",decode_state.g_symbol_table,decode_state.g_symbol_code];
         
         // ok let's do some transcribing...
-        if( decode_state.g_lat != G_UNKNOWN && decode_state.g_lon != G_UNKNOWN )
+        if( (decode_state.g_flags & kDataFlag_Latitude) && (decode_state.g_flags & kDataFlag_Longitude) )
         {
             us.coordinate = CLLocationCoordinate2DMake( decode_state.g_lat, decode_state.g_lon );
             us.flags |= kPacketFlag_CoordinatesValid;
         }
-
-           
-//        A->g_symbol_table = '/';    /* Default to primary table. */
-//        A->g_symbol_code = ' ';        /* What should we have for default symbol? */
-//
-//        A->g_speed_mph = G_UNKNOWN;
-//        A->g_course = G_UNKNOWN;
-//
-//        A->g_power = G_UNKNOWN;
-//        A->g_height = G_UNKNOWN;
-//        A->g_gain = G_UNKNOWN;
-//
-//        A->g_range = G_UNKNOWN;
-//        A->g_altitude_ft = G_UNKNOWN;
-//        A->g_freq = G_UNKNOWN;
-//        A->g_tone = G_UNKNOWN;
-//        A->g_dcs = G_UNKNOWN;
-//        A->g_offset = G_UNKNOWN;
-//
-//        A->g_footprint_lat = G_UNKNOWN;
-//        A->g_footprint_lon = G_UNKNOWN;
-//        A->g_footprint_radius = G_UNKNOWN;
-
+        
+        if( decode_state.g_wxdata.wxflags )
+        {
+            // just outright copy the entire wx record
+            us.wx = malloc( sizeof( wx_data ) );
+            if( us.wx )
+            {
+                memcpy( us.wx, &decode_state.g_wxdata, sizeof( wx_data ) );
+                us.flags |= kPacketFlag_Weather;
+            }
+        }
     }
     
     return us;
@@ -169,7 +132,11 @@
 }
 
 
-
+- (void)dealloc
+{
+    if( _wx )
+        free( _wx );
+}
 
 
 - (NSString*)title
@@ -188,115 +155,113 @@
 }
 
 
-- (CLLocationDegrees)convertToDegrees:(NSString*)aprsPosition
+
+
+- (UIImage* _Nullable)getWindIndicatorIcon:(CGRect)imageBounds
 {
-    if( !aprsPosition )
-        return 0.0;
+    // see if we have any weather info
+    if( !(_flags & kPacketFlag_Weather) || !_wx )
+        return nil;
     
-    int degrees = 0;
-    int minutes = 0;
-    float hundredthsMinutes = 0;
+    UIGraphicsBeginImageContextWithOptions( imageBounds.size, false, 0.0f );
+    CGContextRef myContext = UIGraphicsGetCurrentContext();
     
-    // check for latitude vs longitude
-    if( aprsPosition.length == 7 )
-    {
-        degrees = [aprsPosition substringWithRange:NSMakeRange( 0, 2 )].intValue;
-        minutes = [aprsPosition substringWithRange:NSMakeRange( 2, 2 )].intValue;
-        hundredthsMinutes = [aprsPosition substringWithRange:NSMakeRange( 4, 3 )].floatValue;
-    }
-    else
-    {
-        degrees = [aprsPosition substringWithRange:NSMakeRange( 0, 3 )].intValue;
-        minutes = [aprsPosition substringWithRange:NSMakeRange( 3, 2 )].intValue;
-        hundredthsMinutes = [aprsPosition substringWithRange:NSMakeRange( 5, 3 )].floatValue;
-    }
+    // create HSV color so we can make the spectrum rainbow colored
+    CGColorRef cgColor = NULL;
+
+    CGFloat xCenter = imageBounds.size.width  * 0.5f;
+    CGFloat yCenter = imageBounds.size.height * 0.5f;
+    CGFloat r       = imageBounds.size.height * 0.5f;
     
-    // convert to seconds
-    int seconds = hundredthsMinutes * 60.0f;
+    CGFloat oversampling   = 4.0f;
+    CGFloat centerDiameter = imageBounds.size.width * 0.76f;
+    CGRect  circleRect     = CGRectMake( xCenter - (centerDiameter * 0.5f), yCenter - (centerDiameter * 0.5f), centerDiameter, centerDiameter );
+    CGRect  clipRect       = CGRectInset( imageBounds, 1, 1 );
+
+    CGContextSaveGState( myContext );
     
-    float fraction = ((seconds / 60.0f) + minutes) / 60.0f;
-    return degrees + fraction;
-}
-
-
-- (void)parse_position_data:(NSString*)raw_lat longitude:(NSString*)raw_long
-{
-    NSString* latitude = [raw_lat substringWithRange:NSMakeRange( 0, raw_lat.length - 1 )];
-    if( latitude.length == 7 )
+    if( _wx->wxflags & kWxDataFlag_windDir )
     {
-        char n = [raw_lat characterAtIndex:7];
-
-        NSString* longitude = [raw_long substringWithRange:NSMakeRange( 0, raw_long.length - 1 )];
-        if( longitude.length >= 8 )
-        {
-            char w = [raw_long characterAtIndex:8];
-
-            CLLocationDegrees lat = [self convertToDegrees:latitude];
-            CLLocationDegrees lng = [self convertToDegrees:longitude];
-            
-            if( lng > 1 )
-            {
-                // flip sign to deal with East vs West
-                if( w == 'W' || w == 'w' )
-                    lng = -lng;
-
-                if( n != 'N' && n != 'n' )
-                    lat = -lat;
-
-                _coordinate.latitude  = lat;
-                _coordinate.longitude = lng;
-                _flags |= kPacketFlag_CoordinatesValid;
-
-//                [s_map_controller plotMessage:lat longitude:lng sender:address];
-            }
-        }
-    }
-}
-
-
-
-
-- (void)parse:(const char*)rawstring address:(const char*)rawaddress
-{
-    NSString* info = [NSString stringWithUTF8String:rawstring];
-    NSString* addr = [NSString stringWithUTF8String:rawaddress];
-
-    // positions without timestamps
-    if( [info characterAtIndex:0]  == '!' || [info characterAtIndex:0]  == '=' )
-    {
-        NSString* data = [info substringFromIndex:1];
-        NSArray* listItems = [data componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"z/\\>_"]];
+        // clip to the inside of that double line
+        CGContextBeginPath( myContext );
+        CGContextAddEllipseInRect( myContext, clipRect );
+        CGContextAddEllipseInRect( myContext, circleRect );
+        CGContextEOClip( myContext );
         
-        if( listItems.count >= 2 )
-        {
-            [self parse_position_data:listItems[0] longitude:listItems[1]];
-        }
-    }
-
-
-    // positions with timestamps
-    if( [info characterAtIndex:0]  == '@' || [info characterAtIndex:0]  == '/' )
-    {
-        NSString* data = [info substringFromIndex:1];
-        NSArray* listItems = [data componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"z/\\>_"]];
+        // Drawing code here -- we do this at a quarter degree to avoid moire patterns
+        int indicatorWidth = 12; // in degrees
+        int windDirection = _wx->windDirection;
         
-        if( listItems.count >= 3 )
+        for( int i = 0; i < indicatorWidth * oversampling; i++ )
         {
-            [self parse_position_data:listItems[1] longitude:listItems[2]];
+            // convert from math to compass orientation
+            int degrees = 90 + (360 - windDirection);
+            // offset the marker so that it is centered about its target
+            int offset = (i + (degrees * oversampling)) - ((indicatorWidth * oversampling) / 2);
+
+            // convert from degrees to radians
+            CGFloat rs = r * sin( (offset / oversampling) * M_PI / 180.0f );
+            CGFloat rc = r * cos( (offset / oversampling) * M_PI / 180.0f );
+            CGFloat x  = xCenter + rc;
+            CGFloat y  = yCenter - rs;
+
+            cgColor = [UIColor redColor].CGColor;
+            CGContextSetStrokeColorWithColor( myContext, cgColor );
+            CGContextBeginPath( myContext );
+            CGContextMoveToPoint( myContext, xCenter, yCenter );
+            CGContextAddLineToPoint( myContext, x, y );
+            CGContextStrokePath( myContext );
         }
+        CGContextResetClip( myContext );
     }
-
-    // get sender's callsign
-    NSArray* addressComponents = [addr componentsSeparatedByString:@">"];
-    if( addressComponents.count >= 1 )
-        _call = addressComponents.firstObject;
     
-    // store the entire packet data
-    _address = addr;
-    _info = info;
+    // draw double outline
+    centerDiameter = imageBounds.size.width * 0.75f;
+    circleRect     = CGRectMake( xCenter - (centerDiameter * 0.5f), yCenter - (centerDiameter * 0.5f), centerDiameter, centerDiameter );
+    clipRect       = CGRectInset( imageBounds, 0.5, 0.5 );
+    
+    CGContextBeginPath( myContext );
+    CGContextAddEllipseInRect( myContext, clipRect );
+    CGContextAddEllipseInRect( myContext, circleRect );
+    cgColor = [UIColor grayColor].CGColor;
+    CGContextSetStrokeColorWithColor( myContext, cgColor );
+    CGContextStrokePath( myContext );
+
+    NSMutableParagraphStyle* paragraph = [[NSMutableParagraphStyle alloc] init];
+    paragraph.alignment = NSTextAlignmentCenter;
+    
+    // draw the text in the center
+    centerDiameter = 18;
+    CGFloat fontSize = 8;
+    CGFloat padding  = 2;
+    CGRect  textRect = CGRectMake( xCenter - (centerDiameter * 0.5f), yCenter - (centerDiameter * 0.55f), centerDiameter, fontSize + padding );
+
+    if( _wx->wxflags & kWxDataFlag_wind )
+    {
+        [[NSString stringWithFormat:@"%0.f", _wx->windSpeedMph] drawInRect:textRect withAttributes:@{
+            NSFontAttributeName : [UIFont systemFontOfSize:8],
+            NSParagraphStyleAttributeName : paragraph,
+            NSForegroundColorAttributeName : [UIColor labelColor]
+        }];
+    }
+    
+    if( _wx->wxflags & kWxDataFlag_gust )
+    {
+        textRect.origin.y += fontSize + padding;
+        [[NSString stringWithFormat:@"%0.f", _wx->windGustMph] drawInRect:textRect withAttributes:@{
+            NSFontAttributeName : [UIFont systemFontOfSize:8],
+            NSParagraphStyleAttributeName : paragraph,
+            NSForegroundColorAttributeName : [UIColor secondaryLabelColor]
+        }];
+    }
+    
+    CGContextRestoreGState( myContext );
+
+    UIImage* resultImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    return resultImage;
 }
-
-
 
 
 @end

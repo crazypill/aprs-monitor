@@ -538,7 +538,7 @@ exit_gracefully:
     shutdown( server_sock, 2 );
     close( server_sock );
     
-    if( info->status )
+    if( info && info->status )
         info->status( false );
     
     free( info );
