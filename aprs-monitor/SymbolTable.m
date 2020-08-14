@@ -42,18 +42,18 @@ static const SymbolEntry s_symbol_table[] =
 //     /L PL  PC user (Jan 03)
 //     /M PM  MacAPRS
 //     /N PN  NTS Station
-    { @"/O", @"Balloon",               @"🎈",             0, 1, 0.00f, 0.00f, 0.00f, 1.0f },
+    { @"/O", @"Balloon",               @"🎈",             0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
 
 //     /Q PQ  TBD
 //     /R PR  REC. VEHICLE   (SSID-13)
 //     /S PS  SHUTTLE
 //     /T PT  SSTV
 
-    { @"/V", @"ATV",                   @"🏍",             0, 1, 0.00f, 0.00f, 0.00f, 1.0f },
+    { @"/V", @"ATV",                   @"🏍",             0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
 //     /W PW  National WX Service Site
 //     /X PX  HELO           (SSID-6)
 //     /Y PY  YACHT (sail)   (SSID-5)
-    { @"/Y", @"Yacht",                 @"🛥",             0, 1, 0.00f, 0.00f, 0.00f, 1.0f },
+    { @"/Y", @"Yacht",                 @"🛥",             0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
 //     /Z PZ  WinAPRS
 
 //     /\ HT  TRIANGLE(DF station)
@@ -309,7 +309,7 @@ static const SymbolEntry s_symbol_table[] =
 //    LD = LIght Rail or Subway (new Aug 2014)
 //    SD = Seaport Depot (new Aug 2014)
 //
-//    DIGIPEATERS
+//    DIGIPEATERS - green
     { @"/#", @"Generic digipeater",         @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 1.0f },
     { @"1#", @"WIDE1-1 digipeater",         @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 1.0f },
     { @"A#", @"Alternate input",            @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 1.0f },
@@ -338,7 +338,7 @@ static const SymbolEntry s_symbol_table[] =
 //    DE = (D overlay) blowing Dust or sand was \b
 //    FE = (F overlay) Fog                  was \{
 //
-//    GATEWAYS: #&
+//    GATEWAYS: #& - black
     { @"/&", @"HF Gateway",                           @"✸",            1, 1, 0.00f, 0.00f, 0.00f, 1.0f },
     { @"I&", @"Igate Generic",                        @"✸",            1, 1, 0.00f, 0.00f, 0.00f, 1.0f },
     { @"R&", @"Receive only IGate",                   @"✸",            1, 1, 0.00f, 0.00f, 0.00f, 1.0f },
