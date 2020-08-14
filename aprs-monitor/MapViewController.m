@@ -255,6 +255,8 @@ void map_callback( packet_t packet )
     anno.displayPriority = MKFeatureDisplayPriorityRequired;
     anno.titleVisibility = MKFeatureVisibilityAdaptive;
 
+    anno.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+    
     const SymbolEntry* sym = getSymbolEntry( pkt.symbol );
     if( sym )
     {
@@ -287,5 +289,29 @@ void map_callback( packet_t packet )
    
     return anno;
 }
+
+
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
+{
+    // This illustrates how to detect which annotation type was tapped on for its callout.
+    UIViewController* detailNavController = [self.storyboard instantiateViewControllerWithIdentifier:@"DetailNavController"];
+    if( detailNavController )
+    {
+        detailNavController.modalPresentationStyle = UIModalPresentationPopover;
+        
+        UIPopoverPresentationController* presentationController = detailNavController.popoverPresentationController;
+        if( presentationController )
+        {
+            presentationController.permittedArrowDirections = UIPopoverArrowDirectionAny;
+        
+            // Anchor the popover to the button that triggered the popover.
+            presentationController.sourceRect = control.frame;
+            presentationController.sourceView = control;
+            
+            [self presentViewController:detailNavController animated:YES completion:nil];
+        }
+    }
+}
+
 
 @end

@@ -26,7 +26,7 @@
         <!--Golden Gate Bridge-->
         <scene sceneID="d5v-4X-9tX">
             <objects>
-                <viewController id="hKd-EI-jjl" customClass="DetailViewController" customModule="APRS_Monitor" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DetailViewController" id="hKd-EI-jjl" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="S6c-0S-zoU">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -45,16 +45,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="KeA-eK-DMK"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Golden Gate Bridge" id="aRj-iJ-jPc">
-                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="A7o-2a-CBH">
-                            <connections>
-                                <action selector="doneAction:" destination="hKd-EI-jjl" id="fkG-9N-wzI"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                    <connections>
-                        <outlet property="imageView" destination="K89-Ix-nOr" id="9hM-E7-v1z"/>
-                    </connections>
+                    <navigationItem key="navigationItem" title="Golden Gate Bridge" id="aRj-iJ-jPc"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="23b-HA-j9q" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
