@@ -17,6 +17,7 @@ typedef struct
     NSString* symbol;
     NSString* name;
     NSString* glyph;
+    bool      tint;     // this indicatates that the glyph image needs to be colorized
     bool      emoji;    // this indicatates that the glyph is not a name but an actual emoji
     float     red;
     float     grn;
