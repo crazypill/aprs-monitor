@@ -260,16 +260,15 @@ void map_callback( packet_t packet )
     const SymbolEntry* sym = getSymbolEntry( pkt.symbol );
     if( sym )
     {
+        anno.markerTintColor = [UIColor colorWithRed:sym->red green:sym->grn blue:sym->blu alpha:sym->alpha];
         if( sym->emoji && sym->glyph )
         {
-            anno.markerTintColor = [UIColor colorWithRed:0.7 green:0.7 blue:0.7 alpha:0.7f];
             anno.glyphImage      = nil;
             anno.glyphText       = sym->glyph;
             anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:emojiToImage( sym->glyph )];
         }
         else
         {
-            anno.markerTintColor = [UIColor colorWithRed:sym->red green:sym->grn blue:sym->blu alpha:sym->alpha];
             anno.glyphImage      = sym->glyph ? [UIImage systemImageNamed:sym->glyph withConfiguration:[UIImageSymbolConfiguration configurationWithScale:UIImageSymbolScaleLarge]] : nil;
             anno.glyphText       = nil;
             anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:anno.glyphImage];
