@@ -281,9 +281,7 @@ void map_callback( packet_t packet )
         anno.markerTintColor = [UIColor colorNamed:@"internationalOrange"];
         anno.glyphImage = nil;
         anno.glyphText  = nil;
-
-        UIImage* image = emojiToImage( @"📍" );
-        anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:image];
+        anno.leftCalloutAccessoryView = nil;
     }
    
     return anno;
