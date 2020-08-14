@@ -262,14 +262,14 @@ void map_callback( packet_t packet )
     {
         if( sym->emoji && sym->glyph )
         {
-            anno.markerTintColor = [UIColor colorWithRed:0.7 green:0.7 blue:0.7 alpha:0.8f]; // !!@ important, set to clear so we don't see it!!
+            anno.markerTintColor = [UIColor colorWithRed:0.7 green:0.7 blue:0.7 alpha:0.7f];
             anno.glyphImage      = nil;
             anno.glyphText       = sym->glyph;
             anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:emojiToImage( sym->glyph )];
         }
         else
         {
-            anno.markerTintColor = [UIColor colorWithRed:sym->red green:sym->grn blue:sym->blu alpha:0.8f];
+            anno.markerTintColor = [UIColor colorWithRed:sym->red green:sym->grn blue:sym->blu alpha:sym->alpha];
             anno.glyphImage      = [UIImage systemImageNamed:sym->glyph withConfiguration:[UIImageSymbolConfiguration configurationWithScale:UIImageSymbolScaleLarge]];
             anno.glyphText       = nil;
             anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:anno.glyphImage];

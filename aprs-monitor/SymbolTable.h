@@ -21,6 +21,7 @@ typedef struct
     float     red;
     float     grn;
     float     blu;
+    float     alpha;
 } SymbolEntry;
 
 

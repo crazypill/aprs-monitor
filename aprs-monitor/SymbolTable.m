@@ -57,47 +57,47 @@ static const SymbolEntry s_symbol_table[] =
 
 //     /\ HT  TRIANGLE(DF station)
 
-    { @"/:", @"Fire",                  @"flame",         0, 1.00f, 0.00f, 0.00f },
-    { @"/<", @"Motorcycle",            @"🏍",            1, 0.00f, 0.00f, 0.00f },
-    { @"/>", @"Car",                   @"🚗",            1, 1.00f, 0.00f, 0.00f },
-    { @"/P", @"Police",                @"🚓",            1, 0.00f, 0.00f, 0.00f },
-    { @"/U", @"Bus",                   @"🚌",            1, 0.00f, 0.00f, 0.00f },
-    { @"/[", @"Person",                @"🏃‍♂️",            1, 0.00f, 1.00f, 1.00f },
-    { @"/]", @"Post Office",           @"📨",            1, 1.00f, 1.00f, 0.00f },
-    { @"/^", @"Large Aircraft",        @"✈️",            1, 1.00f, 0.00f, 0.50f },
-    { @"/_", @"Weather Station",       @"thermometer",   0, 0.00f, 0.00f, 1.00f },
+    { @"/:", @"Fire",                  @"flame",         0, 1.00f, 0.00f, 0.00f, 0.7f },
+    { @"/<", @"Motorcycle",            @"🏍",            1, 0.00f, 0.00f, 0.00f, 1.0f },
+    { @"/>", @"Car",                   @"🚗",            1, 1.00f, 0.00f, 0.00f, 1.0f },
+    { @"/P", @"Police",                @"🚓",            1, 0.00f, 0.00f, 0.00f, 1.0f },
+    { @"/U", @"Bus",                   @"🚌",            1, 0.00f, 0.00f, 0.00f, 1.0f },
+    { @"/[", @"Person",                @"🏃‍♂️",            1, 0.00f, 1.00f, 1.00f, 1.0f },
+    { @"/]", @"Post Office",           @"📨",            1, 1.00f, 1.00f, 0.00f, 1.0f },
+    { @"/^", @"Large Aircraft",        @"✈️",            1, 1.00f, 0.00f, 0.50f, 1.0f },
+    { @"/_", @"Weather Station",       @"thermometer",   0, 0.00f, 0.00f, 1.00f, 0.7f },
 
-    { @"/`", @"Dish Antenna",          @"📡",            1, 0.00f, 0.00f, 0.00f },
-    { @"/a", @"Ambulance",             @"🚑",            1, 0.00f, 0.00f, 0.00f },
-    { @"/b", @"Bike",                  @"🚲",            1, 0.00f, 0.00f, 0.00f },
-//  { @"/c", @"Incident Command Post", @"",              0, 0.00f, 0.00f, 0.00f },
-    { @"/d", @"Fire dept",             @"🚒",            1, 0.00f, 0.00f, 0.00f },
-    { @"/e", @"Horse",                 @"🐎",            1, 0.00f, 0.00f, 0.00f },
-    { @"/f", @"Fire truck",            @"🚒",            1, 0.00f, 0.00f, 0.00f },
-//  { @"/g", @"Glider",                @"",              0, 0.00f, 0.00f, 0.00f },
-    { @"/h", @"Hospital",              @"🏥",            1, 0.00f, 0.00f, 0.00f },
-//  { @"/i", @"Islands on the air",    @"",              0, 0.00f, 0.00f, 0.00f },
-    { @"/j", @"Jeep",                  @"🛺",            1, 0.00f, 0.00f, 0.00f },
-    { @"/k", @"Truck",                 @"🚚",            1, 0.00f, 0.00f, 0.00f },
-//    { @"/l", @"Laptop",                @"", 0, 0.00f, 1.00f, 0.00f },
-//    { @"/m", @"Mic-E Repeater",        @"", 0, 0.00f, 1.00f, 0.00f },
-//    { @"/n", @"Node",                  @"", 0, 0.00f, 1.00f, 0.00f },
-//    { @"/o", @"EOC",                   @"", 0, 0.00f, 1.00f, 0.00f },
-    { @"/p", @"Rover (dog)",           @"🐶", 0, 0.00f, 1.00f, 0.00f },
-//    { @"/q", @"Grid Square",           @"", 0, 0.00f, 1.00f, 0.00f },
-    { @"/r", @"Repeater",              @"", 0, 0.00f, 0.80f, 0.10f },
-//    { @"/s", @"Power Boat",            @"", 0, 0.00f, 1.00f, 0.00f },
-//    { @"/t", @"Truck Stop",            @"", 0, 0.00f, 1.00f, 0.00f },
-//    { @"/u", @"Tractor trailer",       @"", 0, 0.00f, 1.00f, 0.00f },
-    { @"/v", @"Van",                   @"🚐", 1, 0.00f, 1.00f, 0.00f },
-//    { @"/w", @"Water station",         @"", 0, 0.00f, 1.00f, 0.00f },
-//    { @"/x", @"xAPRS (Unix)",          @"", 0, 0.00f, 1.00f, 0.00f },
-//    { @"/y", @"YAGI @ QTH",            @"", 0, 0.00f, 1.00f, 0.00f },
-//    { @"/z", @"",                      @"", 0, 0.00f, 1.00f, 0.00f },
-//    { @"/{", @"",                      @"", 0, 0.00f, 1.00f, 0.00f },
-//    { @"/|", @"TNC Stream Switch",     @"", 0, 0.00f, 1.00f, 0.00f },
-//    { @"/}", @"",                      @"", 0, 0.00f, 1.00f, 0.00f },
-//    { @"/~", @"TNC Stream Switch",     @"", 0, 0.00f, 1.00f, 0.00f },
+    { @"/`", @"Dish Antenna",          @"📡",            1, 0.00f, 0.00f, 0.00f, 1.0f },
+    { @"/a", @"Ambulance",             @"🚑",            1, 0.00f, 0.00f, 0.00f, 1.0f },
+    { @"/b", @"Bike",                  @"🚲",            1, 0.00f, 0.00f, 0.00f, 1.0f },
+//  { @"/c", @"Incident Command Post", @"",              0, 0.00f, 0.00f, 0.00f, 1.0f },
+    { @"/d", @"Fire dept",             @"🚒",            1, 0.00f, 0.00f, 0.00f, 1.0f },
+    { @"/e", @"Horse",                 @"🐎",            1, 0.00f, 0.00f, 0.00f, 1.0f },
+    { @"/f", @"Fire truck",            @"🚒",            1, 0.00f, 0.00f, 0.00f, 1.0f },
+//  { @"/g", @"Glider",                @"",              0, 0.00f, 0.00f, 0.00f, 1.0f },
+    { @"/h", @"Hospital",              @"🏥",            1, 0.00f, 0.00f, 0.00f, 1.0f },
+//  { @"/i", @"Islands on the air",    @"",              0, 0.00f, 0.00f, 0.00f, 1.0f },
+    { @"/j", @"Jeep",                  @"🛺",            1, 0.00f, 0.00f, 0.00f, 1.0f },
+    { @"/k", @"Truck",                 @"🚚",            1, 0.00f, 0.00f, 0.00f, 1.0f },
+//  { @"/l", @"Laptop",                @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
+//  { @"/m", @"Mic-E Repeater",        @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
+//  { @"/n", @"Node",                  @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
+//  { @"/o", @"EOC",                   @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
+    { @"/p", @"Rover (dog)",           @"🐶",            1, 0.00f, 1.00f, 0.00f, 1.0f },
+//  { @"/q", @"Grid Square",           @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
+    { @"/r", @"Repeater",              @"",              0, 0.00f, 0.80f, 0.10f, 0.7f },
+//  { @"/s", @"Power Boat",            @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
+//  { @"/t", @"Truck Stop",            @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
+//  { @"/u", @"Tractor trailer",       @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
+    { @"/v", @"Van",                   @"🚐",            1, 0.00f, 1.00f, 0.00f, 1.0f },
+//  { @"/w", @"Water station",         @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
+//  { @"/x", @"xAPRS (Unix)",          @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
+//  { @"/y", @"YAGI @ QTH",            @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
+//  { @"/z", @"",                      @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
+//  { @"/{", @"",                      @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
+//  { @"/|", @"TNC Stream Switch",     @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
+//  { @"/}", @"",                      @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
+//  { @"/~", @"TNC Stream Switch",     @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
 
 //    /" BC  reserved  (was rain)
 //    /( BI  Mobile Satellite Station
@@ -520,7 +520,7 @@ static const SymbolEntry s_symbol_table[] =
 //    Yw = Yellow flood gauge
     
     // leave last
-    { nil, nil, nil, 0.00f, 0.00f, 0.00f }
+    { nil, nil, nil, 0, 0.00f, 0.00f, 0.00f, 0.00f }
 };
 
 
@@ -562,7 +562,6 @@ UIImage* emojiToImage( NSString* emoji )
 {
     CGRect bounds = CGRectMake( 0.0f, 0.0f, kEmojiSize, kEmojiSize );
     UIGraphicsBeginImageContextWithOptions( bounds.size, false, 0.0f );
-//    [emoji drawAtPoint:bounds.origin withAttributes:@{ NSFontAttributeName : [UIFont systemFontOfSize:kEmojiSize] }];
     [emoji drawInRect:bounds withAttributes:@{ NSFontAttributeName : [UIFont systemFontOfSize:kEmojiSize - 2] }];
     UIImage* emojiImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
