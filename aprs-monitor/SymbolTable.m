@@ -42,62 +42,62 @@ static const SymbolEntry s_symbol_table[] =
 //     /L PL  PC user (Jan 03)
 //     /M PM  MacAPRS
 //     /N PN  NTS Station
-//     /O PO  BALLOON        (SSID-11)
+    { @"/O", @"Balloon",               @"🎈",             1, 0.00f, 0.00f, 0.00f, 1.0f },
 
 //     /Q PQ  TBD
 //     /R PR  REC. VEHICLE   (SSID-13)
 //     /S PS  SHUTTLE
 //     /T PT  SSTV
 
-//     /V PV  ATV
+    { @"/V", @"ATV",                   @"🏍",             1, 0.00f, 0.00f, 0.00f, 1.0f },
 //     /W PW  National WX Service Site
 //     /X PX  HELO           (SSID-6)
 //     /Y PY  YACHT (sail)   (SSID-5)
+    { @"/Y", @"Yacht",                 @"🛥",             1, 0.00f, 0.00f, 0.00f, 1.0f },
 //     /Z PZ  WinAPRS
 
 //     /\ HT  TRIANGLE(DF station)
 
     { @"/:", @"Fire",                  @"flame",         0, 1.00f, 0.00f, 0.00f, 0.7f },
-    { @"/<", @"Motorcycle",            @"🏍",            1, 0.00f, 0.00f, 0.00f, 1.0f },
-    { @"/>", @"Car",                   @"🚗",            1, 1.00f, 0.00f, 0.00f, 1.0f },
-    { @"/P", @"Police",                @"🚓",            1, 0.00f, 0.00f, 0.00f, 1.0f },
-    { @"/U", @"Bus",                   @"🚌",            1, 0.00f, 0.00f, 0.00f, 1.0f },
-    { @"/[", @"Person",                @"🏃‍♂️",            1, 0.00f, 1.00f, 1.00f, 1.0f },
-    { @"/]", @"Post Office",           @"📨",            1, 1.00f, 1.00f, 0.00f, 1.0f },
-    { @"/^", @"Large Aircraft",        @"✈️",            1, 1.00f, 0.00f, 0.50f, 1.0f },
+    { @"/<", @"Motorcycle",            @"🏍",            1, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/>", @"Car",                   @"🚗",            1, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/P", @"Police",                @"🚓",            1, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/U", @"Bus",                   @"🚌",            1, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/[", @"Person",                @"🏃‍♂️",            1, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/]", @"Post Office",           @"📨",            1, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/^", @"Large Aircraft",        @"✈️",            1, 0.70f, 0.70f, 0.70f, 0.7f },
     { @"/_", @"Weather Station",       @"thermometer",   0, 0.00f, 0.00f, 1.00f, 0.6f },
-
-    { @"/`", @"Dish Antenna",          @"📡",            1, 0.00f, 0.00f, 0.00f, 1.0f },
-    { @"/a", @"Ambulance",             @"🚑",            1, 0.00f, 0.00f, 0.00f, 1.0f },
-    { @"/b", @"Bike",                  @"🚲",            1, 0.00f, 0.00f, 0.00f, 1.0f },
-//  { @"/c", @"Incident Command Post", @"",              0, 0.00f, 0.00f, 0.00f, 1.0f },
-    { @"/d", @"Fire dept",             @"🚒",            1, 0.00f, 0.00f, 0.00f, 1.0f },
-    { @"/e", @"Horse",                 @"🐎",            1, 0.00f, 0.00f, 0.00f, 1.0f },
-    { @"/f", @"Fire truck",            @"🚒",            1, 0.00f, 0.00f, 0.00f, 1.0f },
-//  { @"/g", @"Glider",                @"",              0, 0.00f, 0.00f, 0.00f, 1.0f },
-    { @"/h", @"Hospital",              @"🏥",            1, 0.00f, 0.00f, 0.00f, 1.0f },
-//  { @"/i", @"Islands on the air",    @"",              0, 0.00f, 0.00f, 0.00f, 1.0f },
-    { @"/j", @"Jeep",                  @"🛺",            1, 0.00f, 0.00f, 0.00f, 1.0f },
-    { @"/k", @"Truck",                 @"🚚",            1, 0.00f, 0.00f, 0.00f, 1.0f },
-//  { @"/l", @"Laptop",                @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
-//  { @"/m", @"Mic-E Repeater",        @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
-//  { @"/n", @"Node",                  @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
-//  { @"/o", @"EOC",                   @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
-    { @"/p", @"Rover (dog)",           @"🐶",            1, 0.00f, 1.00f, 0.00f, 1.0f },
-//  { @"/q", @"Grid Square",           @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
-    { @"/r", @"Repeater",              @"",              0, 0.00f, 0.80f, 0.10f, 0.7f },
-//  { @"/s", @"Power Boat",            @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
-//  { @"/t", @"Truck Stop",            @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
-//  { @"/u", @"Tractor trailer",       @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
-    { @"/v", @"Van",                   @"🚐",            1, 0.00f, 1.00f, 0.00f, 1.0f },
-//  { @"/w", @"Water station",         @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
-//  { @"/x", @"xAPRS (Unix)",          @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
-//  { @"/y", @"YAGI @ QTH",            @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
-//  { @"/z", @"",                      @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
-//  { @"/{", @"",                      @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
-//  { @"/|", @"TNC Stream Switch",     @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
-//  { @"/}", @"",                      @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
-//  { @"/~", @"TNC Stream Switch",     @"",              0, 0.00f, 1.00f, 0.00f, 1.0f },
+    { @"/`", @"Dish Antenna",          @"📡",            1, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/a", @"Ambulance",             @"🚑",            1, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/b", @"Bike",                  @"🚲",            1, 0.70f, 0.70f, 0.70f, 0.7f },
+//  { @"/c", @"Incident Command Post", @"",              0, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/d", @"Fire dept",             @"🚒",            1, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/e", @"Horse",                 @"🐎",            1, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/f", @"Fire truck",            @"🚒",            1, 0.70f, 0.70f, 0.70f, 0.7f },
+//  { @"/g", @"Glider",                @"",              0, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/h", @"Hospital",              @"🏥",            1, 0.70f, 0.70f, 0.70f, 0.7f },
+//  { @"/i", @"Islands on the air",    @"",              0, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/j", @"Jeep",                  @"🛺",            1, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/k", @"Truck",                 @"🚚",            1, 0.70f, 0.70f, 0.70f, 0.7f },
+//  { @"/l", @"Laptop",                @"",              0, 0.70f, 0.70f, 0.70f, 0.7f },
+//  { @"/m", @"Mic-E Repeater",        @"",              0, 0.70f, 0.70f, 0.70f, 0.7f },
+//  { @"/n", @"Node",                  @"",              0, 0.70f, 0.70f, 0.70f, 0.7f },
+//  { @"/o", @"EOC",                   @"",              0, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/p", @"Rover (dog)",           @"🐶",            1, 0.70f, 0.70f, 0.70f, 0.7f },
+//  { @"/q", @"Grid Square",           @"",              0, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/r", @"Repeater",              @"",              0, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/s", @"Power Boat",            @"🚤",            1, 0.70f, 0.70f, 0.70f, 0.7f },
+//  { @"/t", @"Truck Stop",            @"",              0, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/u", @"Tractor trailer",       @"🚚",            1, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/v", @"Van",                   @"🚐",            1, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/w", @"Water station",         @"🚰",            1, 0.70f, 0.70f, 0.70f, 0.7f },
+//  { @"/x", @"xAPRS (Unix)",          @"",              0, 0.70f, 0.70f, 0.70f, 0.7f },
+//  { @"/y", @"YAGI @ QTH",            @"",              0, 0.70f, 0.70f, 0.70f, 0.7f },
+//  { @"/z", @"",                      @"",              0, 0.70f, 0.70f, 0.70f, 0.7f },
+//  { @"/{", @"",                      @"",              0, 0.70f, 0.70f, 0.70f, 0.7f },
+//  { @"/|", @"TNC Stream Switch",     @"",              0, 0.70f, 0.70f, 0.70f, 0.7f },
+//  { @"/}", @"",                      @"",              0, 0.70f, 0.70f, 0.70f, 0.7f },
+//  { @"/~", @"TNC Stream Switch",     @"",              0, 0.70f, 0.70f, 0.70f, 0.7f },
 
 //    /" BC  reserved  (was rain)
 //    /( BI  Mobile Satellite Station
@@ -310,18 +310,19 @@ static const SymbolEntry s_symbol_table[] =
 //    SD = Seaport Depot (new Aug 2014)
 //
 //    DIGIPEATERS
-//    /# - Generic digipeater
-//    1# - WIDE1-1 digipeater
-//    A# - Alternate input (i.e. 144.990MHz) digipeater
-//    E# - Emergency powered (assumed full normal digi)
-//    I# - I-gate equipped digipeater
-//    L# - WIDEn-N with path length trapping
-//    P# - PacComm
-//    S# - SSn-N digipeater (includes WIDEn-N)
-//    X# - eXperimental digipeater
-//    V# - Viscous https://github.com/PhirePhly/aprx/blob/master/ViscousDigipeater.README
-//    W# - WIDEn-N, SSn-N and Trapping
-//
+    { @"/#", @"Generic digipeater",         @"✸",            1, 0.00f, 0.80f, 0.00f, 1.0f },
+    { @"1#", @"WIDE1-1 digipeater",         @"✸",            1, 0.00f, 0.80f, 0.00f, 1.0f },
+    { @"A#", @"Alternate input",            @"✸",            1, 0.00f, 0.80f, 0.00f, 1.0f },
+    { @"E#", @"Emergency powered",          @"✸",            1, 0.00f, 0.80f, 0.00f, 1.0f },
+    { @"I#", @"I-gate equipped digipeater", @"✸",            1, 0.00f, 0.80f, 0.00f, 1.0f },
+    { @"L#", @"WIDEn-N with path length",   @"✸",            1, 0.00f, 0.80f, 0.00f, 1.0f },
+    { @"P#", @"PacComm",                    @"✸",            1, 0.00f, 0.80f, 0.00f, 1.0f },
+    { @"S#", @"SSn-N digipeater",           @"✸",            1, 0.00f, 0.80f, 0.00f, 1.0f },
+    { @"X#", @"eXperimental digipeater",    @"✸",            1, 0.00f, 0.80f, 0.00f, 1.0f },
+    { @"V#", @"Viscous",                    @"✸",            1, 0.00f, 0.80f, 0.00f, 1.0f },
+    { @"W#", @"WIDEn-N",                    @"✸",            1, 0.00f, 0.80f, 0.00f, 1.0f },
+
+
 //    EMERGENCY: #!
 //    /! = Police/Sheriff, etc
 //    \! = Emergency!
@@ -338,14 +339,14 @@ static const SymbolEntry s_symbol_table[] =
 //    FE = (F overlay) Fog                  was \{
 //
 //    GATEWAYS: #&
-//    /& = HF Gateway  <= the original primary table definition
-//    I& = Igate Generic (please use more specific overlay)
-//    R& = Receive only IGate (do not send msgs back to RF)
-//    P& = PSKmail node
-//    T& = TX igate with path set to 1 hop only)
-//    W& = WIRES-X as opposed to W0 for WiresII
-//    2& = TX igate with path set to 2 hops (not generally good idea)
-//
+    { @"/&", @"HF Gateway",                           @"✸",            1, 0.00f, 0.00f, 0.00f, 1.0f },
+    { @"I&", @"Igate Generic",                        @"✸",            1, 0.00f, 0.00f, 0.00f, 1.0f },
+    { @"R&", @"Receive only IGate",                   @"✸",            1, 0.00f, 0.00f, 0.00f, 1.0f },
+    { @"P&", @"PSKmail node",                         @"✸",            1, 0.00f, 0.00f, 0.00f, 1.0f },
+    { @"T&", @"TX igate with path set to 1 hop only", @"✸",            1, 0.00f, 0.00f, 0.00f, 1.0f },
+    { @"W&", @"WIRES-X as opposed to W0 for WiresII", @"✸",            1, 0.00f, 0.00f, 0.00f, 1.0f },
+    { @"2&", @"TX igate with path set to 2 hops",     @"✸",            1, 0.00f, 0.00f, 0.00f, 1.0f },
+
 //    GPS devices: #\
 //    /\ = Triangle DF primary symbol
 //    \\ = was undefined alternate symbol
