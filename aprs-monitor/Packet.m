@@ -9,6 +9,7 @@
 
 
 
+#define kWindMask (kWxDataFlag_wind | kWxDataFlag_windDir | kWxDataFlag_gust)
 
 @implementation Packet
 
@@ -161,6 +162,10 @@
 {
     // see if we have any weather info
     if( !(_flags & kPacketFlag_Weather) || !_wx )
+        return nil;
+    
+    // if we have no wind flags at all, we should bail and use the default icon instead (rather than draw empty circles)
+    if( !(_wx->wxflags & kWindMask) )
         return nil;
     
     UIGraphicsBeginImageContextWithOptions( imageBounds.size, false, 0.0f );

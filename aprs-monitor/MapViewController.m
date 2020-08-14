@@ -277,7 +277,11 @@ void map_callback( packet_t packet )
         
         // see if we need to replace the callout image... we do this for wind only...
         if( pkt.flags & kPacketFlag_Weather )
-            anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:[pkt getWindIndicatorIcon:CGRectMake( 0, 0,  40, 40 )]];
+        {
+            UIImage* windIcon = [pkt getWindIndicatorIcon:CGRectMake( 0, 0,  40, 40 )];
+            if( windIcon )
+                anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:windIcon];
+        }
     }
     else
     {
