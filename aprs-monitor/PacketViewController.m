@@ -71,8 +71,6 @@
 {
     dispatch_async( dispatch_get_main_queue(), ^{
         [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
-
-//        [self.tableView reloadData];
     });
 }
 
