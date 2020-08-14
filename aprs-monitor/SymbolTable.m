@@ -65,7 +65,7 @@ static const SymbolEntry s_symbol_table[] =
     { @"/[", @"Person",                @"🏃‍♂️",            1, 0.00f, 1.00f, 1.00f, 1.0f },
     { @"/]", @"Post Office",           @"📨",            1, 1.00f, 1.00f, 0.00f, 1.0f },
     { @"/^", @"Large Aircraft",        @"✈️",            1, 1.00f, 0.00f, 0.50f, 1.0f },
-    { @"/_", @"Weather Station",       @"thermometer",   0, 0.00f, 0.00f, 1.00f, 0.7f },
+    { @"/_", @"Weather Station",       @"thermometer",   0, 0.00f, 0.00f, 1.00f, 0.6f },
 
     { @"/`", @"Dish Antenna",          @"📡",            1, 0.00f, 0.00f, 0.00f, 1.0f },
     { @"/a", @"Ambulance",             @"🚑",            1, 0.00f, 0.00f, 0.00f, 1.0f },
