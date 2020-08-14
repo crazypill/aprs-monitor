@@ -183,7 +183,8 @@
     if( _weather.length )
         return _weather;
 
-    return [NSString stringWithFormat:@"%@ -> %@",  _type, _comment.length ? _comment : _address];
+//    return [NSString stringWithFormat:@"%@ -> %@",  _type, _comment.length ? _comment : _address];
+    return _comment.length ? _comment : _address;
 }
 
 
