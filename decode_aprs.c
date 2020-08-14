@@ -926,6 +926,7 @@ static void aprs_raw_nmea (decode_aprs_t *A, unsigned char *info, int ilen)
 
 	  (void) dwgpsnmea_gprmc ((char*)info, A->g_quiet, &(A->g_lat), &(A->g_lon), &speed_knots, &(A->g_course));
 	  A->g_speed_mph = DW_KNOTS_TO_MPH(speed_knots);
+      A->g_flags |= kDataFlag_Speed;
 	}
 	else if (strncmp((char*)info, "$GPGGA,", 7) == 0)
 	{
@@ -934,6 +935,8 @@ static void aprs_raw_nmea (decode_aprs_t *A, unsigned char *info, int ilen)
 
 	  (void) dwgpsnmea_gpgga ((char*)info, A->g_quiet, &(A->g_lat), &(A->g_lon), &alt_meters, &num_sat);
 	  A->g_altitude_ft = DW_METERS_TO_FEET(alt_meters);
+      if( A->g_altitude_ft != G_UNKNOWN )
+          A->g_flags |= kDataFlag_Altitude;
 	}
 
 	// TODO (low): add a few other sentence types.
@@ -1125,6 +1128,7 @@ static void aprs_mic_e (decode_aprs_t *A, packet_t pp, unsigned char *info, int 
 		 mic_e_digit(A, dest[3], 0, &std_msg, &cust_msg) * 100 + 
 		 mic_e_digit(A, dest[4], 0, &std_msg, &cust_msg) * 10 + 
 		 mic_e_digit(A, dest[5], 0, &std_msg, &cust_msg)) / 6000.0;
+    A->g_flags |= kDataFlag_Latitude;
 
 
 /* 4th character of desination indicates north / south. */
@@ -1177,18 +1181,22 @@ static void aprs_mic_e (decode_aprs_t *A, packet_t pp, unsigned char *info, int 
 	if (offset && ch >= 118 && ch <= 127) 
 	{
 	    A->g_lon = ch - 118;			/* 0 - 9 degrees */
+        A->g_flags |= kDataFlag_Longitude;
 	}
 	else if ( ! offset && ch >= 38 && ch <= 127)
 	{
 	    A->g_lon = (ch - 38) + 10;		/* 10 - 99 degrees */
+        A->g_flags |= kDataFlag_Longitude;
 	}
 	else if (offset && ch >= 108 && ch <= 117)
 	{
 	    A->g_lon = (ch - 108) + 100;		/* 100 - 109 degrees */
+        A->g_flags |= kDataFlag_Longitude;
 	}
 	else if (offset && ch >= 38 && ch <= 107)
 	{
 	    A->g_lon = (ch - 38) + 110;		/* 110 - 179 degrees */
+        A->g_flags |= kDataFlag_Longitude;
 	}
 	else 
 	{
@@ -1323,6 +1331,7 @@ static void aprs_mic_e (decode_aprs_t *A, packet_t pp, unsigned char *info, int 
 	if (n >= 800) n -= 800;
 
 	A->g_speed_mph = DW_KNOTS_TO_MPH(n);
+    A->g_flags |= kDataFlag_Speed;
 
 	n = ((p->speed_course[1] - 28) % 10) * 100 + (p->speed_course[2] - 28);
 	if (n >= 400) n -= 400;
@@ -1333,9 +1342,15 @@ static void aprs_mic_e (decode_aprs_t *A, packet_t pp, unsigned char *info, int 
 	if (n == 0) 
 	  A->g_course = G_UNKNOWN;
 	else if (n == 360)
+    {
 	  A->g_course = 0;
+      A->g_flags |= kDataFlag_Course;
+    }
 	else
+    {
 	  A->g_course = n;
+      A->g_flags |= kDataFlag_Course;
+    }
 
 
 /* Now try to pick out manufacturer and other optional items. */
@@ -1431,6 +1446,8 @@ static void aprs_mic_e (decode_aprs_t *A, packet_t pp, unsigned char *info, int 
 	    }
 	    A->g_altitude_ft = G_UNKNOWN;
 	  }
+      else
+          A->g_flags |= kDataFlag_Altitude;
 	  
 	  pfirst += 4;
 	}
@@ -1607,6 +1624,7 @@ static void aprs_message (decode_aprs_t *A, unsigned char *info, int ilen, int q
 	  /* No location so don't use  process_comment () */
 
 	  strlcpy (A->g_comment, p->message, sizeof(A->g_comment));
+      A->g_flags |= kDataFlag_Comment;
 	}
 
 }
@@ -1853,7 +1871,7 @@ static void aprs_station_capabilities (decode_aprs_t *A, char *info, int ilen)
 	//	extracts information found in certain formats.
 
 	strlcpy (A->g_comment, info+1, sizeof(A->g_comment));
-
+    A->g_flags |= kDataFlag_Comment;
 } /* end aprs_station_capabilities */
 
 
@@ -1956,6 +1974,7 @@ static void aprs_status_report (decode_aprs_t *A, char *info, int ilen)
 	  //	extracts information found in certain formats.
 
 	  strlcpy (A->g_comment, pt->comment, sizeof(A->g_comment));
+      A->g_flags |= kDataFlag_Comment;
 	}
 
 /*
@@ -1965,6 +1984,7 @@ static void aprs_status_report (decode_aprs_t *A, char *info, int ilen)
 
 	  memset (A->g_maidenhead, 0, sizeof(A->g_maidenhead));
 	  memcpy (A->g_maidenhead, pm6->mhead6, sizeof(pm6->mhead6));
+      A->g_flags |= kDataFlag_MaidenHead;
 
 	  A->g_symbol_table = pm6->sym_table_id;
 	  A->g_symbol_code = pm6->symbol_code;
@@ -1990,6 +2010,7 @@ static void aprs_status_report (decode_aprs_t *A, char *info, int ilen)
 	  //	extracts information found in certain formats.
 
 	  strlcpy (A->g_comment, pm6->comment, sizeof(A->g_comment));
+      A->g_flags |= kDataFlag_Comment;
 	}
 
 /*
@@ -1999,6 +2020,7 @@ static void aprs_status_report (decode_aprs_t *A, char *info, int ilen)
 
 	  memset (A->g_maidenhead, 0, sizeof(A->g_maidenhead));
 	  memcpy (A->g_maidenhead, pm4->mhead4, sizeof(pm4->mhead4));
+      A->g_flags |= kDataFlag_MaidenHead;
 
 	  A->g_symbol_table = pm4->sym_table_id;
 	  A->g_symbol_code = pm4->symbol_code;
@@ -2024,21 +2046,19 @@ static void aprs_status_report (decode_aprs_t *A, char *info, int ilen)
 	  //	extracts information found in certain formats.
 
 	  strlcpy (A->g_comment, pm4->comment, sizeof(A->g_comment));
+      A->g_flags |= kDataFlag_Comment;
+	}
+	else
+    {
+        // Whole thing is status text.
+        strlcpy (A->g_comment, ps->comment, sizeof(A->g_comment));
+        A->g_flags |= kDataFlag_Comment;
 	}
 
-/*
- * Whole thing is status text.
- */
-	else {
-	  strlcpy (A->g_comment, ps->comment, sizeof(A->g_comment));
-	}
 
-
-/*
- * Last 3 characters can represent beam heading and ERP.
- */
-
-	if (strlen(A->g_comment) >= 3) {
+    // Last 3 characters can represent beam heading and ERP.
+ 	if (strlen(A->g_comment) >= 3)
+    {
 	  char *hp = A->g_comment + strlen(A->g_comment) - 3;
 	
 	  if (*hp == '^') {
@@ -2059,7 +2079,7 @@ static void aprs_status_report (decode_aprs_t *A, char *info, int ilen)
 	      erp = (p - '0') * (p - '0') * 10;
 	    }
 
-	// TODO (low):  put result somewhere.
+	// TODO (low):  put result somewhere.  !!@ add variables for this...
 	// could use A->g_directivity and need new variable for erp.
 
 	    *hp = '\0';
@@ -2189,6 +2209,7 @@ static void aprs_general_query (decode_aprs_t *A, char *info, int ilen, int quie
 	      A->g_footprint_lat = lat;
 	      A->g_footprint_lon = lon;
 	      A->g_footprint_radius = radius;
+          A->g_flags |= kDataFlag_Footprint;
 	    }
 	    else {
 	      if ( ! A->g_quiet) {
@@ -2332,6 +2353,7 @@ static void aprs_raw_touch_tone (decode_aprs_t *A, char *info, int ilen)
 	else
 	  strlcpy (A->g_comment, info+1, sizeof(A->g_comment));
 
+    A->g_flags |= kDataFlag_Comment;
 
 } /* end aprs_raw_touch_tone */
 
@@ -2363,6 +2385,7 @@ static void aprs_morse_code (decode_aprs_t *A, char *info, int ilen)
 	else
 	  strlcpy (A->g_comment, info+1, sizeof(A->g_comment));
 
+    A->g_flags |= kDataFlag_Comment;
 
 } /* end aprs_morse_code */
 
@@ -2511,236 +2534,270 @@ static void weather_data (decode_aprs_t *A, char *wdata, int wind_prefix)
 	    // Fine point:  Officially, should be values of 001-360.
 	    // "000" or "..." or "   " means unknown. 
 	    // In practice we see do see "000" here.
-	    A->g_course = n;
+          A->g_wxdata.windDirection = n;
+          A->g_wxdata.wxflags |= kWxDataFlag_windDir;
 	  }
 	  if (sscanf (wp+4, "%3d", &n))
 	  {
-	    A->g_speed_mph = DW_KNOTS_TO_MPH(n);  /* yes, in knots */
+          A->g_wxdata.windSpeedMph = DW_KNOTS_TO_MPH(n);  /* yes, in knots */
+          A->g_wxdata.wxflags |= kWxDataFlag_wind;
 	  }
 	  wp += 7;
 	}
-	else if ( A->g_speed_mph == G_UNKNOWN) {
-
-	  if ( ! getwdata (&wp, 'c', 3, &A->g_course)) {
+	else if( !(A->g_wxdata.wxflags & kWxDataFlag_wind) )
+    {
+	  if( !getwdata( &wp, 'c', 3, &A->g_wxdata.windDirection ) )
+      {
 	    if ( ! A->g_quiet) {
 	      text_color_set(DW_COLOR_ERROR);
 	      dw_printf("Didn't find wind direction in form c999.\n");
 	    }
 	  }
-	  if ( ! getwdata (&wp, 's', 3, &A->g_speed_mph)) {	/* MPH here */
+      else
+          A->g_wxdata.wxflags |= kWxDataFlag_windDir;
+
+        
+	  if( !getwdata( &wp, 's', 3, &A->g_wxdata.windSpeedMph ) )
+      {
+        /* MPH here */
 	    if ( ! A->g_quiet) {
 	      text_color_set(DW_COLOR_ERROR);
 	      dw_printf("Didn't find wind speed in form s999.\n");
 	    }
 	  }
+      else
+          A->g_wxdata.wxflags |= kWxDataFlag_wind;
 	}
 
-// At this point, we should have the wind direction and speed
-// from one of three methods.
+    // At this point, we should have the wind direction and speed from one of three methods.
+	if( A->g_wxdata.wxflags & kWxDataFlag_wind )
+    {
+        char ctemp[40];
+        if( A->g_wxdata.wxflags & kWxDataFlag_windDir )
+        {
+          snprintf( ctemp, sizeof( ctemp ), " 💨 %.0f° ", A->g_wxdata.windDirection );
+          strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
+        }
 
-	if (A->g_speed_mph != G_UNKNOWN) {
+        snprintf( ctemp, sizeof( ctemp ), "%.1f mph", A->g_wxdata.windSpeedMph );
+        strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
+	}
 
-	  snprintf (A->g_weather, sizeof(A->g_weather), "wind %.1f mph", A->g_speed_mph);
-	  if (A->g_course != G_UNKNOWN) {
+
+    //  After the mandatory wind direction and speed (in 1 of 3 formats), the
+    //  next two must be in fixed positions:
+    //  - gust (peak in mph last 5 minutes)
+    //  - temperature, degrees F, can be negative e.g. -01
+	if( getwdata( &wp, 'g', 3, &A->g_wxdata.windGustMph ) )
+    {
+	  if( A->g_wxdata.windGustMph != G_UNKNOWN )
+      {
+        A->g_wxdata.wxflags |= kWxDataFlag_gust;
+
 	    char ctemp[40];
-	    snprintf (ctemp, sizeof(ctemp), ", direction %.0f", A->g_course);
+	    snprintf( ctemp, sizeof(ctemp), " 💨 %.0f", A->g_wxdata.windGustMph );
 	    strlcat (A->g_weather, ctemp, sizeof(A->g_weather));
 	  }
 	}
-
-	/* We don't want this to show up on the location line. */
-	A->g_speed_mph = G_UNKNOWN;
-	A->g_course = G_UNKNOWN;
-
-/*
- * After the mandatory wind direction and speed (in 1 of 3 formats), the
- * next two must be in fixed positions:
- * - gust (peak in mph last 5 minutes)
- * - temperature, degrees F, can be negative e.g. -01
- */
-	if (getwdata (&wp, 'g', 3, &fval)) {
-	  if (fval != G_UNKNOWN) {
-	    char ctemp[40];
-	    snprintf (ctemp, sizeof(ctemp), ", gust %.0f", fval);
-	    strlcat (A->g_weather, ctemp, sizeof(A->g_weather));
-	  }
-	}
-	else {
-	  if ( ! A->g_quiet) {
+	else
+    {
+	  if( !A->g_quiet )
+      {
 	    text_color_set(DW_COLOR_ERROR);
 	    dw_printf("Didn't find wind gust in form g999.\n");
 	  }
 	}
 
-	if (getwdata (&wp, 't', 3, &fval)) {
-	  if (fval != G_UNKNOWN) {
-	    char ctemp[40];
-	    snprintf (ctemp, sizeof(ctemp), ", temperature %.0f", fval);
-	    strlcat (A->g_weather, ctemp, sizeof(A->g_weather));
-	  }
-	}
-	else {
-	  if ( ! A->g_quiet) {
-	    text_color_set(DW_COLOR_ERROR);
-	    dw_printf("Didn't find temperature in form t999.\n");
-	  }
-	}
-
-/*
- * Now pick out other optional fields in any order.
- */
+    // Now pick out other optional fields in any order
 	keep_going = 1;
-	while (keep_going) {
+	while( keep_going )
+    {
+        if( getwdata( &wp, 't', 3, &A->g_wxdata.tempF ) )
+        {
+          if( A->g_wxdata.tempF != G_UNKNOWN )
+          {
+              A->g_wxdata.wxflags |= kWxDataFlag_temp;
+              
+              char ctemp[40];
+              snprintf( ctemp, sizeof( ctemp ), " %.0f°F🌡", A->g_wxdata.tempF );
+              strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
+          }
+        }
+        else
+        {
+          if( !A->g_quiet )
+          {
+            text_color_set(DW_COLOR_ERROR);
+            dw_printf("Didn't find temperature in form t999.\n");
+          }
+        }
 
-	  if (getwdata (&wp, 'r', 3, &fval)) {	
+        
+        if( getwdata( &wp, 'r', 3, &A->g_wxdata.rainLastHour ) )
+        {
+            // r = rainfall, 1/100 inch, last hour
+            if( A->g_wxdata.rainLastHour != G_UNKNOWN )
+            {
+                A->g_wxdata.rainLastHour /= 100.0;
+                A->g_wxdata.wxflags |= kWxDataFlag_rainHr;
 
-	/* r = rainfall, 1/100 inch, last hour */
+                char ctemp[40];
+                snprintf( ctemp, sizeof(ctemp), " %.2f ☔️/hr", A->g_wxdata.rainLastHour );
+                strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
+            }
+        }
+        else if( getwdata( &wp, 'p', 3, &A->g_wxdata.rainLast24Hrs ) )
+        {
+            // p = rainfall, 1/100 inch, last 24 hours
+            if( A->g_wxdata.rainLast24Hrs != G_UNKNOWN )
+            {
+                A->g_wxdata.rainLast24Hrs /= 100.0;
+                A->g_wxdata.wxflags |= kWxDataFlag_rain24;
+                
+                char ctemp[40];
+                snprintf( ctemp, sizeof( ctemp ), " %.2f ☔️/24hrs", A->g_wxdata.rainLast24Hrs );
+                strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
+            }
+        }
+        else if( getwdata( &wp, 'P', 3, &A->g_wxdata.rainSinceMidnight ) )
+        {
+            // P = rainfall, 1/100 inch, since midnight
 
-	    if (fval != G_UNKNOWN) {
-	      char ctemp[40];
-	      snprintf (ctemp, sizeof(ctemp), ", rain %.2f in last hour", fval / 100.);
-	      strlcat (A->g_weather, ctemp, sizeof(A->g_weather));
-	    }
-	  }
-	  else if (getwdata (&wp, 'p', 3, &fval)) {	
+            if( A->g_wxdata.rainSinceMidnight != G_UNKNOWN)
+            {
+                A->g_wxdata.rainSinceMidnight /= 100.0;
+                A->g_wxdata.wxflags |= kWxDataFlag_rainMid;
 
-	/* p = rainfall, 1/100 inch, last 24 hours */
+                char ctemp[40];
+                snprintf( ctemp, sizeof( ctemp ), " %.2f ☔️ midnight", A->g_wxdata.rainSinceMidnight );
+                strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
+            }
+        }
+        else if( getwdata( &wp, 'h', 2, &fval ) )
+        {
+            // h = humidity %, 00 means 100%
+            if( fval != G_UNKNOWN )
+            {
+                char ctemp[30];
+                if( fval == 0 )
+                    fval = 100;
+                
+                A->g_wxdata.humidity = fval;
+                A->g_wxdata.wxflags |= kWxDataFlag_humidity;
+                snprintf( ctemp, sizeof(ctemp), " %.2d%%💧", A->g_wxdata.humidity );
+                strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
+            }
+        }
+        else if( getwdata( &wp, 'b', 5, &A->g_wxdata.pressure ) )
+        {
+            // b = barometric presure (tenths millibars / tenths of hPascal)
+            if( A->g_wxdata.pressure != G_UNKNOWN)
+            {
+                A->g_wxdata.wxflags |= kWxDataFlag_pressure;
 
-	    if (fval != G_UNKNOWN) {
-	      char ctemp[40];
-	      snprintf (ctemp, sizeof(ctemp), ", rain %.2f in last 24 hours", fval / 100.);
-	      strlcat (A->g_weather, ctemp, sizeof(A->g_weather));
-	    }
-	  }
-	  else if (getwdata (&wp, 'P', 3, &fval)) {	
+                // Here, display as inches of mercury
+                char ctemp[40];
+                snprintf( ctemp, sizeof( ctemp ), " %.2f InHg", DW_MBAR_TO_INHG( A->g_wxdata.pressure * 0.1 ) );
+                strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
+            }
+        }
+        else if( getwdata( &wp, 'L', 3, &A->g_wxdata.luminosity ) )
+        {
+            // L = Luminosity, watts/ sq meter, 000-999
+            if( A->g_wxdata.luminosity != G_UNKNOWN )
+            {
+                A->g_wxdata.wxflags |= kWxDataFlag_luminosity;
 
-	/* P = rainfall, 1/100 inch, since midnight */
+                char ctemp[40];
+                snprintf( ctemp, sizeof( ctemp ), " %.0f watts/m^2", A->g_wxdata.luminosity );
+                strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
+            }
+        }
+        else if( getwdata( &wp, 'l', 3, &A->g_wxdata.luminosity ) )
+        {
+            // l = Luminosity, watts/ sq meter, 1000-1999
+            if( A->g_wxdata.luminosity != G_UNKNOWN )
+            {
+                A->g_wxdata.wxflags |= kWxDataFlag_luminosity;
+                A->g_wxdata.luminosity += 1000;
 
-	    if (fval != G_UNKNOWN) {
-	      char ctemp[40];
-	      snprintf (ctemp, sizeof(ctemp), ", rain %.2f since midnight", fval / 100.);
-	      strlcat (A->g_weather, ctemp, sizeof(A->g_weather));
-	    }
-	  }
-	  else if (getwdata (&wp, 'h', 2, &fval)) {	
+                char ctemp[40];
+                snprintf( ctemp, sizeof( ctemp ), " %.0f watts/m^2", A->g_wxdata.luminosity );
+                strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
+            }
+        }
+        else if( getwdata( &wp, 's', 3, &A->g_wxdata.snowLast24Hrs ) )
+        {
+            // s = Snowfall in last 24 hours, inches
+            // Data can have decimal point so we don't have to worry about scaling.
+            // 's' is also used by wind speed but that must be in a fixed
+            // position in the message so there is no confusion.
 
-	/* h = humidity %, 00 means 100%  */
+            if( A->g_wxdata.snowLast24Hrs != G_UNKNOWN )
+            {
+                char ctemp[40];
+                snprintf( ctemp, sizeof(ctemp), " %.1f ❄️", A->g_wxdata.snowLast24Hrs );
+                strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
+            }
+        }
+        else if( getwdata( &wp, '#', 3, &A->g_wxdata.rainRaw ) )
+        {
+            // # = Raw rain counter
+            if( A->g_wxdata.rainRaw != G_UNKNOWN )
+            {
+                A->g_wxdata.wxflags |= kWxDataFlag_rainRaw;
 
-	    if (fval != G_UNKNOWN) {
-	      char ctemp[30];
-	      if (fval == 0) fval = 100;
-	      snprintf (ctemp, sizeof(ctemp), ", humidity %.0f", fval);
-	      strlcat (A->g_weather, ctemp, sizeof(A->g_weather));
-	    }
-	  }
-	  else if (getwdata (&wp, 'b', 5, &fval)) {	
+                char ctemp[40];
+                snprintf( ctemp, sizeof( ctemp ), ", %.f 🌨", A->g_wxdata.rainRaw );
+                strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
+            }
+        }
+        else if( getwdata( &wp, 'X', 3, &A->g_wxdata.radiation ) )
+        {
+            // X = Nuclear Radiation.
+            // Encoded as two significant digits and order of magnitude like resistor color code
+            
+            // TODO: decode this properly
+            if( A->g_wxdata.radiation != G_UNKNOWN )
+            {
+                A->g_wxdata.wxflags |= kWxDataFlag_radiation;
 
-	/* b = barometric presure (tenths millibars / tenths of hPascal)  */
-	/* Here, display as inches of mercury. */
+                char ctemp[40];
+                snprintf( ctemp, sizeof( ctemp ), " %.f ☢️", A->g_wxdata.radiation );
+                strlcat (A->g_weather, ctemp, sizeof(A->g_weather));
+            }
+        }
+        else
+        {
+            // TODO: add new flood level, battery voltage, etc.
 
-	    if (fval != G_UNKNOWN) {
-	      char ctemp[40];
-	      fval = DW_MBAR_TO_INHG(fval * 0.1);
-	      snprintf (ctemp, sizeof(ctemp), ", barometer %.2f", fval);
-	      strlcat (A->g_weather, ctemp, sizeof(A->g_weather));
-	    }
-	  }
-	  else if (getwdata (&wp, 'L', 3, &fval)) {	
-
-	/* L = Luminosity, watts/ sq meter, 000-999  */
-	
-	    if (fval != G_UNKNOWN) {
-	      char ctemp[40];
-	      snprintf (ctemp, sizeof(ctemp), ", %.0f watts/m^2", fval);
-	      strlcat (A->g_weather, ctemp, sizeof(A->g_weather));
-	    }
-	  }
-	  else if (getwdata (&wp, 'l', 3, &fval)) {	
-
-	/* l = Luminosity, watts/ sq meter, 1000-1999  */
-	
-	    if (fval != G_UNKNOWN) {
-	      char ctemp[40];
-	      snprintf (ctemp, sizeof(ctemp), ", %.0f watts/m^2", fval + 1000);
-	      strlcat (A->g_weather, ctemp, sizeof(A->g_weather));
-	    }
-	  }
-	  else if (getwdata (&wp, 's', 3, &fval)) {	
-
-	/* s = Snowfall in last 24 hours, inches  */
-	/* Data can have decimal point so we don't have to worry about scaling. */
-	/* 's' is also used by wind speed but that must be in a fixed */
-	/* position in the message so there is no confusion. */
-	
-	    if (fval != G_UNKNOWN) {
-	      char ctemp[40];
-	      snprintf (ctemp, sizeof(ctemp), ", %.1f snow in 24 hours", fval);
-	      strlcat (A->g_weather, ctemp, sizeof(A->g_weather));
-	    }
-	  }
-	  else if (getwdata (&wp, 's', 3, &fval)) {	
-
-	/* # = Raw rain counter  */
-	
-	    if (fval != G_UNKNOWN) {
-	      char ctemp[40];
-	      snprintf (ctemp, sizeof(ctemp), ", raw rain counter %.f", fval);
-	      strlcat (A->g_weather, ctemp, sizeof(A->g_weather));
-	    }
-	  }
-	  else if (getwdata (&wp, 'X', 3, &fval)) {	
-
-	/* X = Nuclear Radiation.  */
-	/* Encoded as two significant digits and order of magnitude */
-	/* like resistor color code. */
-
-// TODO: decode this properly
-	
-	    if (fval != G_UNKNOWN) {
-	      char ctemp[40];
-	      snprintf (ctemp, sizeof(ctemp), ", nuclear Radiation %.f", fval);
-	      strlcat (A->g_weather, ctemp, sizeof(A->g_weather));
-	    }
-	  }
-
-// TODO: add new flood level, battery voltage, etc.
-
-	  else {
-	    keep_going = 0;
-	  }
+            keep_going = 0;
+        }
 	}
 
-/*
- * We should be left over with:
- * - one character for software.
- * - two to four characters for weather station type.
- * Examples: tU2k, wRSW
- *
- * But few people follow the protocol spec here.  Instead more often we see things like:
- *  sunny/WX
- *  / {UIV32N}
- */
+    // We should be left over with:
+    // - one character for software.
+    // - two to four characters for weather station type.
+    // Examples: tU2k, wRSW
+    //
+    // But few people follow the protocol spec here.  Instead more often we see things like:
+    //  sunny/WX
+    //  / {UIV32N}
+	strlcat( A->g_weather, ", \"", sizeof( A->g_weather ) );
+	strlcat( A->g_weather, wp, sizeof( A->g_weather ) );
+    
+    // Drop any CR / LF character at the end
+	n = (int)strlen( A->g_weather );
+	if( n >= 1 && A->g_weather[n - 1] == '\n' )
+        A->g_weather[n - 1] = '\0';
 
-	strlcat (A->g_weather, ", \"", sizeof(A->g_weather));
-	strlcat (A->g_weather, wp, sizeof(A->g_weather));
-/*
- * Drop any CR / LF character at the end.
- */
-	n = strlen(A->g_weather);
-	if (n >= 1 && A->g_weather[n-1] == '\n') {
-	  A->g_weather[n-1] = '\0';
-	}
+	n = (int)strlen( A->g_weather );
+	if( n >= 1 && A->g_weather[n - 1] == '\r')
+	  A->g_weather[n - 1] = '\0';
 
-	n = strlen(A->g_weather);
-	if (n >= 1 && A->g_weather[n-1] == '\r') {
-	  A->g_weather[n-1] = '\0';
-	}
+	strlcat( A->g_weather, "\"", sizeof( A->g_weather ) );
+}
 
-	strlcat (A->g_weather, "\"", sizeof(A->g_weather));
-
-	return;
-
-} /* end weather_data */
 
 
 /*------------------------------------------------------------------
@@ -2801,9 +2858,9 @@ static void aprs_ultimeter (decode_aprs_t *A, char *info, int ilen)
 
 	strlcpy (A->g_msg_type, "Ultimeter", sizeof(A->g_msg_type));
 
-	if (*info == '$')
+	if( *info == '$' )
  	{
-	  n = sscanf (info+5, "%4hx%4hx%4hx%4hx%4hx%4hx%4hx%4hx%4hx%4hx%4hx%4hx%4hx",
+        n = sscanf (info+5, "%4hx%4hx%4hx%4hx%4hx%4hx%4hx%4hx%4hx%4hx%4hx%4hx%4hx",
 			&h_windpeak,		
 			&h_wdir,		
 			&h_otemp,
@@ -2818,63 +2875,57 @@ static void aprs_ultimeter (decode_aprs_t *A, char *info, int ilen)
 			&h_raintoday,	 	// not on some models.
 			&h_windave);		// not on some models.
 
-	  if (n >= 11 && n <= 13) {
+        if( n >= 11 && n <= 13 )
+        {
+            float ohumid = h_ohumid * 0.1;
 
-	    float windpeak, wdir, otemp, baro, ohumid;
-
-	    windpeak = DW_KM_TO_MILES(h_windpeak * 0.1);
-	    wdir = (h_wdir & 0xff) * 360. / 256.;
-	    otemp = h_otemp * 0.1;
-	    baro = DW_MBAR_TO_INHG(h_baro * 0.1);
-	    ohumid = h_ohumid * 0.1;
-	  
-	    snprintf (A->g_weather, sizeof(A->g_weather), "wind %.1f mph, direction %.0f, temperature %.1f, barometer %.2f, humidity %.0f",
-			windpeak, wdir, otemp, baro, ohumid);
-	  }
+            A->g_wxdata.windGustMph = DW_KM_TO_MILES( h_windpeak * 0.1 );
+            A->g_wxdata.windDirection = (h_wdir & 0xff) * 360. / 256.;
+            A->g_wxdata.tempF = h_otemp * 0.1;
+            A->g_wxdata.pressure = h_baro * 0.1;
+            A->g_wxdata.humidity = ohumid;
+            A->g_wxdata.wxflags |= (kWxDataFlag_gust | kWxDataFlag_windDir | kWxDataFlag_temp | kWxDataFlag_pressure | kWxDataFlag_humidity);
+            snprintf( A->g_weather, sizeof( A->g_weather ), "wind %.1f mph, direction %.0f, temperature %.1f, barometer %.2f, humidity %d%%", A->g_wxdata.windGustMph, A->g_wxdata.windDirection, A->g_wxdata.tempF, DW_MBAR_TO_INHG( A->g_wxdata.pressure ), A->g_wxdata.humidity );
+        }
 	}
 
 	
-		// Header = !! 
-		// Data Fields 
-		// 1. Wind Speed (0.1 kph) 
-		// 2. Wind Direction (0-255) 
-		// 3. Outdoor Temp (0.1 deg F) 
-		// 4. Rain* Long Term Total (0.01 inches)  
-		// 5. Barometer (0.1 mbar) 	[ can be ---- ]
-		// 6. Indoor Temp (0.1 deg F) 	[ can be ---- ]
-		// 7. Outdoor Humidity (0.1%) 	[ can be ---- ]
-		// 8. Indoor Humidity (0.1%) 	[ can be ---- ]
-		// 9. Date (day of year) 
-		// 10. Time (minute of day) 
-		// 11. Today's Rain Total (0.01 inches)* 
-		// 12. 1 Minute Wind Speed Average (0.1kph)* 
-		// Carriage Return & Line Feed 
-		//
-		// *Some instruments may not include field 12, some may not include 11 or 12. 
-		// Total size: 40, 44 or 48 characters (hex digits) + header, carriage return and line feed
-
-	if (*info == '!')
+    // Header = !!
+    // Data Fields
+    // 1. Wind Speed (0.1 kph)
+    // 2. Wind Direction (0-255)
+    // 3. Outdoor Temp (0.1 deg F)
+    // 4. Rain* Long Term Total (0.01 inches)
+    // 5. Barometer (0.1 mbar) 	[ can be ---- ]
+    // 6. Indoor Temp (0.1 deg F) 	[ can be ---- ]
+    // 7. Outdoor Humidity (0.1%) 	[ can be ---- ]
+    // 8. Indoor Humidity (0.1%) 	[ can be ---- ]
+    // 9. Date (day of year)
+    // 10. Time (minute of day)
+    // 11. Today's Rain Total (0.01 inches)*
+    // 12. 1 Minute Wind Speed Average (0.1kph)*
+    // Carriage Return & Line Feed
+    //
+    // *Some instruments may not include field 12, some may not include 11 or 12.
+    // Total size: 40, 44 or 48 characters (hex digits) + header, carriage return and line feed
+    if( *info == '!' )
  	{
-	  n = sscanf (info+2, "%4hx%4hx%4hx%4hx",
+        n = sscanf (info+2, "%4hx%4hx%4hx%4hx",
 			&h_windpeak,		
 			&h_wdir,		
 			&h_otemp,
 			&h_totrain);
 
-	  if (n == 4) {
+        if( n == 4 )
+        {
+            A->g_wxdata.windGustMph = DW_KM_TO_MILES( h_windpeak * 0.1 );
+            A->g_wxdata.windDirection = (h_wdir & 0xff) * 360. / 256.;
+            A->g_wxdata.tempF = h_otemp * 0.1;
+            A->g_wxdata.wxflags |= (kWxDataFlag_gust | kWxDataFlag_windDir | kWxDataFlag_temp);
 
-	    float windpeak, wdir, otemp;
-
-	    windpeak = DW_KM_TO_MILES(h_windpeak * 0.1);
-	    wdir = (h_wdir & 0xff) * 360. / 256.;
-	    otemp = h_otemp * 0.1;
-	  
-	    snprintf (A->g_weather, sizeof(A->g_weather), "wind %.1f mph, direction %.0f, temperature %.1f\n",
-			windpeak, wdir, otemp);
-	  }
-
-	}
-
+            snprintf( A->g_weather, sizeof( A->g_weather ), "wind %.1f mph, direction %.0f, temperature %.1f\n", A->g_wxdata.windGustMph, A->g_wxdata.windDirection, A->g_wxdata.tempF );
+        }
+    }
 } /* end aprs_ultimeter */
 
 
@@ -2923,14 +2974,18 @@ static void third_party_header (decode_aprs_t *A, char *info, int ilen)
  *------------------------------------------------------------------*/
 
 
-static void decode_position (decode_aprs_t *A, position_t *ppos)
+static void decode_position( decode_aprs_t *A, position_t *ppos )
 {
+    A->g_lat = get_latitude_8 (ppos->lat, A->g_quiet);
+    A->g_lon = get_longitude_9 (ppos->lon, A->g_quiet);
 
-	  A->g_lat = get_latitude_8 (ppos->lat, A->g_quiet);
-	  A->g_lon = get_longitude_9 (ppos->lon, A->g_quiet);
-
-	  A->g_symbol_table = ppos->sym_table_id;
-	  A->g_symbol_code = ppos->symbol_code;
+    A->g_symbol_table = ppos->sym_table_id;
+    A->g_symbol_code = ppos->symbol_code;
+    
+    if( A->g_lat != G_UNKNOWN )
+        A->g_flags |= kDataFlag_Latitude;
+    if( A->g_lon != G_UNKNOWN )
+        A->g_flags |= kDataFlag_Longitude;
 }
 
 /*------------------------------------------------------------------
@@ -2975,7 +3030,8 @@ static void decode_compressed_position (decode_aprs_t *A, compressed_position_t 
 {
 	if (isdigit91(pcpos->y[0]) && isdigit91(pcpos->y[1]) && isdigit91(pcpos->y[2]) && isdigit91(pcpos->y[3]))
 	{
-	  A->g_lat = 90 - ((pcpos->y[0]-33)*91*91*91 + (pcpos->y[1]-33)*91*91 + (pcpos->y[2]-33)*91 + (pcpos->y[3]-33)) / 380926.0;
+        A->g_lat = 90 - ((pcpos->y[0]-33)*91*91*91 + (pcpos->y[1]-33)*91*91 + (pcpos->y[2]-33)*91 + (pcpos->y[3]-33)) / 380926.0;
+        A->g_flags |= kDataFlag_Latitude;
 	}
 	else
  	{
@@ -2988,7 +3044,8 @@ static void decode_compressed_position (decode_aprs_t *A, compressed_position_t 
 	  
 	if (isdigit91(pcpos->x[0]) && isdigit91(pcpos->x[1]) && isdigit91(pcpos->x[2]) && isdigit91(pcpos->x[3]))
 	{
-	  A->g_lon = -180 + ((pcpos->x[0]-33)*91*91*91 + (pcpos->x[1]-33)*91*91 + (pcpos->x[2]-33)*91 + (pcpos->x[3]-33)) / 190463.0;
+        A->g_lon = -180 + ((pcpos->x[0]-33)*91*91*91 + (pcpos->x[1]-33)*91*91 + (pcpos->x[2]-33)*91 + (pcpos->x[3]-33)) / 190463.0;
+        A->g_flags |= kDataFlag_Longitude;
 	}
 	else 
 	{
@@ -3022,19 +3079,21 @@ static void decode_compressed_position (decode_aprs_t *A, compressed_position_t 
 	  ; /* ignore other two bytes */
 	}
 	else if (((pcpos->t - 33) & 0x18) == 0x10) {
-	  A->g_altitude_ft = pow(1.002, (pcpos->c - 33) * 91 + pcpos->s - 33);
+        A->g_altitude_ft = pow(1.002, (pcpos->c - 33) * 91 + pcpos->s - 33);
+        A->g_flags |= kDataFlag_Altitude;
 	}
 	else if (pcpos->c == '{')
 	{
-	  A->g_range = 2.0 * pow(1.08, pcpos->s - 33);
+        A->g_range = 2.0 * pow(1.08, pcpos->s - 33);
+        A->g_flags |= kDataFlag_Range;
 	}
 	else if (pcpos->c >= '!' && pcpos->c <= 'z')
 	{
-	  /* For a weather station, this is wind information. */
-	  A->g_course = (pcpos->c - 33) * 4;
-	  A->g_speed_mph = DW_KNOTS_TO_MPH(pow(1.08, pcpos->s - 33) - 1.0);
+        /* For a weather station, this is wind information. */
+        A->g_wxdata.windDirection = (pcpos->c - 33) * 4;
+        A->g_wxdata.windSpeedMph = DW_KNOTS_TO_MPH(pow(1.08, pcpos->s - 33) - 1.0);
+        A->g_flags |= (kWxDataFlag_wind | kWxDataFlag_windDir);
 	}
-
 }
 
 
@@ -3414,7 +3473,7 @@ double get_longitude_9 (char *p, int quiet)
  *------------------------------------------------------------------*/
 
 
-time_t get_timestamp (decode_aprs_t *A, char *p)
+time_t get_timestamp( decode_aprs_t *A, char *p )
 {
 	struct dhm_s {
 	  char day[2];
@@ -3590,98 +3649,107 @@ int get_maidenhead (decode_aprs_t *A, char *p)
  *
  *------------------------------------------------------------------*/
 
-const char *dir[9] = { "omni", "NE", "E", "SE", "S", "SW", "W", "NW", "N" };
+const char* dir[9] = { "omni", "NE", "E", "SE", "S", "SW", "W", "NW", "N" };
 
 static int data_extension_comment (decode_aprs_t *A, char *pdext)
 {
-	int n;
+	int n = 0;
 
-	if (strlen(pdext) < 7) {
-	  strlcpy (A->g_comment, pdext, sizeof(A->g_comment));
-	  return 0;
+	if( strlen(pdext) < 7 )
+    {
+        strlcpy (A->g_comment, pdext, sizeof(A->g_comment));
+        A->g_flags |= kDataFlag_Comment;
+        return 0;
 	}
 
-/* Tyy/Cxx - Area object descriptor. */
-
-	if (pdext[0] == 'T' &&
-		pdext[3] == '/' &&
-	 	pdext[4] == 'C')
+    // Tyy/Cxx - Area object descriptor
+	if( pdext[0] == 'T' && pdext[3] == '/' && pdext[4] == 'C')
 	{
-	  /* not decoded at this time */
-	  process_comment (A, pdext+7, -1);
-	  return 1;
+        // not decoded at this time */
+        process_comment( A, pdext+7, -1 );
+        return 1;
 	}
 
-/* CSE/SPD */
-/* For a weather station (symbol code _) this is wind. */
-/* For others, it would be course and speed. */
-
-	if (pdext[3] == '/')
+    // CSE/SPD For a weather station (symbol code _) this is wind. For others, it would be course and speed.
+    if( pdext[3] == '/' )
 	{
-	  if (sscanf (pdext, "%3d", &n))
-	  {
-	    A->g_course = n;
-	  }
-	  if (sscanf (pdext+4, "%3d", &n))
-	  {
-	    A->g_speed_mph = DW_KNOTS_TO_MPH(n);
-	  }
+        if( sscanf( pdext, "%3d", &n ) )
+        {
+            if( A->g_symbol_code == '_' )
+            {
+                A->g_wxdata.windDirection = n;
+                A->g_wxdata.wxflags |= kWxDataFlag_windDir;
+            }
+            else
+            {
+                A->g_course = n;
+                A->g_flags |= kDataFlag_Course;
+            }
+        }
 
-	  /* Bearing and Number/Range/Quality? */
+        if( sscanf( pdext+4, "%3d", &n ) )
+        {
+            if( A->g_symbol_code == '_' )
+            {
+                A->g_wxdata.windSpeedMph = n;
+                A->g_wxdata.wxflags |= kWxDataFlag_wind;
+            }
+            else
+            {
+                A->g_speed_mph = DW_KNOTS_TO_MPH(n);
+                A->g_flags |= kDataFlag_Speed;
+            }
+        }
 
-	  if (pdext[7] == '/' && pdext[11] == '/') 
-	  {
-	    process_comment (A, pdext + 7 + 8, -1);
-	  }
-	  else {
-	    process_comment (A, pdext+7, -1);
-	  }
-	  return 1;
+        // Bearing and Number/Range/Quality?
+        if( pdext[7] == '/' && pdext[11] == '/' )
+            process_comment( A, pdext + 7 + 8, -1 );
+        else
+            process_comment( A, pdext+7, -1 );
+        return 1;
 	}
 
-/* check for Station power, height, gain. */
-
-	if (strncmp(pdext, "PHG", 3) == 0)
+    // check for Station power, height, gain
+	if( strncmp( pdext, "PHG", 3 ) == 0 )
 	{
-	  A->g_power = (pdext[3] - '0') * (pdext[3] - '0');
-	  A->g_height = (1 << (pdext[4] - '0')) * 10;
-	  A->g_gain = pdext[5] - '0';
-	  if (pdext[6] >= '0' && pdext[6] <= '8') {
-	    strlcpy (A->g_directivity, dir[pdext[6]-'0'], sizeof(A->g_directivity));
-	  }
-
-	  process_comment (A, pdext+7, -1);
-	  return 1;
+        A->g_power  = (pdext[3] - '0') * (pdext[3] - '0');
+        A->g_height = (1 << (pdext[4] - '0')) * 10;
+        A->g_gain   = pdext[5] - '0';
+        if( pdext[6] >= '0' && pdext[6] <= '8' )
+            strlcpy (A->g_directivity, dir[pdext[6]-'0'], sizeof(A->g_directivity));    // !!@ don't have flag for directivity
+        
+        A->g_flags |= (kDataFlag_Power | kDataFlag_Height | kDataFlag_Gain);
+        process_comment( A, pdext+7, -1 );
+        return 1;
 	}
 
-/* check for precalculated radio range. */
-
-	if (strncmp(pdext, "RNG", 3) == 0)
+    // check for precalculated radio range
+	if( strncmp( pdext, "RNG", 3 ) == 0 )
 	{
-	  if (sscanf (pdext+3, "%4d", &n))
-	  {
-	    A->g_range = n;
-	  }
-	  process_comment (A, pdext+7, -1);
-	  return 1;
+        if( sscanf( pdext+3, "%4d", &n ) )
+        {
+            A->g_range = n;
+            A->g_flags |= kDataFlag_Range;
+        }
+        process_comment( A, pdext+7, -1 );
+        return 1;
 	}
 
-/* DF signal strength,  */
-
-	if (strncmp(pdext, "DFS", 3) == 0)
+    // DF signal strength
+	if( strncmp( pdext, "DFS", 3 ) == 0 )
 	{
-	  //A->g_strength = pdext[3] - '0';
-	  A->g_height = (1 << (pdext[4] - '0')) * 10;
-	  A->g_gain = pdext[5] - '0';
-	  if (pdext[6] >= '0' && pdext[6] <= '8') {
-	    strlcpy (A->g_directivity, dir[pdext[6]-'0'], sizeof(A->g_directivity));
-	  }
-
-	  process_comment (A, pdext+7, -1);
-	  return 1;
+        //A->g_strength = pdext[3] - '0';
+        A->g_height = (1 << (pdext[4] - '0')) * 10;
+        A->g_gain = pdext[5] - '0';
+        if( pdext[6] >= '0' && pdext[6] <= '8' )
+            strlcpy (A->g_directivity, dir[pdext[6]-'0'], sizeof(A->g_directivity));    // !!@ don't have flag for directivity
+        
+        A->g_flags |= (kDataFlag_Height | kDataFlag_Gain);
+        process_comment( A, pdext+7, -1 );
+        return 1;
 	}
 
-	process_comment (A, pdext, -1);
+	process_comment( A, pdext, -1 );
 	return 0;
 }
 
@@ -4291,8 +4359,9 @@ static void process_comment (decode_aprs_t *A, char *pstart, int clen)
 	    f = atoi(sttemp+1);
 	    for (i = 0; i < NUM_CTCSS; i++) {
 	      if (f == i_ctcss[i]) {
-	        A->g_tone = f_ctcss[i];
-	        break;
+              A->g_tone = f_ctcss[i];
+              A->g_flags |= kDataFlag_Tone;
+              break;
 	      }
 	    }
 	    if (A->g_tone == G_UNKNOWN) {
@@ -4303,16 +4372,18 @@ static void process_comment (decode_aprs_t *A, char *pstart, int clen)
 	      }
 	    }
 
-	    strlcpy (temp, A->g_comment + match[0].rm_eo, sizeof(temp));
-	    strlcpy (A->g_comment + match[0].rm_so, temp, sizeof(A->g_comment));
+          strlcpy (temp, A->g_comment + match[0].rm_eo, sizeof(temp));
+          strlcpy (A->g_comment + match[0].rm_so, temp, sizeof(A->g_comment));
+          A->g_flags |= kDataFlag_Comment;
 	  }
 	  else if (regexec (&std_toff_re, A->g_comment, MAXMATCH, match, 0) == 0) {
 
-	    dw_printf ("NO tone\n");
-	    A->g_tone = 0;
+          dw_printf ("NO tone\n");
+          A->g_tone = 0;
 
-	    strlcpy (temp, A->g_comment + match[0].rm_eo, sizeof(temp));
-	    strlcpy (A->g_comment + match[0].rm_so, temp, sizeof(A->g_comment));
+          strlcpy (temp, A->g_comment + match[0].rm_eo, sizeof(temp));
+          strlcpy (A->g_comment + match[0].rm_so, temp, sizeof(A->g_comment));
+          A->g_flags |= kDataFlag_Comment;
 	  }
 	  else if (regexec (&std_dcs_re, A->g_comment, MAXMATCH, match, 0) == 0) {
 
@@ -4324,6 +4395,7 @@ static void process_comment (decode_aprs_t *A, char *pstart, int clen)
 
 	    strlcpy (temp, A->g_comment + match[0].rm_eo, sizeof(temp));
 	    strlcpy (A->g_comment + match[0].rm_so, temp, sizeof(A->g_comment)-match[0].rm_so);
+          A->g_flags |= (kDataFlag_Comment | kDataFlag_DCS);
 	  }
 	  else if (regexec (&std_offset_re, A->g_comment, MAXMATCH, match, 0) == 0) {
 
@@ -4335,6 +4407,7 @@ static void process_comment (decode_aprs_t *A, char *pstart, int clen)
 
 	    strlcpy (temp, A->g_comment + match[0].rm_eo, sizeof(temp));
 	    strlcpy (A->g_comment + match[0].rm_so, temp, sizeof(A->g_comment)-match[0].rm_so);
+          A->g_flags |= (kDataFlag_Comment | kDataFlag_Offset);
 	  }
 	  else if (regexec (&std_range_re, A->g_comment, MAXMATCH, match, 0) == 0) {
 
@@ -4353,6 +4426,7 @@ static void process_comment (decode_aprs_t *A, char *pstart, int clen)
 
 	    strlcpy (temp, A->g_comment + match[0].rm_eo, sizeof(temp));
 	    strlcpy (A->g_comment + match[0].rm_so, temp, sizeof(A->g_comment)-match[0].rm_so);
+          A->g_flags |= (kDataFlag_Comment | kDataFlag_Range);
 	  }
 	  else {
 	    keep_going = 0;
@@ -4380,6 +4454,7 @@ static void process_comment (decode_aprs_t *A, char *pstart, int clen)
 
 	  strlcpy (temp, A->g_comment + match[0].rm_eo, sizeof(temp));
 	  strlcpy (A->g_comment + match[0].rm_so, temp, sizeof(A->g_comment)-match[0].rm_so);
+        A->g_flags |= kDataFlag_Comment;
 	}
 
 
@@ -4487,6 +4562,7 @@ static void process_comment (decode_aprs_t *A, char *pstart, int clen)
 
 	  strlcpy (temp, A->g_comment + match[0].rm_eo, sizeof(temp));
 	  strlcpy (A->g_comment + match[0].rm_so, temp, sizeof(A->g_comment)-match[0].rm_so);
+        A->g_flags |= kDataFlag_Comment;
 	}
 
 /*
@@ -4504,6 +4580,7 @@ static void process_comment (decode_aprs_t *A, char *pstart, int clen)
           A->g_altitude_ft = atoi(A->g_comment + match[0].rm_so + 3);
 
 	  strlcpy (A->g_comment + match[0].rm_so, temp, sizeof(A->g_comment)-match[0].rm_so);
+        A->g_flags |= (kDataFlag_Comment | kDataFlag_Altitude);
 	}
 
 	//dw_printf("Final comment='%s'\n", A->g_comment);
@@ -4535,7 +4612,8 @@ static void process_comment (decode_aprs_t *A, char *pstart, int clen)
 	      dw_printf("For most systems to recognize it, use exactly this form \"%s\" at beginning of comment.\n", good);
 	    }
 	    if (A->g_freq == G_UNKNOWN) {
-	      A->g_freq = x;
+            A->g_freq = x;
+            A->g_flags |= kDataFlag_Frequency;
 	    }
 	  }
 	}
@@ -4577,7 +4655,8 @@ static void process_comment (decode_aprs_t *A, char *pstart, int clen)
 	        dw_printf("For most systems to recognize it, use exactly this form \"%s\" at near beginning of comment, after any frequency.\n", good);
 	      }
 	      if (A->g_tone == G_UNKNOWN) {
-	        A->g_tone = atof(bad2);
+              A->g_tone = atof(bad2);
+              A->g_flags |= kDataFlag_Tone;
 	      }
 	      break;
 	    }
@@ -4600,328 +4679,5 @@ static void process_comment (decode_aprs_t *A, char *pstart, int clen)
 
 /* end process_comment */
 
-
-
-
-
-/*------------------------------------------------------------------
- *
- * Function:	main
- *
- * Purpose:	Main program for standalone test program.
- *
- * Inputs:	stdin for raw data to decode.
- *		This is in the usual display format either from
- *		a TNC, findu.com, aprs.fi, etc.  e.g.
- *
- *		N1EDF-9>T2QT8Y,W1CLA-1,WIDE1*,WIDE2-2,00000:`bSbl!Mv/`"4%}_ <0x0d>
- *
- *		WB2OSZ-1>APN383,qAR,N1EDU-2:!4237.14NS07120.83W#PHG7130Chelmsford, MA
- *
- *		New for 1.5:
- *
- *		Also allow hexadecimal bytes for raw AX.25 or KISS.  e.g.
- *
- *		00 82 a0 ae ae 62 60 e0 82 96 68 84 40 40 60 9c 68 b0 ae 86 40 e0 40 ae 92 88 8a 64 63 03 f0 3e 45 4d 36 34 6e 65 2f 23 20 45 63 68 6f 6c 69 6e 6b 20 31 34 35 2e 33 31 30 2f 31 30 30 68 7a 20 54 6f 6e 65
- *
- *		If it begins with 00 or C0 (which would be impossible for AX.25 address) process as KISS.
- *		Also print these formats.
- *
- * Outputs:	stdout
- *
- * Description:	Compile like this to make a standalone test program.
- *
- *		gcc -o decode_aprs -DDECAMAIN decode_aprs.c ax25_pad.c ...
- *
- *		./decode_aprs < decode_aprs.txt
- *
- *		aprs.fi precedes raw data with a time stamp which you
- *		would need to remove first.
- *
- *		cut -c26-999 tmp/kj4etp-9.txt | decode_aprs.exe
- *
- *
- * Restriction:	MIC-E message type can be problematic because it
- *		it can use unprintable characters in the information field.
- *
- *		Dire Wolf and aprs.fi print it in hexadecimal.  Example:
- *
- *		KB1KTR-8>TR3U6T,KB1KTR-9*,WB2OSZ-1*,WIDE2*,qAR,W1XM:`c1<0x1f>l!t>/>"4^}
- *		                                                       ^^^^^^
- *		                                                       ||||||
- *		What does findu.com do in this case?
- *
- *		ax25_from_text recognizes this representation so it can be used
- *		to decode raw data later.
- *
- * TODO:	To make it more useful,
- *			- Remove any leading timestamp.
- *			- Remove any "qA*" and following from the path.
- *			- Handle non-APRS frames properly.
- *
- *------------------------------------------------------------------*/
-
-#if DECAMAIN
-
-#include "kiss_frame.h"
-
-
-
-/* Stub for stand-alone decoder. */
-
-void nmea_send_waypoint (char *wname_in, double dlat, double dlong, char symtab, char symbol,
-                 float alt, float course, float speed, char *comment)
-{
-	return;
-}
-
-// TODO:  hex_dump is currently in server.c and we don't want to drag that in.
-// Someday put it in a more reasonable place, with other general utilities, and remove the private copy here.
-
-
-static void hex_dump (unsigned char *p, int len)
-{
-	int n, i, offset;
-
-	offset = 0;
-	while (len > 0) {
-	  n = len < 16 ? len : 16;
-	  dw_printf ("  %03x: ", offset);
-	  for (i=0; i<n; i++) {
-	    dw_printf (" %02x", p[i]);
-	  }
-	  for (i=n; i<16; i++) {
-	    dw_printf ("   ");
-	  }
-	  dw_printf ("  ");
-	  for (i=0; i<n; i++) {
-	    dw_printf ("%c", isprint(p[i]) ? p[i] : '.');
-	  }
-	  dw_printf ("\n");
-	  p += 16;
-	  offset += 16;
-	  len -= 16;
-	}
-}
-
-
-// Do we have two hexadecimal digits followed by whitespace or end of line?
-
-#define ISHEX2(x)  (isxdigit(x[0]) && isxdigit(x[1]) && (x[2] == '\0' || isspace(x[2])))
-
-#define MAXLINE 9000
-#define MAXBYTES 3000
-
-int main (int argc, char *argv[]) 
-{
-	char stuff[MAXLINE];
-	unsigned char bytes[MAXBYTES];
-	int num_bytes;
-	char *p;	
-	packet_t pp;
-
-#if __WIN32__
-
-// Select UTF-8 code page for console output.
-// http://msdn.microsoft.com/en-us/library/windows/desktop/ms686036(v=vs.85).aspx
-// This is the default I see for windows terminal:  
-// >chcp
-// Active code page: 437
-
-	//Restore on exit? oldcp = GetConsoleOutputCP();
-	SetConsoleOutputCP(CP_UTF8);
-
-#else
-
-/*
- * Default on Raspian & Ubuntu Linux is fine.  Don't know about others.
- *
- * Should we look at LANG environment variable and issue a warning
- * if it doesn't look something like  en_US.UTF-8 ?
- */
-
-#endif	
-	if (argc >= 2) {
-	  if (freopen (argv[1], "r", stdin) == NULL) {
-	    fprintf(stderr, "Can't open %s for read.\n", argv[1]);
-	    exit(1);
-	  }
-	}
-
-	text_color_init(1);
-	text_color_set(DW_COLOR_INFO);
-
-	while (fgets(stuff, sizeof(stuff), stdin) != NULL) 
-        {
-	  p = stuff + strlen(stuff) - 1;
-	  while (p >= stuff && (*p == '\r' || *p == '\n')) {
-	    *p-- = '\0';
-	  }
-
-	  if (strlen(stuff) == 0 || stuff[0] == '#') 
-          {
-	    /* comment or blank line */
-	    text_color_set(DW_COLOR_INFO);
-	    dw_printf("%s\n", stuff);
-	    continue;
-          }
-  	  else 
-	  {
-	    /* Try to process it. */
-
-	    text_color_set(DW_COLOR_REC);
-	    dw_printf("\n%s\n", stuff);	    
-
-// Do we have monitor format, KISS, or AX.25 frame?
-
-	    p = stuff;
-	    while (isspace(*p)) p++;
-
-	    if (ISHEX2(p)) {
-
-// Collect a bunch of hexadecimal numbers.
-
-	      num_bytes = 0;
-
-	      while (ISHEX2(p) && num_bytes < MAXBYTES) {
-
-	        bytes[num_bytes++] = strtoul(p, NULL, 16);
-	        p += 2;
-	        while (isspace(*p)) p++;
-	      }
-
-	      if (num_bytes == 0 || *p != '\0') {
-	        text_color_set(DW_COLOR_ERROR);
-	        dw_printf("Parse error around column %d.\n", (int)(long)(p - stuff) + 1);
-	        dw_printf("Was expecting only space separated 2 digit hexadecimal numbers.\n\n");
-	        continue;	// next line
-	      }
-
-// If we have 0xC0 at start, remove it and expect same at end.
-
-	      if (bytes[0] == FEND) {
-
-		if (num_bytes < 2 || bytes[1] != 0) {
-	          text_color_set(DW_COLOR_ERROR);
-	          dw_printf("Was expecting to find 00 after the initial C0.\n");
-	          continue;
-	        }
-
-		if (bytes[num_bytes-1] == FEND) {
-	          text_color_set(DW_COLOR_INFO);
-	          dw_printf("Removing KISS FEND characters at beginning and end.\n");
-		  int n;
-	          for (n = 0; n < num_bytes-1; n++) {
-	            bytes[n] = bytes[n+1];
-	          }
-	          num_bytes -= 2;
-	        }
-	        else {
-	          text_color_set(DW_COLOR_INFO);
-	          dw_printf("Removing KISS FEND character at beginning.  Was expecting another at end.\n");
-		  int n;
-	          for (n = 0; n < num_bytes-1; n++) {
-	            bytes[n] = bytes[n+1];
-	          }
-	          num_bytes -= 1;
-		}
-	      }
-
-
-	      if (bytes[0] == 0) {
-
-// Treat as KISS.  Undo any KISS encoding.
-
-	        unsigned char kiss_frame[MAXBYTES];
-	        int kiss_len = num_bytes;
-
-	        memcpy (kiss_frame, bytes, num_bytes);
-
-	        text_color_set(DW_COLOR_DEBUG);
-	        dw_printf ("--- KISS frame ---\n");
-	        hex_dump (kiss_frame, kiss_len);
-
-	        // Put FEND at end to keep kiss_unwrap happy.
-	        // Having one at the begining is optional.
-
-	        kiss_frame[kiss_len++] = FEND;
-
-		// In the more general case, we would need to include
-	        // the command byte because it could be escaped.
-	        // Here we know it is 0, so we take a short cut and
-	        // remove it before, rather than after, the conversion.
-
-	        num_bytes = kiss_unwrap (kiss_frame + 1, kiss_len - 1, bytes);
-	      }
-
-// Treat as AX.25.
-
-	      alevel_t alevel;
-	      memset (&alevel, 0, sizeof(alevel));
-
-	      pp = ax25_from_frame(bytes, num_bytes, alevel);
-	      if (pp != NULL) {
-	        char addrs[120];
-	        unsigned char *pinfo;
-	        int info_len;
-	        decode_aprs_t A;
-
-	        text_color_set(DW_COLOR_DEBUG);
-	        dw_printf ("--- AX.25 frame ---\n");
-	        ax25_hex_dump (pp);
-	        dw_printf ("-------------------\n");
-
-	        ax25_format_addrs (pp, addrs);
-	        text_color_set(DW_COLOR_DECODED);
-	        dw_printf ("%s", addrs);
-
-	        info_len = ax25_get_info (pp, &pinfo);
-	        ax25_safe_print ((char *)pinfo, info_len, 1);	// Display non-ASCII to hexadecimal.
-	        dw_printf ("\n");
-
-	        decode_aprs (&A, pp, 0);			// Extract information into structure.
-
-	        decode_aprs_print (&A);			// Now print it in human readable format.
-
-	        (void)ax25_check_addresses(pp);		// Errors for invalid addresses.
-
-	        ax25_delete (pp);
-	      }
-	      else {
-	        text_color_set(DW_COLOR_ERROR);
-	        dw_printf("Could not construct AX.25 frame from bytes supplied!\n\n");
-	      }
-	    }
-	    else {
-
-// Normal monitoring format.
-
-	      pp = ax25_from_text(stuff, 1);
-	      if (pp != NULL) {
-	        decode_aprs_t A;
-
-	        decode_aprs (&A, pp, 0);	// Extract information into structure.
-
-	        decode_aprs_print (&A);		// Now print it in human readable format.
-
-	        // This seems to be redundant because we used strict option
-	        // when parsing the monitoring format text.
-	        //(void)ax25_check_addresses(pp);	// Errors for invalid addresses.
-
-	        // Future?  Add -d option to include hex dump and maybe KISS?
-
-	        ax25_delete (pp);
-	      }
-	      else {
-	        text_color_set(DW_COLOR_ERROR);
-	        dw_printf("ERROR - Could not parse monitoring format input!\n\n");
-	      }
-	    }
-	  }
-	}
-	return (0);
-}
-
-#endif /* DECAMAIN */
 
 /* end decode_aprs.c */

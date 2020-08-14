@@ -26,13 +26,48 @@ static bool               s_have_location  = false;
 
 
 
+
+
+//@interface PacketAnnotationView : MKMarkerAnnotationView
+//@end
+//
+//@implementation PacketAnnotationView
+//
+//- (void)setSelected:(BOOL)selected animated:(BOOL)animated
+//{
+//    [super setSelected:selected animated:animated];
+//
+//    // Get the custom callout view.
+//    UIView* calloutView = [[UIImageView alloc] initWithImage:[UIImage systemImageNamed:@"thermometer"]];
+//    if( selected )
+//    {
+//        CGRect annotationViewBounds = self.bounds;
+//        CGRect calloutViewFrame = calloutView.frame;
+//
+//        // Center the callout view above and to the right of the annotation view.
+//        calloutViewFrame.origin.x = -(calloutViewFrame.size.width - annotationViewBounds.size.width) * 0.5;
+//        calloutViewFrame.origin.y = -(calloutViewFrame.size.height) + 15.0;
+//        calloutView.frame = calloutViewFrame;
+//
+//        [self addSubview:calloutView];
+//    }
+//    else
+//    {
+//        [calloutView removeFromSuperview];
+//    }
+//}
+//
+//@end
+
+
+
+
+
+
 @interface MapViewController ()
 @property (nonatomic)         bool     thread_running;
 @property (strong, nonatomic) NSTimer* timer;
 @end
-
-
-
 
 
 void stat_callback( bool running )
@@ -106,8 +141,6 @@ void map_callback( packet_t packet )
     [PacketManager shared].documentUpdatedBlock = ^{ [[NSNotificationCenter defaultCenter] postNotificationName:@"NewPacket" object:nil]; };        // !!@ remove literals
     
     [self.mapView registerClass:[MKMarkerAnnotationView class] forAnnotationViewWithReuseIdentifier:@"marker.pin"];
-    [self.mapView registerClass:[MKAnnotationView class] forAnnotationViewWithReuseIdentifier:@"generic.pin"];
-
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
