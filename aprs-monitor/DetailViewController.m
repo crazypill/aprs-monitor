@@ -249,29 +249,29 @@ static uint32_t s_position_state = 0;
         if( s_position_state & kPacketFlag_Latitude )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
-            cell.name.text = _detail.coordinate.latitude;
-            cell.data.text = @"34.45345N";
+            cell.name.text = @"Latitude";
+            cell.data.text = [NSString stringWithFormat:@"%0.4f", _detail.coordinate.latitude]; // use a formatter so this read in degrees, minutes, seconds
             return cell;
         }
         else if( s_position_state & kPacketFlag_Longitude )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Longitude";
-            cell.data.text = @"118.45345W";
+            cell.data.text = [NSString stringWithFormat:@"%0.4f", _detail.coordinate.longitude]; // use a formatter so this read in degrees, minutes, seconds
             return cell;
         }
         else if( s_position_state & kPacketFlag_Course )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Course";
-            cell.data.text = @"295°";
+            cell.data.text = _detail.course;
             return cell;
         }
         else if( s_position_state & kPacketFlag_Speed )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Speed";
-            cell.data.text = @"55 mph";
+            cell.data.text = @"55 mph"; // !!@ fix me
             return cell;
         }
     }
