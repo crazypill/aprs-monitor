@@ -98,7 +98,7 @@ static const SymbolEntry s_symbol_table[] =
     { @"/v", @"Van",                   @"🚐",            0, 1, kNGry, kNGry, kNGry, 0.7f },
     { @"/w", @"Water station",         @"🚰",            0, 1, kNGry, kNGry, kNGry, 0.7f },
 //  { @"/x", @"xAPRS (Unix)",          @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
-//  { @"/y", @"YAGI @ QTH",            @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
+    { @"/y", @"YAGI @ QTH"       ,     @"🏠",            0, 1, kNGry, kNGry, kNGry, 0.7f },
 //  { @"/z", @"",                      @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
 //  { @"/{", @"",                      @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
 //  { @"/|", @"TNC Stream Switch",     @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
