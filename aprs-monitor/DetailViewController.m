@@ -140,47 +140,111 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
 }
 
 
+static bool     s_wind_latch     = false;
 static uint32_t s_weather_state  = 0;
 static uint32_t s_position_state = 0;
 
 
+- (NSInteger)getSection:(NSInteger)raw
+{
+    if( [self numberOfSectionsInTableView:self.tableView] == 2 )
+        return raw;
+    else
+    {
+        if( (_detail.flags & kCoordinatesMask) | (_detail.flags & kCourseSpeedMask) )
+            return kDetailSection_Position;
+        else
+            return kDetailSection_Weather;
+    }
+}
+
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if( section == kDetailSection_Weather )
+
+    if( [self getSection:section] == kDetailSection_Weather )
     {
         s_weather_state = 0;
-        // count the number of weather bits we have
-        return count_bits( _detail.wx->wxflags );
+        s_wind_latch = false;
+        int bitsToRemove = 0;
+        
+        // count the number of weather bits we have -- if we have any weather bits we need to pay special attention
+        // we do this because we have three bits of data that fit into one cell
+        int numWindBits = count_bits( _detail.wx->wxflags & kWindMask );
+        if( numWindBits > 1 )
+            bitsToRemove = numWindBits - 1;
+        
+        return count_bits( _detail.wx->wxflags ) - bitsToRemove;
     }
-    else if( section == kDetailSection_Position )
+    else if( [self getSection:section] == kDetailSection_Position )
     {
         s_position_state = 0;
         // mask out weather and things
         return count_bits( _detail.flags & kPositionMask );
     }
+
     return 0;
 }
 
 
+- (nullable NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    if( [self getSection:section] == kDetailSection_Weather )
+        return @"Weather";
+    else
+        return @"Position";
+}
+
 
 - (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    if( indexPath.section == kDetailSection_Weather )
+    if( [self getSection:indexPath.section] == kDetailSection_Weather )
     {
         s_weather_state = get_next_on_bit( _detail.wx->wxflags, s_weather_state );
         
-        if( s_weather_state & (kWxDataFlag_gust | kWxDataFlag_windDir | kWxDataFlag_wind) )
+        if( s_wind_latch && (s_weather_state & kWindMask) )
         {
+            // skip over bits - there are three of them, one counts, the others we toss
+            s_weather_state = get_next_on_bit( _detail.wx->wxflags, s_weather_state );
+            if( s_weather_state & kWindMask )
+                s_weather_state = get_next_on_bit( _detail.wx->wxflags, s_weather_state );
+        }
+        
+        // only do this once
+        if( s_weather_state & kWindMask )
+        {
+            s_wind_latch = true;
+            
             WindCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.wind.cell" forIndexPath:indexPath];
 
             // Configure the cell...
-            int windIndex = (int)(_detail.wx->windDirection / 22.5f); // truncate
-            const char* compass[] = { "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW" };
+            if( (_detail.wx->wxflags & (kWxDataFlag_windDir | kWxDataFlag_windDir)) == (kWxDataFlag_windDir | kWxDataFlag_windDir) )
+            {
+                int windIndex = (int)(_detail.wx->windDirection / 22.5f); // truncate
+                const char* compass[] = { "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW" };
+                
+                // !!@ use attributed string here to make data part grey !!@
+                cell.line1.text = [NSString stringWithFormat:@"Wind    🧭%s  %.0f°  %0.1f mph", compass[windIndex], _detail.wx->windDirection, _detail.wx->windSpeedMph];
+            }
+            else if( _detail.wx->wxflags & kWxDataFlag_windDir )
+            {
+                int windIndex = (int)(_detail.wx->windDirection / 22.5f); // truncate
+                const char* compass[] = { "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW" };
+                
+                // !!@ use attributed string here to make data part grey !!@
+                cell.line1.text = [NSString stringWithFormat:@"Wind    🧭%s  %.0f°", compass[windIndex], _detail.wx->windDirection];
+            }
+            else if( _detail.wx->wxflags & kWxDataFlag_wind )
+            {
+                cell.line1.text = [NSString stringWithFormat:@"Wind    %0.1f mph", _detail.wx->windSpeedMph];
+            }
+            else
+                cell.line1.text = nil;
             
-            // !!@ use attributed string here to make data part grey !!@
-            cell.line1.text = [NSString stringWithFormat:@"Wind    🧭%s  %.0f°  %0.1f mph", compass[windIndex], _detail.wx->windDirection, _detail.wx->windSpeedMph];
-            cell.line2.text = [NSString stringWithFormat:@"Gusts   💨%0.1f mph", _detail.wx->windGustMph];
+            if( _detail.wx->wxflags & kWxDataFlag_gust )
+                cell.line2.text = [NSString stringWithFormat:@"Gusts   💨%0.1f mph", _detail.wx->windGustMph];
+            else
+                cell.line2.text = nil;
 
             cell.windIcon.image = [_detail getWindIndicatorIcon:CGRectMake( 0, 0,  40, 40 )];
             return cell;
@@ -242,7 +306,7 @@ static uint32_t s_position_state = 0;
             return cell;
         }
     }
-    else if( indexPath.section == kDetailSection_Position )
+    else if( [self getSection:indexPath.section] == kDetailSection_Position )
     {
         s_position_state = get_next_on_bit( _detail.flags & kPositionMask, s_position_state );
         
@@ -271,7 +335,7 @@ static uint32_t s_position_state = 0;
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Speed";
-            cell.data.text = @"55 mph"; // !!@ fix me
+            cell.data.text = _detail.speed;
             return cell;
         }
     }

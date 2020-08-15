@@ -38,11 +38,11 @@ typedef enum
 
 enum
 {
-    kWxDataFlag_temp       = 1 << 0,
-    kWxDataFlag_humidity   = 1 << 1,
-    kWxDataFlag_wind       = 1 << 2,
-    kWxDataFlag_windDir    = 1 << 3,
-    kWxDataFlag_gust       = 1 << 4,
+    kWxDataFlag_wind       = 1 << 0,
+    kWxDataFlag_windDir    = 1 << 1,
+    kWxDataFlag_gust       = 1 << 2,    // note: a bunch of my hacky code depends on these wind guys all sticking together
+    kWxDataFlag_temp       = 1 << 3,
+    kWxDataFlag_humidity   = 1 << 4,
     kWxDataFlag_pressure   = 1 << 5,
     kWxDataFlag_rainHr     = 1 << 6,
     kWxDataFlag_rain24     = 1 << 7,

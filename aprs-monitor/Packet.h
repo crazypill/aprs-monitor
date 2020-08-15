@@ -44,6 +44,7 @@ enum
 @property (nonatomic, copy, nullable) NSString* comment;
 @property (nonatomic, copy, nullable) NSString* weather;
 @property (nonatomic, copy, nullable) NSString* course;
+@property (nonatomic, copy, nullable) NSString* speed;
 @property (nonatomic, copy, nullable) NSDate*   timeStamp;
 @property (nonatomic, nullable)       wx_data*  wx;
 

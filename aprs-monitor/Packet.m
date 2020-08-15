@@ -22,7 +22,7 @@ static bool s_displayMmHg = false;
 
 -(void)encodeWithCoder:(NSCoder*)encoder
 {
-    
+    // !!@ add missing items
     [encoder encodeInt32:_flags                forKey:@"flags"];
     [encoder encodeFloat:_coordinate.latitude  forKey:@"latitude"];
     [encoder encodeFloat:_coordinate.longitude forKey:@"longitude"];
@@ -42,6 +42,7 @@ static bool s_displayMmHg = false;
 {
     if( self = [super init] )
     {
+        // !!@ add missing items
         _flags                = [decoder decodeInt32ForKey:@"flags"];
         _coordinate.latitude  = [decoder decodeFloatForKey:@"latitude"];
         _coordinate.longitude = [decoder decodeFloatForKey:@"longitude"];
@@ -63,6 +64,7 @@ static bool s_displayMmHg = false;
 {
     Packet* pkt = [[self class] allocWithZone:zone];
 
+    // !!@ add missing items
     pkt.coordinate = _coordinate;
     pkt.flags      = _flags;
     pkt.call       = [_call copyWithZone:zone];
@@ -133,7 +135,8 @@ static bool s_displayMmHg = false;
         if( (decode_state.g_flags & kDataFlag_Course) && (decode_state.g_flags & kDataFlag_Speed) && decode_state.g_speed_mph != 0 )
         {
             us.flags |= (kPacketFlag_Course | kPacketFlag_Speed);
-            us.course = [NSString stringWithFormat:@"Course: %.0f°  Speed: %.0f mph", decode_state.g_course, decode_state.g_speed_mph];
+            us.course = [NSString stringWithFormat:@"Course: %.0f°",   decode_state.g_course];
+            us.speed  = [NSString stringWithFormat:@"Speed: %.0f mph", decode_state.g_speed_mph];
         }
         
         if( decode_state.g_wxdata.wxflags )
@@ -181,10 +184,16 @@ static bool s_displayMmHg = false;
 {
     if( _weather.length )
         return _weather;
-    
-   if( _course.length )
+
+    if( _course.length && _speed.length )
+        return [NSString stringWithFormat:@"%@  %@",  _course, _speed];
+
+    if( _course.length )
        return _course;
-    
+
+    if( _speed.length )
+        return _speed;
+
     NSString* typeDebug = [NSString stringWithFormat:@"%@-%@",  _type, _address];
     return _comment.length ? _comment : typeDebug;
 }
