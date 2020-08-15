@@ -167,6 +167,7 @@ void map_callback( packet_t packet )
 }
 
 
+#pragma mark -
 
 - (void)blinkMessageButton
 {
@@ -212,6 +213,56 @@ void map_callback( packet_t packet )
 }
 
 
+- (IBAction)positionButtonPressed:(id)sender
+{
+    
+}
+
+
+- (IBAction)weatherButtonPressed:(id)sender
+{
+    Packet* pkt = [[Packet alloc] init];
+    pkt.flags |= (kPacketFlag_CoordinatesValid | kPacketFlag_Weather);
+    pkt.coordinate = CLLocationCoordinate2DMake( -34.5, 118.20 );
+    pkt.call = @"K6TEST";
+    pkt.weather = @"fake weather";
+    pkt.symbol = @"/_";
+    
+    pkt.wx = malloc( sizeof( wx_data ) );
+    if( pkt.wx )
+    {
+        pkt.wx->wxflags |= (kWxDataFlag_gust | kWxDataFlag_windDir | kWxDataFlag_wind);
+        pkt.wx->windGustMph = 10;
+        pkt.wx->windSpeedMph = 2;
+        pkt.wx->windDirection = 195;
+    
+        [self plotMessage:pkt];
+    }
+    pkt = nil;
+}
+
+
+- (IBAction)statusButtonPressed:(id)sender
+{
+    
+}
+
+
+- (IBAction)objectButtonPressed:(id)sender
+{
+    
+}
+
+
+- (IBAction)allButtonPressed:(id)sender
+{
+    
+}
+
+
+
+#pragma mark -
+
 - (void)plotMessage:(const Packet*)packet
 {
     __weak MapViewController* weakself = self;
@@ -243,6 +294,8 @@ void map_callback( packet_t packet )
 }
 
 
+
+#pragma mark -
 
 - (nullable MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
 {
@@ -287,7 +340,10 @@ void map_callback( packet_t packet )
         {
             UIImage* windIcon = [pkt getWindIndicatorIcon:CGRectMake( 0, 0,  40, 40 )];
             if( windIcon )
+            {
                 anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:windIcon];
+                anno.leftCalloutAccessoryView.backgroundColor = [UIColor clearColor];
+            }
         }
     }
     else

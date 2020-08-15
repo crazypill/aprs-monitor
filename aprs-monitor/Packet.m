@@ -170,6 +170,7 @@
     
     UIGraphicsBeginImageContextWithOptions( imageBounds.size, false, 0.0f );
     CGContextRef myContext = UIGraphicsGetCurrentContext();
+    CGContextClearRect( myContext, imageBounds );
     
     // create HSV color so we can make the spectrum rainbow colored
     CGColorRef cgColor = NULL;
@@ -178,25 +179,22 @@
     CGFloat yCenter = imageBounds.size.height * 0.5f;
     CGFloat r       = imageBounds.size.height * 0.5f;
     
+    // this code used to draw a rainbow which is why it draws slivers instead of a shape.  !!@ fix this
     CGFloat oversampling   = 4.0f;
     CGFloat centerDiameter = imageBounds.size.width * 0.76f;
     CGRect  circleRect     = CGRectMake( xCenter - (centerDiameter * 0.5f), yCenter - (centerDiameter * 0.5f), centerDiameter, centerDiameter );
     CGRect  clipRect       = CGRectInset( imageBounds, 1, 1 );
 
     CGContextSaveGState( myContext );
-    
+    CGContextSetBlendMode( myContext, kCGBlendModeOverlay );
+
     if( _wx->wxflags & kWxDataFlag_windDir )
     {
-        // clip to the inside of that double line
-        CGContextBeginPath( myContext );
-        CGContextAddEllipseInRect( myContext, clipRect );
-        CGContextAddEllipseInRect( myContext, circleRect );
-        CGContextEOClip( myContext );
-        
-        // Drawing code here -- we do this at a quarter degree to avoid moire patterns
         int indicatorWidth = 12; // in degrees
         int windDirection = _wx->windDirection;
         
+        [[[UIColor redColor] colorWithAlphaComponent:0.01] setStroke];
+
         for( int i = 0; i < indicatorWidth * oversampling; i++ )
         {
             // convert from math to compass orientation
@@ -210,8 +208,41 @@
             CGFloat x  = xCenter + rc;
             CGFloat y  = yCenter - rs;
 
-            cgColor = [UIColor redColor].CGColor;
-            CGContextSetStrokeColorWithColor( myContext, cgColor );
+            CGContextBeginPath( myContext );
+            CGContextMoveToPoint( myContext, xCenter, yCenter );
+            CGContextAddLineToPoint( myContext, x, y );
+            CGContextStrokePath( myContext );
+        }
+
+        // fill in the middle part with white alpha - this (if it worked) would make the red more consistent (right now it's less transparent near the center) !!@
+//        [[UIColor colorWithWhite:1.0f alpha:0.6f] setFill];
+//        CGContextBeginPath( myContext );
+//        CGContextAddEllipseInRect( myContext, clipRect );
+//        CGContextFillPath( myContext );
+        
+        // clip to the inside of that double line
+        CGContextBeginPath( myContext );
+        CGContextAddEllipseInRect( myContext, clipRect );
+        CGContextAddEllipseInRect( myContext, circleRect );
+        CGContextEOClip( myContext );
+        
+        // we color over the line so much that a 0.05 alpha will look almost opaque
+        [[[UIColor redColor] colorWithAlphaComponent:0.05] setStroke];
+
+        // re-draw the end bit so it's darker
+        for( int i = 0; i < indicatorWidth * oversampling; i++ )
+        {
+            // convert from math to compass orientation
+            int degrees = 90 + (360 - windDirection);
+            // offset the marker so that it is centered about its target
+            int offset = (i + (degrees * oversampling)) - ((indicatorWidth * oversampling) / 2);
+
+            // convert from degrees to radians
+            CGFloat rs = r * sin( (offset / oversampling) * M_PI / 180.0f );
+            CGFloat rc = r * cos( (offset / oversampling) * M_PI / 180.0f );
+            CGFloat x  = xCenter + rc;
+            CGFloat y  = yCenter - rs;
+
             CGContextBeginPath( myContext );
             CGContextMoveToPoint( myContext, xCenter, yCenter );
             CGContextAddLineToPoint( myContext, x, y );

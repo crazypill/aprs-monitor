@@ -96,12 +96,32 @@
                         <viewLayoutGuide key="safeArea" id="A2x-cY-S2p"/>
                     </view>
                     <toolbarItems>
-                        <barButtonItem title="Position" id="dyZ-Ro-lkR"/>
-                        <barButtonItem title="Weather" id="5Gn-kw-07Q"/>
-                        <barButtonItem title="Status" id="im6-Qc-sCL"/>
-                        <barButtonItem title="Object" id="rvl-Iy-U0L"/>
+                        <barButtonItem title="Position" id="dyZ-Ro-lkR">
+                            <connections>
+                                <action selector="positionButtonPressed:" destination="Q2x-WI-wPB" id="Cq9-7T-eBA"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem title="Weather" id="5Gn-kw-07Q">
+                            <connections>
+                                <action selector="weatherButtonPressed:" destination="Q2x-WI-wPB" id="EL8-31-w2U"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem title="Status" id="im6-Qc-sCL">
+                            <connections>
+                                <action selector="statusButtonPressed:" destination="Q2x-WI-wPB" id="s9Y-Ul-blv"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem title="Object" id="rvl-Iy-U0L">
+                            <connections>
+                                <action selector="objectButtonPressed:" destination="Q2x-WI-wPB" id="f4b-X9-adP"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="QSE-7U-4Ei"/>
-                        <barButtonItem title="All" id="BVs-og-Y7K"/>
+                        <barButtonItem title="All" id="BVs-og-Y7K">
+                            <connections>
+                                <action selector="allButtonPressed:" destination="Q2x-WI-wPB" id="n93-di-oCi"/>
+                            </connections>
+                        </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="Monitor" id="jVU-xi-FZF">
                         <barButtonItem key="leftBarButtonItem" title="Connect" id="Rgw-9H-VhC">
