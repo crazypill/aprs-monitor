@@ -74,12 +74,14 @@
 
 #pragma mark - Table view data source
 
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 14;
+    return 16;
 }
 
 
@@ -89,7 +91,7 @@
     Packet* pkt = [[Packet alloc] init];
     pkt.flags |= (kPacketFlag_CoordinatesValid | kPacketFlag_Weather);
     pkt.coordinate = CLLocationCoordinate2DMake( -34.5, 118.20 );
-    pkt.call = @"K6TEST";
+    pkt.call = @"K6TESTies";
     pkt.weather = @"fake weather";
     pkt.symbol = @"/_";
     
@@ -117,9 +119,10 @@
         // Configure the cell...
         int windIndex = (int)(_detail.wx->windDirection / 22.5f); // truncate
         const char* compass[] = { "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW" };
-
-        cell.line1.text = [NSString stringWithFormat:@"Wind   🧭  %s  %.0f°  %0.1f mph", compass[windIndex], _detail.wx->windDirection, _detail.wx->windSpeedMph];
-        cell.line2.text = [NSString stringWithFormat:@"Gusts  💨  %0.1f mph", _detail.wx->windGustMph];
+        
+        // !!@ use attributed string here to make data part grey !!@
+        cell.line1.text = [NSString stringWithFormat:@"Wind    🧭%s  %.0f°  %0.1f mph", compass[windIndex], _detail.wx->windDirection, _detail.wx->windSpeedMph];
+        cell.line2.text = [NSString stringWithFormat:@"Gusts   💨%0.1f mph", _detail.wx->windGustMph];
 
         cell.windIcon.image = [pkt getWindIndicatorIcon:CGRectMake( 0, 0,  40, 40 )];
         return cell;
@@ -204,11 +207,25 @@
     else if( indexPath.row == 12 )
     {
         DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
-        cell.name.text = @"Comment";
-        cell.data.text = @"blah blah";
+        cell.name.text = @"Longitude";
+        cell.data.text = @"118.45345W";
         return cell;
     }
     else if( indexPath.row == 13 )
+    {
+        DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
+        cell.name.text = @"Course";
+        cell.data.text = @"295°";
+        return cell;
+    }
+    else if( indexPath.row == 14 )
+    {
+        DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
+        cell.name.text = @"Speed";
+        cell.data.text = @"55 mph";
+        return cell;
+    }
+    else if( indexPath.row == 15 )
     {
         DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
         cell.name.text = @"Path";
