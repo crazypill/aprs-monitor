@@ -195,7 +195,7 @@ static const SymbolEntry s_symbol_table[] =
 //     \e  SE  Sleet (& future ovrly codes)
 //     \f  SF  Funnel Cloud
 //     \g  SG  Gale Flags
-//     \h  SHO Store. or HAMFST Hh=HAM store
+    { @"\\h", @"Store. or HAMFST",                       @"🛒",           0, 1, kNGry, kNGry, 1.0f,  kAlpha },
 //     \i  SI# BOX or points of Interest
 //     \j  SJ  WorkZone (Steam Shovel)
     { @"\\k", @"Special Vehicle SUV,ATV,4x4",            @"🚙",           0, 1, kNGry, kNGry, kNGry, kAlpha },
@@ -339,6 +339,7 @@ static const SymbolEntry s_symbol_table[] =
     { @"V#", @"Viscous",                    @"✸",            1, 1, 0.00f, 0.80f, 0.00f, kAlpha },
     { @"W#", @"WIDEn-N",                    @"✸",            1, 1, 0.00f, 0.80f, 0.00f, kAlpha },
     { @"N#", @"Digipeater with N overlay",  @"✸",            1, 1, 0.00f, 0.80f, 0.00f, kAlpha },     // !!@ add support for overlay letters and numbers
+    { @"T#", @"Digipeater with 1 overlay",  @"✸",            1, 1, 0.00f, 0.80f, 0.00f, kAlpha },     // !!@ add support for overlay letters and numbers
 
 
 //    EMERGENCY: #!
