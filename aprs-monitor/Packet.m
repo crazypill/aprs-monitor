@@ -130,7 +130,7 @@ static bool s_displayMmHg = false;
             us.flags |= kPacketFlag_CoordinatesValid;
         }
         
-        if( (decode_state.g_flags & kDataFlag_Course) && (decode_state.g_flags & kDataFlag_Speed) )
+        if( (decode_state.g_flags & kDataFlag_Course) && (decode_state.g_flags & kDataFlag_Speed) && decode_state.g_speed_mph != 0 )
         {
             us.flags |= kPacketFlag_CourseSpeed;
             us.course = [NSString stringWithFormat:@"Course: %.0f°  Speed: %0.2f mph", decode_state.g_course, decode_state.g_speed_mph];
