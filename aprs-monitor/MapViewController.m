@@ -9,6 +9,7 @@
 #import "MapViewController.h"
 #import "MapKit/MKMarkerAnnotationView.h"
 
+#include "DetailViewController.h"
 #include "RemoteTNC.h"
 #include "PacketManager.h"
 #include "SymbolTable.h"
@@ -337,7 +338,11 @@ void map_callback( packet_t packet )
     {
         Packet* pkt = (Packet*)view.annotation;
         if( pkt )
-            detailNavController.viewControllers.firstObject.title = pkt.title; // !!@ change this to pass full packet for inspection
+        {
+            DetailViewController* dvc = detailNavController.viewControllers.firstObject;
+            dvc.detail = pkt;
+            dvc.title  = pkt.title;
+        }
         
         detailNavController.modalPresentationStyle = UIModalPresentationPopover;
         UIPopoverPresentationController* presentationController = detailNavController.popoverPresentationController;

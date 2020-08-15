@@ -7,11 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Packet.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface DetailViewController : UITableViewController
-
+@property (nonatomic, strong) Packet* detail;
 @end
 
 NS_ASSUME_NONNULL_END
