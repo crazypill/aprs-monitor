@@ -47,6 +47,7 @@ static const SymbolEntry s_symbol_table[] =
 //     /K PK  School
 //     /L PL  PC user (Jan 03)
 //     /M PM  MacAPRS
+    { @"/M", @"MacAPRS",               @"🍏",             0, 1, kNGry, kNGry, kNGry, 0.7f },
 //     /N PN  NTS Station
     { @"/O", @"Balloon",               @"🎈",             0, 1, kNGry, kNGry, kNGry, 0.7f },
 
