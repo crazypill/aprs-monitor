@@ -134,7 +134,7 @@ static bool s_displayMmHg = false;
         if( (decode_state.g_flags & kDataFlag_Course) && (decode_state.g_flags & kDataFlag_Speed) && decode_state.g_speed_mph != 0 )
         {
             us.flags |= kPacketFlag_CourseSpeed;
-            us.course = [NSString stringWithFormat:@"Course: %.0f°  Speed: %0.2f mph", decode_state.g_course, decode_state.g_speed_mph];
+            us.course = [NSString stringWithFormat:@"Course: %.0f°  Speed: %.0f mph", decode_state.g_course, decode_state.g_speed_mph];
         }
         
         if( decode_state.g_wxdata.wxflags )
