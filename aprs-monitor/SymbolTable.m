@@ -310,17 +310,17 @@ static const SymbolEntry s_symbol_table[] =
 //    SD = Seaport Depot (new Aug 2014)
 //
 //    DIGIPEATERS - green
-    { @"/#", @"Generic digipeater",         @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 1.0f },
-    { @"1#", @"WIDE1-1 digipeater",         @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 1.0f },
-    { @"A#", @"Alternate input",            @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 1.0f },
-    { @"E#", @"Emergency powered",          @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 1.0f },
-    { @"I#", @"I-gate equipped digipeater", @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 1.0f },
-    { @"L#", @"WIDEn-N with path length",   @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 1.0f },
-    { @"P#", @"PacComm",                    @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 1.0f },
-    { @"S#", @"SSn-N digipeater",           @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 1.0f },
-    { @"X#", @"eXperimental digipeater",    @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 1.0f },
-    { @"V#", @"Viscous",                    @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 1.0f },
-    { @"W#", @"WIDEn-N",                    @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 1.0f },
+    { @"/#", @"Generic digipeater",         @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 0.7f },
+    { @"1#", @"WIDE1-1 digipeater",         @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 0.7f },
+    { @"A#", @"Alternate input",            @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 0.7f },
+    { @"E#", @"Emergency powered",          @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 0.7f },
+    { @"I#", @"I-gate equipped digipeater", @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 0.7f },
+    { @"L#", @"WIDEn-N with path length",   @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 0.7f },
+    { @"P#", @"PacComm",                    @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 0.7f },
+    { @"S#", @"SSn-N digipeater",           @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 0.7f },
+    { @"X#", @"eXperimental digipeater",    @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 0.7f },
+    { @"V#", @"Viscous",                    @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 0.7f },
+    { @"W#", @"WIDEn-N",                    @"✸",            1, 1, 0.00f, 0.80f, 0.00f, 0.7f },
 
 
 //    EMERGENCY: #!
@@ -339,13 +339,13 @@ static const SymbolEntry s_symbol_table[] =
 //    FE = (F overlay) Fog                  was \{
 //
 //    GATEWAYS: #& - black
-    { @"/&", @"HF Gateway",                           @"✸",            1, 1, 0.00f, 0.00f, 0.00f, 1.0f },
-    { @"I&", @"Igate Generic",                        @"✸",            1, 1, 0.00f, 0.00f, 0.00f, 1.0f },
-    { @"R&", @"Receive only IGate",                   @"✸",            1, 1, 0.00f, 0.00f, 0.00f, 1.0f },
-    { @"P&", @"PSKmail node",                         @"✸",            1, 1, 0.00f, 0.00f, 0.00f, 1.0f },
-    { @"T&", @"TX igate with path set to 1 hop only", @"✸",            1, 1, 0.00f, 0.00f, 0.00f, 1.0f },
-    { @"W&", @"WIRES-X as opposed to W0 for WiresII", @"✸",            1, 1, 0.00f, 0.00f, 0.00f, 1.0f },
-    { @"2&", @"TX igate with path set to 2 hops",     @"✸",            1, 1, 0.00f, 0.00f, 0.00f, 1.0f },
+    { @"/&", @"HF Gateway",                           @"✸",            1, 1, 0.00f, 0.00f, 0.00f, 0.7f },
+    { @"I&", @"Igate Generic",                        @"✸",            1, 1, 0.00f, 0.00f, 0.00f, 0.7f },
+    { @"R&", @"Receive only IGate",                   @"✸",            1, 1, 0.00f, 0.00f, 0.00f, 0.7f },
+    { @"P&", @"PSKmail node",                         @"✸",            1, 1, 0.00f, 0.00f, 0.00f, 0.7f },
+    { @"T&", @"TX igate with path set to 1 hop only", @"✸",            1, 1, 0.00f, 0.00f, 0.00f, 0.7f },
+    { @"W&", @"WIRES-X as opposed to W0 for WiresII", @"✸",            1, 1, 0.00f, 0.00f, 0.00f, 0.7f },
+    { @"2&", @"TX igate with path set to 2 hops",     @"✸",            1, 1, 0.00f, 0.00f, 0.00f, 0.7f },
 
 //    GPS devices: #\
 //    /\ = Triangle DF primary symbol
