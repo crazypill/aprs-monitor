@@ -130,6 +130,7 @@ static bool s_displayMmHg = false;
             us.flags |= kPacketFlag_CoordinatesValid;
         }
         
+        // I like to think about these strings as short summary strings...  until we add custom views, this works nicely.
         if( (decode_state.g_flags & kDataFlag_Course) && (decode_state.g_flags & kDataFlag_Speed) && decode_state.g_speed_mph != 0 )
         {
             us.flags |= kPacketFlag_CourseSpeed;
