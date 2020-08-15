@@ -162,7 +162,7 @@ static const SymbolEntry s_symbol_table[] =
 //     \I  AI  Rain Shower
 //     \J  AJ  AVAIL (Lightening ==> I ovly L)
 //     \K  AK  Kenwood HT (W)
-    { @"\\K", @"Kenwood HT",         @"W",            1, 1, 0.70f, kNGry, kNGry, 0.7f },
+    { @"\\K", @"Kenwood HT",         @"W",            1, 1, 0.70f, 0.00f, 0.00f, 0.7f },
 
 //     \L  AL  Lighthouse
 //     \M  AMO MARS (A=Army,N=Navy,F=AF)
