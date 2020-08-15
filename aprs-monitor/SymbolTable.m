@@ -9,8 +9,14 @@
 #include "SymbolTable.h"
 
 
+#define kEmojiSize 32
+#define kNGry      0.7f
+
+
 static const SymbolEntry s_symbol_table[] =
 {
+//     /- ???
+    
 //     /0 P0  # circle (obsolete)
 //     /1 P1  TBD (these were numbered)
 //     /2 P2  TBD (circles like pool)
@@ -42,62 +48,62 @@ static const SymbolEntry s_symbol_table[] =
 //     /L PL  PC user (Jan 03)
 //     /M PM  MacAPRS
 //     /N PN  NTS Station
-    { @"/O", @"Balloon",               @"🎈",             0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/O", @"Balloon",               @"🎈",             0, 1, kNGry, kNGry, kNGry, 0.7f },
 
 //     /Q PQ  TBD
 //     /R PR  REC. VEHICLE   (SSID-13)
 //     /S PS  SHUTTLE
 //     /T PT  SSTV
 
-    { @"/V", @"ATV",                   @"🏍",             0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/V", @"ATV",                   @"🏍",             0, 1, kNGry, kNGry, kNGry, 0.7f },
 //     /W PW  National WX Service Site
 //     /X PX  HELO           (SSID-6)
 //     /Y PY  YACHT (sail)   (SSID-5)
-    { @"/Y", @"Yacht",                 @"🛥",             0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/Y", @"Yacht",                 @"🛥",             0, 1, kNGry, kNGry, kNGry, 0.7f },
 //     /Z PZ  WinAPRS
 
 //     /\ HT  TRIANGLE(DF station)
 
     { @"/:", @"Fire",                  @"flame",         0, 0, 1.00f, 0.00f, 0.00f, 0.7f },
-    { @"/<", @"Motorcycle",            @"🏍",            0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
-    { @"/>", @"Car",                   @"🚗",            0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
-    { @"/P", @"Police",                @"🚓",            0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
-    { @"/U", @"Bus",                   @"🚌",            0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
-    { @"/[", @"Person",                @"🏃‍♂️",            0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
-    { @"/]", @"Post Office",           @"📨",            0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
-    { @"/^", @"Large Aircraft",        @"✈️",            0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/<", @"Motorcycle",            @"🏍",            0, 1, kNGry, kNGry, kNGry, 0.7f },
+    { @"/>", @"Car",                   @"🚗",            0, 1, kNGry, kNGry, kNGry, 0.7f },
+    { @"/P", @"Police",                @"🚓",            0, 1, kNGry, kNGry, kNGry, 0.7f },
+    { @"/U", @"Bus",                   @"🚌",            0, 1, kNGry, kNGry, kNGry, 0.7f },
+    { @"/[", @"Person",                @"🏃‍♂️",            0, 1, kNGry, kNGry, kNGry, 0.7f },
+    { @"/]", @"Post Office",           @"📨",            0, 1, kNGry, kNGry, kNGry, 0.7f },
+    { @"/^", @"Large Aircraft",        @"✈️",            0, 1, kNGry, kNGry, kNGry, 0.7f },
     { @"/_", @"Weather Station",       @"thermometer",   0, 0, 0.00f, 0.00f, 1.00f, 0.6f },
-    { @"/`", @"Dish Antenna",          @"📡",            0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
-    { @"/a", @"Ambulance",             @"🚑",            0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
-    { @"/b", @"Bike",                  @"🚲",            0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
-//  { @"/c", @"Incident Command Post", @"",              0, 0, 0.70f, 0.70f, 0.70f, 0.7f },
-    { @"/d", @"Fire dept",             @"🚒",            0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
-    { @"/e", @"Horse",                 @"🐎",            0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
-    { @"/f", @"Fire truck",            @"🚒",            0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
-//  { @"/g", @"Glider",                @"",              0, 0, 0.70f, 0.70f, 0.70f, 0.7f },
-    { @"/h", @"Hospital",              @"🏥",            0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
-//  { @"/i", @"Islands on the air",    @"",              0, 0, 0.70f, 0.70f, 0.70f, 0.7f },
-    { @"/j", @"Jeep",                  @"🛺",            0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
-    { @"/k", @"Truck",                 @"🚚",            0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
-//  { @"/l", @"Laptop",                @"",              0, 0, 0.70f, 0.70f, 0.70f, 0.7f },
-//  { @"/m", @"Mic-E Repeater",        @"",              0, 0, 0.70f, 0.70f, 0.70f, 0.7f },
-//  { @"/n", @"Node",                  @"",              0, 0, 0.70f, 0.70f, 0.70f, 0.7f },
-//  { @"/o", @"EOC",                   @"",              0, 0, 0.70f, 0.70f, 0.70f, 0.7f },
-    { @"/p", @"Rover (dog)",           @"🐶",            0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
-//  { @"/q", @"Grid Square",           @"",              0, 0, 0.70f, 0.70f, 0.70f, 0.7f },
-    { @"/r", @"Repeater",              @"",              0, 0, 0.70f, 0.70f, 0.70f, 0.7f },
-    { @"/s", @"Power Boat",            @"🚤",            0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
-//  { @"/t", @"Truck Stop",            @"",              0, 0, 0.70f, 0.70f, 0.70f, 0.7f },
-    { @"/u", @"Tractor trailer",       @"🚚",            0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
-    { @"/v", @"Van",                   @"🚐",            0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
-    { @"/w", @"Water station",         @"🚰",            0, 1, 0.70f, 0.70f, 0.70f, 0.7f },
-//  { @"/x", @"xAPRS (Unix)",          @"",              0, 0, 0.70f, 0.70f, 0.70f, 0.7f },
-//  { @"/y", @"YAGI @ QTH",            @"",              0, 0, 0.70f, 0.70f, 0.70f, 0.7f },
-//  { @"/z", @"",                      @"",              0, 0, 0.70f, 0.70f, 0.70f, 0.7f },
-//  { @"/{", @"",                      @"",              0, 0, 0.70f, 0.70f, 0.70f, 0.7f },
-//  { @"/|", @"TNC Stream Switch",     @"",              0, 0, 0.70f, 0.70f, 0.70f, 0.7f },
-//  { @"/}", @"",                      @"",              0, 0, 0.70f, 0.70f, 0.70f, 0.7f },
-//  { @"/~", @"TNC Stream Switch",     @"",              0, 0, 0.70f, 0.70f, 0.70f, 0.7f },
+    { @"/`", @"Dish Antenna",          @"📡",            0, 1, kNGry, kNGry, kNGry, 0.7f },
+    { @"/a", @"Ambulance",             @"🚑",            0, 1, kNGry, kNGry, kNGry, 0.7f },
+    { @"/b", @"Bike",                  @"🚲",            0, 1, kNGry, kNGry, kNGry, 0.7f },
+//  { @"/c", @"Incident Command Post", @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
+    { @"/d", @"Fire dept",             @"🚒",            0, 1, kNGry, kNGry, kNGry, 0.7f },
+    { @"/e", @"Horse",                 @"🐎",            0, 1, kNGry, kNGry, kNGry, 0.7f },
+    { @"/f", @"Fire truck",            @"🚒",            0, 1, kNGry, kNGry, kNGry, 0.7f },
+//  { @"/g", @"Glider",                @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
+    { @"/h", @"Hospital",              @"🏥",            0, 1, kNGry, kNGry, kNGry, 0.7f },
+//  { @"/i", @"Islands on the air",    @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
+    { @"/j", @"Jeep",                  @"🛺",            0, 1, kNGry, kNGry, kNGry, 0.7f },
+    { @"/k", @"Truck",                 @"🚚",            0, 1, kNGry, kNGry, kNGry, 0.7f },
+//  { @"/l", @"Laptop",                @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
+//  { @"/m", @"Mic-E Repeater",        @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
+    { @"/n", @"Node",                  @"⦿",             1, 1, kNGry, kNGry, kNGry, 0.7f },
+//  { @"/o", @"EOC",                   @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
+    { @"/p", @"Rover (dog)",           @"🐶",            0, 1, kNGry, kNGry, kNGry, 0.7f },
+//  { @"/q", @"Grid Square",           @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
+    { @"/r", @"Repeater",              @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
+    { @"/s", @"Power Boat",            @"🚤",            0, 1, kNGry, kNGry, kNGry, 0.7f },
+//  { @"/t", @"Truck Stop",            @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
+    { @"/u", @"Tractor trailer",       @"🚚",            0, 1, kNGry, kNGry, kNGry, 0.7f },
+    { @"/v", @"Van",                   @"🚐",            0, 1, kNGry, kNGry, kNGry, 0.7f },
+    { @"/w", @"Water station",         @"🚰",            0, 1, kNGry, kNGry, kNGry, 0.7f },
+//  { @"/x", @"xAPRS (Unix)",          @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
+//  { @"/y", @"YAGI @ QTH",            @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
+//  { @"/z", @"",                      @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
+//  { @"/{", @"",                      @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
+//  { @"/|", @"TNC Stream Switch",     @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
+//  { @"/}", @"",                      @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
+//  { @"/~", @"TNC Stream Switch",     @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
 
 //    /" BC  reserved  (was rain)
 //    /( BI  Mobile Satellite Station
@@ -155,6 +161,8 @@ static const SymbolEntry s_symbol_table[] =
 //     \I  AI  Rain Shower
 //     \J  AJ  AVAIL (Lightening ==> I ovly L)
 //     \K  AK  Kenwood HT (W)
+    { @"\\K", @"Kenwood HT",         @"W",            1, 1, 0.70f, kNGry, kNGry, 0.7f },
+
 //     \L  AL  Lighthouse
 //     \M  AMO MARS (A=Army,N=Navy,F=AF)
 //     \N  AN  Navigation Buoy
@@ -191,7 +199,9 @@ static const SymbolEntry s_symbol_table[] =
 //     \l  SL  Areas      (box,circles,etc)
 //     \m  SM  Value Sign (3 digit display)
 //     \n  SN# OVERLAY TRIANGLE
-//     \o  SO  small circle
+    { @"\\o", @"small circle",                           @"◉",            1, 1, 0.70f, 0.00f, 0.00f, 0.7f },
+
+    //     \o  SO  small circle
 //     \p  SP  AVAIL (PrtlyCldy => ( ovly P
 //     \q  SQ  AVAIL
 //     \r  SR  Restrooms
@@ -369,6 +379,7 @@ static const SymbolEntry s_symbol_table[] =
 //    H[ = Hiker
 //
 //    HOUSE: #-
+    { @"/-", @"House",     @"🏠",            0, 1, kNGry, kNGry, kNGry, 0.7f },
 //    /- = House
 //    \- = (was HF)
 //    5- = 50 Hz if non standard
@@ -553,11 +564,11 @@ const SymbolEntry* getSymbolEntry( NSString* symbol )
         entry++;
     }
     
+    NSLog( @"getSymbolEntry: couldn't find symbol for: %@\n", symbol );
     return nil;
 }
 
 
-#define kEmojiSize 32
 
 UIImage* emojiToImage( NSString* emoji )
 {

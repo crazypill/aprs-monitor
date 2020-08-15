@@ -186,8 +186,8 @@ static bool s_displayMmHg = false;
    if( _course.length )
        return _course;
     
-//    return [NSString stringWithFormat:@"%@ -> %@",  _type, _comment.length ? _comment : _address];
-    return _comment.length ? _comment : _address;
+    NSString* typeDebug = [NSString stringWithFormat:@"%@-%@",  _type, _address];
+    return _comment.length ? _comment : typeDebug;
 }
 
 

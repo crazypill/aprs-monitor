@@ -337,7 +337,7 @@ void map_callback( packet_t packet )
     {
         Packet* pkt = (Packet*)view.annotation;
         if( pkt )
-            detailNavController.viewControllers.firstObject.title = pkt.title;
+            detailNavController.viewControllers.firstObject.title = pkt.title; // !!@ change this to pass full packet for inspection
         
         detailNavController.modalPresentationStyle = UIModalPresentationPopover;
         UIPopoverPresentationController* presentationController = detailNavController.popoverPresentationController;
