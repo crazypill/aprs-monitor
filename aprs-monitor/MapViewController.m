@@ -22,7 +22,7 @@
 
 static MapViewController* s_map_controller   = nil;
 static bool               s_have_location    = false;
-static CGFloat            s_default_map_span = 1.50f;
+static CGFloat            s_default_map_span = 10.0f;
 
 
 

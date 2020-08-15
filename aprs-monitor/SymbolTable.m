@@ -45,8 +45,7 @@ static const SymbolEntry s_symbol_table[] =
 //     /I PI  TcpIp on air network stn
 //     /J PJ
 //     /K PK  School
-//     /L PL  PC user (Jan 03)
-//     /M PM  MacAPRS
+    { @"/L", @"PC user",               @"🖥",             0, 1, kNGry, kNGry, kNGry, 0.7f },
     { @"/M", @"MacAPRS",               @"🍏",             0, 1, kNGry, kNGry, kNGry, 0.7f },
 //     /N PN  NTS Station
     { @"/O", @"Balloon",               @"🎈",             0, 1, kNGry, kNGry, kNGry, 0.7f },
@@ -86,7 +85,7 @@ static const SymbolEntry s_symbol_table[] =
 //  { @"/i", @"Islands on the air",    @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
     { @"/j", @"Jeep",                  @"🛺",            0, 1, kNGry, kNGry, kNGry, 0.7f },
     { @"/k", @"Truck",                 @"🚚",            0, 1, kNGry, kNGry, kNGry, 0.7f },
-//  { @"/l", @"Laptop",                @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
+    { @"/l", @"Laptop",                @"💻",            0, 1, kNGry, kNGry, kNGry, 0.7f },
 //  { @"/m", @"Mic-E Repeater",        @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
     { @"/n", @"Node",                  @"⦿",             1, 1, kNGry, kNGry, kNGry, 0.7f },
 //  { @"/o", @"EOC",                   @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
