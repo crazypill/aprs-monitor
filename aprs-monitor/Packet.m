@@ -186,7 +186,7 @@ static bool s_displayMmHg = false;
         return _weather;
 
     if( _course.length && _speed.length )
-        return [NSString stringWithFormat:@"%@  %@",  _course, _speed];
+        return [NSString stringWithFormat:@"%@   %@",  _course, _speed];
 
     if( _course.length )
        return _course;

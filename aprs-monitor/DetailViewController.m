@@ -218,7 +218,7 @@ static uint32_t s_position_state = 0;
             WindCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.wind.cell" forIndexPath:indexPath];
 
             // Configure the cell...
-            if( (_detail.wx->wxflags & (kWxDataFlag_windDir | kWxDataFlag_windDir)) == (kWxDataFlag_windDir | kWxDataFlag_windDir) )
+            if( (_detail.wx->wxflags & (kWxDataFlag_windDir | kWxDataFlag_wind)) == (kWxDataFlag_windDir | kWxDataFlag_wind) )
             {
                 int windIndex = (int)(_detail.wx->windDirection / 22.5f); // truncate
                 const char* compass[] = { "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW" };
