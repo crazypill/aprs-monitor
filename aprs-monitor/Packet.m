@@ -9,8 +9,14 @@
 #import "RemoteTNC.h"
 
 
-
 #define kWindMask (kWxDataFlag_wind | kWxDataFlag_windDir | kWxDataFlag_gust)
+
+
+// eventually this will be hooked up to routines that can be called that set this from settings or prefs. !!@
+static bool s_displayC    = false;
+static bool s_displayMmHg = false;
+// also add m/s option for wind speeds
+
 
 @implementation Packet
 
@@ -124,6 +130,12 @@
             us.flags |= kPacketFlag_CoordinatesValid;
         }
         
+        if( (decode_state.g_flags & kDataFlag_Course) && (decode_state.g_flags & kDataFlag_Speed) )
+        {
+            us.flags |= kPacketFlag_CourseSpeed;
+            us.course = [NSString stringWithFormat:@"Course: %.0f°  Speed: %0.2f mph", decode_state.g_course, decode_state.g_speed_mph];
+        }
+        
         if( decode_state.g_wxdata.wxflags )
         {
             // just outright copy the entire wx record
@@ -134,16 +146,7 @@
                 us.flags |= kPacketFlag_Weather;
             }
             
-            // form weather string in the order we want
-            NSString* wx = [[NSString alloc] init];
-            if( decode_state.g_wxdata.wxflags & kWxDataFlag_temp )
-                wx = [wx stringByAppendingFormat:@"🌡 %.0f°F ", decode_state.g_wxdata.tempF];
-            if( decode_state.g_wxdata.wxflags & kWxDataFlag_humidity )
-                wx = [wx stringByAppendingFormat:@"💧 %.2d%% ", decode_state.g_wxdata.humidity];
-            if( decode_state.g_wxdata.wxflags & kWxDataFlag_pressure )
-                wx = [wx stringByAppendingFormat:@"%.2f InHg ", decode_state.g_wxdata.pressure * millibar2inchHg];
-
-            us.weather = [Packet stringByTrimmingTrailingWhitespaceAndNewlineCharacters:wx];
+            us.weather = [Packet makeWeatherString:&decode_state.g_wxdata];
         }
     }
     
@@ -178,12 +181,41 @@
 {
     if( _weather.length )
         return _weather;
-
+    
+   if( _course.length )
+       return _course;
+    
 //    return [NSString stringWithFormat:@"%@ -> %@",  _type, _comment.length ? _comment : _address];
     return _comment.length ? _comment : _address;
 }
 
 
+// this is the short string used when we don't have rain data, etc...  it's just a short string...
++ (NSString*)makeWeatherString:(wx_data*)wxdata
+{
+    // form weather string in the order we want
+    NSString* wx = [[NSString alloc] init];
+    if( wxdata->wxflags & kWxDataFlag_temp )
+    {
+        if( s_displayC )
+            wx = [wx stringByAppendingFormat:@"🌡%.0f°C ", f2c( wxdata->tempF )];
+        else
+            wx = [wx stringByAppendingFormat:@"🌡%.0f°F ", wxdata->tempF];
+    }
+    
+    if( wxdata->wxflags & kWxDataFlag_humidity )
+        wx = [wx stringByAppendingFormat:@"💧%.2d%% ", wxdata->humidity];
+    
+    if( wxdata->wxflags & kWxDataFlag_pressure )
+    {
+        if( s_displayMmHg )
+            wx = [wx stringByAppendingFormat:@"🔻%.0f mmHg ", wxdata->pressure];
+        else
+            wx = [wx stringByAppendingFormat:@"🔻%.2f InHg ", wxdata->pressure * millibar2inchHg];
+    }
+
+    return [Packet stringByTrimmingTrailingWhitespaceAndNewlineCharacters:wx];
+}
 
 
 - (UIImage* _Nullable)getWindIndicatorIcon:(CGRect)imageBounds

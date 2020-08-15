@@ -231,11 +231,16 @@ void map_callback( packet_t packet )
     pkt.wx = malloc( sizeof( wx_data ) );
     if( pkt.wx )
     {
-        pkt.wx->wxflags |= (kWxDataFlag_gust | kWxDataFlag_windDir | kWxDataFlag_wind);
+        pkt.wx->wxflags |= (kWxDataFlag_gust | kWxDataFlag_windDir | kWxDataFlag_wind | kWxDataFlag_temp | kWxDataFlag_humidity | kWxDataFlag_pressure);
         pkt.wx->windGustMph = 10;
         pkt.wx->windSpeedMph = 2;
         pkt.wx->windDirection = 195;
-    
+
+        pkt.wx->tempF    = 100;
+        pkt.wx->humidity = 55;
+        pkt.wx->pressure = 1013;
+     
+        pkt.weather = [Packet makeWeatherString:pkt.wx];
         [self plotMessage:pkt];
     }
     pkt = nil;
@@ -308,8 +313,8 @@ void map_callback( packet_t packet )
     anno.displayPriority = MKFeatureDisplayPriorityRequired;
     anno.titleVisibility = MKFeatureVisibilityAdaptive;
 
-//    anno.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-    anno.rightCalloutAccessoryView = [UIButton systemButtonWithImage:[UIImage systemImageNamed:@"info.circle"] target:nil action:nil]; //this prevents a tap from selecting this item!
+    // this prevents a tap from selecting this item! using the detailDisclosure type causes the entire text field to also act like a button press.
+    anno.rightCalloutAccessoryView = [UIButton systemButtonWithImage:[UIImage systemImageNamed:@"info.circle"] target:nil action:nil];
     
     
     const SymbolEntry* sym = getSymbolEntry( pkt.symbol );
@@ -344,7 +349,7 @@ void map_callback( packet_t packet )
             if( windIcon )
             {
                 anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:windIcon];
-//                anno.detailCalloutAccessoryView = [[UIImageView alloc] initWithImage:windIcon];
+//                anno.detailCalloutAccessoryView = [[UIImageView alloc] initWithImage:windIcon]; // test code to see if we can easily attach custom view (yes!)
             }
         }
     }

@@ -14,7 +14,8 @@
 enum
 {
     kPacketFlag_CoordinatesValid = 1 << 0,
-    kPacketFlag_Weather          = 1 << 1
+    kPacketFlag_Weather          = 1 << 1,
+    kPacketFlag_CourseSpeed      = 1 << 2
 };
 
 
@@ -32,11 +33,13 @@ enum
 @property (nonatomic, copy, nullable) NSString* symbol;
 @property (nonatomic, copy, nullable) NSString* comment;
 @property (nonatomic, copy, nullable) NSString* weather;
+@property (nonatomic, copy, nullable) NSString* course;
 @property (nonatomic, copy, nullable) NSDate*   timeStamp;
 @property (nonatomic, nullable)       wx_data*  wx;
 
 
 + (_Nullable id)initWithPacket_t:(packet_t _Nullable)packet;
++ (NSString*)makeWeatherString:(wx_data*)wxdata;
 
 - (UIImage* _Nullable)getWindIndicatorIcon:(CGRect)imageBounds;
 
