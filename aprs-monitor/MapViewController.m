@@ -308,7 +308,9 @@ void map_callback( packet_t packet )
     anno.displayPriority = MKFeatureDisplayPriorityRequired;
     anno.titleVisibility = MKFeatureVisibilityAdaptive;
 
-    anno.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+//    anno.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+    anno.rightCalloutAccessoryView = [UIButton systemButtonWithImage:[UIImage systemImageNamed:@"info.circle"] target:nil action:nil]; //this prevents a tap from selecting this item!
+    
     
     const SymbolEntry* sym = getSymbolEntry( pkt.symbol );
     if( sym )
@@ -342,7 +344,7 @@ void map_callback( packet_t packet )
             if( windIcon )
             {
                 anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:windIcon];
-                anno.leftCalloutAccessoryView.backgroundColor = [UIColor clearColor];
+//                anno.detailCalloutAccessoryView = [[UIImageView alloc] initWithImage:windIcon];
             }
         }
     }

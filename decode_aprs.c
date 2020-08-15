@@ -2608,37 +2608,37 @@ static void weather_data (decode_aprs_t *A, char *wdata, int wind_prefix)
 	  }
 	}
 
+    if( getwdata( &wp, 't', 3, &A->g_wxdata.tempF ) )
+    {
+      if( A->g_wxdata.tempF != G_UNKNOWN )
+      {
+          A->g_wxdata.wxflags |= kWxDataFlag_temp;
+          
+          char ctemp[40];
+          snprintf( ctemp, sizeof( ctemp ), " %.0f°F🌡", A->g_wxdata.tempF );
+          strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
+      }
+    }
+    else
+    {
+      if( !A->g_quiet )
+      {
+        text_color_set(DW_COLOR_ERROR);
+        dw_printf("Didn't find temperature in form t999.\n");
+      }
+    }
+
+    
     // Now pick out other optional fields in any order
 	keep_going = 1;
 	while( keep_going )
     {
-        if( getwdata( &wp, 't', 3, &A->g_wxdata.tempF ) )
-        {
-          if( A->g_wxdata.tempF != G_UNKNOWN )
-          {
-              A->g_wxdata.wxflags |= kWxDataFlag_temp;
-              
-              char ctemp[40];
-              snprintf( ctemp, sizeof( ctemp ), " %.0f°F🌡", A->g_wxdata.tempF );
-              strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
-          }
-        }
-        else
-        {
-          if( !A->g_quiet )
-          {
-            text_color_set(DW_COLOR_ERROR);
-            dw_printf("Didn't find temperature in form t999.\n");
-          }
-        }
-
-        
-        if( getwdata( &wp, 'r', 3, &A->g_wxdata.rainLastHour ) )
+        if( getwdata( &wp, 'r', 3, &fval ) )
         {
             // r = rainfall, 1/100 inch, last hour
-            if( A->g_wxdata.rainLastHour != G_UNKNOWN )
+            if( fval != G_UNKNOWN )
             {
-                A->g_wxdata.rainLastHour /= 100.0;
+                A->g_wxdata.rainLastHour = fval / 100.0;
                 A->g_wxdata.wxflags |= kWxDataFlag_rainHr;
 
                 char ctemp[40];
@@ -2646,12 +2646,12 @@ static void weather_data (decode_aprs_t *A, char *wdata, int wind_prefix)
                 strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
             }
         }
-        else if( getwdata( &wp, 'p', 3, &A->g_wxdata.rainLast24Hrs ) )
+        else if( getwdata( &wp, 'p', 3, &fval ) )
         {
             // p = rainfall, 1/100 inch, last 24 hours
-            if( A->g_wxdata.rainLast24Hrs != G_UNKNOWN )
+            if( fval != G_UNKNOWN )
             {
-                A->g_wxdata.rainLast24Hrs /= 100.0;
+                A->g_wxdata.rainLast24Hrs = fval / 100.0;
                 A->g_wxdata.wxflags |= kWxDataFlag_rain24;
                 
                 char ctemp[40];
@@ -2659,13 +2659,12 @@ static void weather_data (decode_aprs_t *A, char *wdata, int wind_prefix)
                 strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
             }
         }
-        else if( getwdata( &wp, 'P', 3, &A->g_wxdata.rainSinceMidnight ) )
+        else if( getwdata( &wp, 'P', 3, &fval ) )
         {
             // P = rainfall, 1/100 inch, since midnight
-
-            if( A->g_wxdata.rainSinceMidnight != G_UNKNOWN)
+            if( fval != G_UNKNOWN )
             {
-                A->g_wxdata.rainSinceMidnight /= 100.0;
+                A->g_wxdata.rainSinceMidnight = fval / 100.0;
                 A->g_wxdata.wxflags |= kWxDataFlag_rainMid;
 
                 char ctemp[40];
@@ -2688,24 +2687,25 @@ static void weather_data (decode_aprs_t *A, char *wdata, int wind_prefix)
                 strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
             }
         }
-        else if( getwdata( &wp, 'b', 5, &A->g_wxdata.pressure ) )
+        else if( getwdata( &wp, 'b', 5, &fval ) )
         {
             // b = barometric presure (tenths millibars / tenths of hPascal)
-            if( A->g_wxdata.pressure != G_UNKNOWN)
+            if( fval != G_UNKNOWN )
             {
+                A->g_wxdata.pressure = fval * 0.1;
                 A->g_wxdata.wxflags |= kWxDataFlag_pressure;
 
-                // Here, display as inches of mercury
                 char ctemp[40];
-                snprintf( ctemp, sizeof( ctemp ), " %.2f InHg", DW_MBAR_TO_INHG( A->g_wxdata.pressure * 0.1 ) );
+                snprintf( ctemp, sizeof( ctemp ), " %.2f InHg", DW_MBAR_TO_INHG( A->g_wxdata.pressure ) );
                 strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
             }
         }
-        else if( getwdata( &wp, 'L', 3, &A->g_wxdata.luminosity ) )
+        else if( getwdata( &wp, 'L', 3, &fval ) )
         {
             // L = Luminosity, watts/ sq meter, 000-999
-            if( A->g_wxdata.luminosity != G_UNKNOWN )
+            if( fval != G_UNKNOWN )
             {
+                A->g_wxdata.luminosity = fval;
                 A->g_wxdata.wxflags |= kWxDataFlag_luminosity;
 
                 char ctemp[40];
@@ -2713,38 +2713,42 @@ static void weather_data (decode_aprs_t *A, char *wdata, int wind_prefix)
                 strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
             }
         }
-        else if( getwdata( &wp, 'l', 3, &A->g_wxdata.luminosity ) )
+        else if( getwdata( &wp, 'l', 3, &fval ) )
         {
             // l = Luminosity, watts/ sq meter, 1000-1999
-            if( A->g_wxdata.luminosity != G_UNKNOWN )
+            if( fval != G_UNKNOWN )
             {
                 A->g_wxdata.wxflags |= kWxDataFlag_luminosity;
-                A->g_wxdata.luminosity += 1000;
+                A->g_wxdata.luminosity = fval + 1000;
 
                 char ctemp[40];
                 snprintf( ctemp, sizeof( ctemp ), " %.0f watts/m^2", A->g_wxdata.luminosity );
                 strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
             }
         }
-        else if( getwdata( &wp, 's', 3, &A->g_wxdata.snowLast24Hrs ) )
+        else if( getwdata( &wp, 's', 3, &fval ) )
         {
             // s = Snowfall in last 24 hours, inches
             // Data can have decimal point so we don't have to worry about scaling.
             // 's' is also used by wind speed but that must be in a fixed
             // position in the message so there is no confusion.
 
-            if( A->g_wxdata.snowLast24Hrs != G_UNKNOWN )
+            if( fval != G_UNKNOWN )
             {
+                A->g_wxdata.snowLast24Hrs = fval;
+                A->g_wxdata.wxflags |= kWxDataFlag_snow24;
+
                 char ctemp[40];
                 snprintf( ctemp, sizeof(ctemp), " %.1f ❄️", A->g_wxdata.snowLast24Hrs );
                 strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
             }
         }
-        else if( getwdata( &wp, '#', 3, &A->g_wxdata.rainRaw ) )
+        else if( getwdata( &wp, '#', 3, &fval ) )
         {
             // # = Raw rain counter
-            if( A->g_wxdata.rainRaw != G_UNKNOWN )
+            if( fval != G_UNKNOWN )
             {
+                A->g_wxdata.rainRaw = fval;
                 A->g_wxdata.wxflags |= kWxDataFlag_rainRaw;
 
                 char ctemp[40];
@@ -2752,14 +2756,15 @@ static void weather_data (decode_aprs_t *A, char *wdata, int wind_prefix)
                 strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
             }
         }
-        else if( getwdata( &wp, 'X', 3, &A->g_wxdata.radiation ) )
+        else if( getwdata( &wp, 'X', 3, &fval ) )
         {
             // X = Nuclear Radiation.
             // Encoded as two significant digits and order of magnitude like resistor color code
             
             // TODO: decode this properly
-            if( A->g_wxdata.radiation != G_UNKNOWN )
+            if( fval != G_UNKNOWN )
             {
+                A->g_wxdata.radiation = fval;
                 A->g_wxdata.wxflags |= kWxDataFlag_radiation;
 
                 char ctemp[40];
@@ -2769,7 +2774,7 @@ static void weather_data (decode_aprs_t *A, char *wdata, int wind_prefix)
         }
         else
         {
-            // TODO: add new flood level, battery voltage, etc.
+            // TODO: add new flood level, battery voltage, etc. !!@
 
             keep_going = 0;
         }

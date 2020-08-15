@@ -6,6 +6,7 @@
 //
 
 #import "Packet.h"
+#import "RemoteTNC.h"
 
 
 
@@ -71,6 +72,23 @@
 }
 
 
++ (NSString*)string:(NSString*)string byTrimmingTrailingCharactersInSet:(NSCharacterSet*)characterSet
+{
+    NSRange rangeOfLastWantedCharacter = [string rangeOfCharacterFromSet:[characterSet invertedSet] options:NSBackwardsSearch];
+    if( rangeOfLastWantedCharacter.location == NSNotFound )
+        return @"";
+    
+    return [string substringToIndex:rangeOfLastWantedCharacter.location + 1]; // non-inclusive
+}
+
+
++ (NSString*)stringByTrimmingTrailingWhitespaceAndNewlineCharacters:(NSString*)string
+{
+    return [Packet string:string byTrimmingTrailingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+}
+
+
+
 
 + (_Nullable id)initWithPacket_t:(packet_t)packet
 {
@@ -97,7 +115,6 @@
         us.type    = [NSString stringWithUTF8String:decode_state.g_msg_type];
         us.info    = [NSString stringWithUTF8String:(const char*)pinfo];
         us.comment = [NSString stringWithUTF8String:decode_state.g_comment];
-        us.weather = [NSString stringWithUTF8String:decode_state.g_weather];
         us.symbol  = [NSString stringWithFormat:@"%c%c",decode_state.g_symbol_table,decode_state.g_symbol_code];
         
         // ok let's do some transcribing...
@@ -116,6 +133,17 @@
                 memcpy( us.wx, &decode_state.g_wxdata, sizeof( wx_data ) );
                 us.flags |= kPacketFlag_Weather;
             }
+            
+            // form weather string in the order we want
+            NSString* wx = [[NSString alloc] init];
+            if( decode_state.g_wxdata.wxflags & kWxDataFlag_temp )
+                wx = [wx stringByAppendingFormat:@"🌡 %.0f°F ", decode_state.g_wxdata.tempF];
+            if( decode_state.g_wxdata.wxflags & kWxDataFlag_humidity )
+                wx = [wx stringByAppendingFormat:@"💧 %.2d%% ", decode_state.g_wxdata.humidity];
+            if( decode_state.g_wxdata.wxflags & kWxDataFlag_pressure )
+                wx = [wx stringByAppendingFormat:@"%.2f InHg ", decode_state.g_wxdata.pressure * millibar2inchHg];
+
+            us.weather = [Packet stringByTrimmingTrailingWhitespaceAndNewlineCharacters:wx];
         }
     }
     
