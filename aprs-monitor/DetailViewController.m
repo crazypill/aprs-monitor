@@ -79,7 +79,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 12;
+    return 14;
 }
 
 
@@ -163,38 +163,52 @@
     {
         DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
         cell.name.text = @"Rain since midnight";
-        cell.data.text = [NSString stringWithFormat:@"☂️ %.2f inches", 3.];
+        cell.data.text = [NSString stringWithFormat:@"☂️ %.2f inches", 3.2];
         return cell;
     }
     else if( indexPath.row == 7 )
+    {
+        DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
+        cell.name.text = @"Raw rain count";
+        cell.data.text = [NSString stringWithFormat:@"%d buckets", 2];
+        return cell;
+    }
+    else if( indexPath.row == 8 )
+    {
+        DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
+        cell.name.text = @"Snow over 24 hours";
+        cell.data.text = [NSString stringWithFormat:@"❄️ %.2f inches", 12.7];
+        return cell;
+    }
+    else if( indexPath.row == 9 )
     {
         DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
         cell.name.text = @"Received";
         cell.data.text = [self getDateString:[NSDate now]];
         return cell;
     }
-    else if( indexPath.row == 8 )
+    else if( indexPath.row == 10 )
     {
         DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
         cell.name.text = @"Latitude";
         cell.data.text = @"34.45345N";
         return cell;
     }
-    else if( indexPath.row == 9 )
+    else if( indexPath.row == 11 )
     {
         DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
         cell.name.text = @"Longitude";
         cell.data.text = @"118.45345W";
         return cell;
     }
-    else if( indexPath.row == 10 )
+    else if( indexPath.row == 12 )
     {
         DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
         cell.name.text = @"Comment";
         cell.data.text = @"blah blah";
         return cell;
     }
-    else if( indexPath.row == 11 )
+    else if( indexPath.row == 13 )
     {
         DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
         cell.name.text = @"Path";
