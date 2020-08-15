@@ -20,11 +20,9 @@
 
 
 
-static MapViewController* s_map_controller = nil;
-static bool               s_have_location  = false;
-
-
-
+static MapViewController* s_map_controller   = nil;
+static bool               s_have_location    = false;
+static CGFloat            s_default_map_span = 1.50f;
 
 
 
@@ -291,7 +289,7 @@ void map_callback( packet_t packet )
         
         if( !s_have_location )
         {
-            MKCoordinateSpan span = MKCoordinateSpanMake( 0.15, 0.15 );
+            MKCoordinateSpan span = MKCoordinateSpanMake( s_default_map_span, s_default_map_span );
             [weakself.mapView setRegion:MKCoordinateRegionMake( packet.coordinate, span ) animated: true];
             s_have_location = true;
         }
