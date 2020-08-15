@@ -69,8 +69,12 @@
 
 - (void)newPacketArrived:(id)sender
 {
+    __weak PacketViewController* pvc = self;
     dispatch_async( dispatch_get_main_queue(), ^{
-        [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+        if( pvc.pm.items.count )
+            [pvc.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+        else
+            [pvc.tableView reloadData];
     });
 }
 
