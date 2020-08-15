@@ -132,6 +132,7 @@ static const SymbolEntry s_symbol_table[] =
 //     \-  ONO House (H=HF) (O = Op Present)
 //     \.  OO  Ambiguous (Big Question mark)
 //     \/  OP  Waypoint Destination
+    { @"\\/", @"Waypoint Destination",         @"・",            0, 1, 162/255, 86/255, 55/255, 0.7f },  // brown
 //
 //     \0  A0# CIRCLE (IRLP/Echolink/WIRES)
 //     \1  A1  AVAIL
