@@ -87,7 +87,7 @@ static const SymbolEntry s_symbol_table[] =
     { @"/k", @"Truck",                 @"🚚",            0, 1, kNGry, kNGry, kNGry, 0.7f },
     { @"/l", @"Laptop",                @"💻",            0, 1, kNGry, kNGry, kNGry, 0.7f },
 //  { @"/m", @"Mic-E Repeater",        @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
-    { @"/n", @"Node",                  @"⦿",             1, 1, kNGry, kNGry, kNGry, 0.7f },
+    { @"/n", @"Node",                  @"⦿",             1, 1, 0.84f, 0.84f, 0.84f, 0.7f },
 //  { @"/o", @"EOC",                   @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
     { @"/p", @"Rover (dog)",           @"🐶",            0, 1, kNGry, kNGry, kNGry, 0.7f },
 //  { @"/q", @"Grid Square",           @"",              0, 0, kNGry, kNGry, kNGry, 0.7f },
