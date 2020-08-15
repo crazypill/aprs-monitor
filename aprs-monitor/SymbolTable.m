@@ -58,7 +58,7 @@ static const SymbolEntry s_symbol_table[] =
 
     { @"/V", @"ATV",                   @"🏍",             0, 1, kNGry, kNGry, kNGry, kAlpha },
 //     /W PW  National WX Service Site
-//     /X PX  HELO           (SSID-6)
+    { @"/X", @"Helicopter",            @"🚁",             0, 1, kNGry, kNGry, kNGry, kAlpha },
 //     /Y PY  YACHT (sail)   (SSID-5)
     { @"/Y", @"Yacht",                 @"🛥",             0, 1, kNGry, kNGry, kNGry, kAlpha },
 //     /Z PZ  WinAPRS

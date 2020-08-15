@@ -83,7 +83,7 @@ void map_callback( packet_t packet )
         if( pkt )
         {
             [pm addItem:pkt];
-            if( s_map_controller && (pkt.flags & kPacketFlag_CoordinatesValid) )
+            if( s_map_controller && (pkt.flags & kCoordinatesMask) )
                 [s_map_controller plotMessage:pkt];
         }
     }
@@ -186,7 +186,7 @@ void map_callback( packet_t packet )
 - (IBAction)weatherButtonPressed:(id)sender
 {
     Packet* pkt = [[Packet alloc] init];
-    pkt.flags |= (kPacketFlag_CoordinatesValid | kPacketFlag_Weather);
+    pkt.flags |= (kCoordinatesMask | kPacketFlag_Weather);
     pkt.coordinate = CLLocationCoordinate2DMake( -34.5, 118.20 );
     pkt.call = @"K6TEST";
     pkt.weather = @"fake weather";

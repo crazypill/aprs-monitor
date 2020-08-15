@@ -13,10 +13,20 @@
 
 enum
 {
-    kPacketFlag_CoordinatesValid = 1 << 0,
-    kPacketFlag_Weather          = 1 << 1,
-    kPacketFlag_CourseSpeed      = 1 << 2
+    kPacketFlag_Latitude         = 1 << 0,
+    kPacketFlag_Longitude        = 1 << 1,
+    kPacketFlag_Course           = 1 << 2,
+    kPacketFlag_Speed            = 1 << 3,
+    kPacketFlag_Weather          = 1 << 4
 };
+
+
+
+#define kWindMask        (kWxDataFlag_wind | kWxDataFlag_windDir | kWxDataFlag_gust)
+#define kCoordinatesMask (kPacketFlag_Latitude | kPacketFlag_Longitude)
+#define kCourseSpeedMask (kPacketFlag_Course | kPacketFlag_Speed)
+#define kPositionMask    (kCoordinatesMask | kCourseSpeedMask)
+
 
 
 @interface Packet : NSObject <MKAnnotation, NSCoding, NSCopying>
@@ -39,8 +49,7 @@ enum
 
 
 + (_Nullable id)initWithPacket_t:(packet_t _Nullable)packet;
-+ (NSString*)makeWeatherString:(wx_data*)wxdata;
-
++ (NSString* _Nullable)makeWeatherString:(wx_data* _Nullable)wxdata;
 - (UIImage* _Nullable)getWindIndicatorIcon:(CGRect)imageBounds;
 
 @end

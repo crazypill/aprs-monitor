@@ -9,7 +9,6 @@
 #import "RemoteTNC.h"
 
 
-#define kWindMask (kWxDataFlag_wind | kWxDataFlag_windDir | kWxDataFlag_gust)
 
 
 // eventually this will be hooked up to routines that can be called that set this from settings or prefs. !!@
@@ -127,13 +126,13 @@ static bool s_displayMmHg = false;
         if( (decode_state.g_flags & kDataFlag_Latitude) && (decode_state.g_flags & kDataFlag_Longitude) )
         {
             us.coordinate = CLLocationCoordinate2DMake( decode_state.g_lat, decode_state.g_lon );
-            us.flags |= kPacketFlag_CoordinatesValid;
+            us.flags |= (kPacketFlag_Latitude | kPacketFlag_Longitude);
         }
         
         // I like to think about these strings as short summary strings...  until we add custom views, this works nicely.
         if( (decode_state.g_flags & kDataFlag_Course) && (decode_state.g_flags & kDataFlag_Speed) && decode_state.g_speed_mph != 0 )
         {
-            us.flags |= kPacketFlag_CourseSpeed;
+            us.flags |= (kPacketFlag_Course | kPacketFlag_Speed);
             us.course = [NSString stringWithFormat:@"Course: %.0f°  Speed: %.0f mph", decode_state.g_course, decode_state.g_speed_mph];
         }
         
