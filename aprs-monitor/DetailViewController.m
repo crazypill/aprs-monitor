@@ -222,16 +222,14 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
     // one we land on based on that index and return the bit for it--
     uint16_t weatherBits = _detail.wx->wxflags & ~kWindMask;
     uint32_t startingBit = 0;
+    startingBit = get_next_on_bit( weatherBits, startingBit );
 
-    if( raw == 0 )
+    // wind can exist from any of three wind bits, wind, dir, gust
+    if( (raw == 0) && (_detail.wx->wxflags & kWindMask) )
     {
-        // wind can exist from any of three wind bits, wind, dir, gust
-        if( _detail.wx->wxflags & kWindMask )
-            return kWxDataFlag_wind; // just one flags for any of them because the list view expects only one
-        else
-            startingBit = get_next_on_bit( weatherBits, startingBit );
+        // just one flags for any of them because the list view expects only one
+        return kWxDataFlag_wind;
     }
-
     
     // we are just dealing with anything beyond wind at this point...
     for( NSInteger i = 0; i < raw; i++ )

@@ -170,14 +170,18 @@ static bool s_displayMmHg = false;
             us.flags |= (kPacketFlag_Latitude | kPacketFlag_Longitude);
         }
         
-        // I like to think about these strings as short summary strings...  until we add custom views, this works nicely.
-        if( (decode_state.g_flags & kDataFlag_Course) && (decode_state.g_flags & kDataFlag_Speed) && decode_state.g_speed_mph != 0 )
+        if( decode_state.g_flags & kDataFlag_Course )
         {
-            us.flags |= (kPacketFlag_Course | kPacketFlag_Speed);
+            us.flags |= kPacketFlag_Course;
             us.course = decode_state.g_course;
+        }
+
+        if( decode_state.g_flags & kDataFlag_Speed )
+        {
+            us.flags |= kPacketFlag_Speed;
             us.speed  = decode_state.g_speed_mph;
         }
-        
+
         if( decode_state.g_wxdata.wxflags )
         {
             // just outright copy the entire wx record
@@ -224,17 +228,14 @@ static bool s_displayMmHg = false;
     if( _weather.length )
         return _weather;
 
-    if( (_flags & kPacketFlag_Course) &&  (_flags & kPacketFlag_Speed) )
+    if( (_flags & kPacketFlag_Course) &&  (_flags & kPacketFlag_Speed) && _speed != 0.0f )
         return [NSString stringWithFormat:@"Course: %.0f°   Speed: %.0f mph",  _course, _speed];
 
     if( _flags & kPacketFlag_Course )
        return [NSString stringWithFormat:@"Course: %.0f°", _course];
 
-    if( _flags & kPacketFlag_Speed )
+    if( _flags & kPacketFlag_Speed && _speed != 0.0f )
         return [NSString stringWithFormat:@"Speed: %.0f mph", _speed];
-
-//    NSString* typeDebug = [NSString stringWithFormat:@"%@-%@",  _type, _path];
-//    return _comment.length ? _comment : typeDebug;
 
     return _comment.length ? _comment : _path;
 }
