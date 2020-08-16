@@ -27,14 +27,16 @@ static bool s_displayMmHg = false;
     [encoder encodeFloat:_coordinate.latitude  forKey:@"latitude"];
     [encoder encodeFloat:_coordinate.longitude forKey:@"longitude"];
     
-    [encoder encodeObject:_call      forKey:@"call"];
-    [encoder encodeObject:_address   forKey:@"address"];
-    [encoder encodeObject:_info      forKey:@"info"];
-    [encoder encodeObject:_type      forKey:@"type"];
-    [encoder encodeObject:_symbol    forKey:@"symbol"];
-    [encoder encodeObject:_comment   forKey:@"comment"];
-    [encoder encodeObject:_weather   forKey:@"weather"];
-    [encoder encodeObject:_timeStamp forKey:@"timeStamp"];
+    [encoder encodeObject:_call        forKey:@"call"];
+    [encoder encodeObject:_address     forKey:@"address"];
+    [encoder encodeObject:_destination forKey:@"destination"];
+    [encoder encodeObject:_path        forKey:@"path"];
+    [encoder encodeObject:_info        forKey:@"info"];
+    [encoder encodeObject:_type        forKey:@"type"];
+    [encoder encodeObject:_symbol      forKey:@"symbol"];
+    [encoder encodeObject:_comment     forKey:@"comment"];
+    [encoder encodeObject:_weather     forKey:@"weather"];
+    [encoder encodeObject:_timeStamp   forKey:@"timeStamp"];
 }
 
 
@@ -47,14 +49,16 @@ static bool s_displayMmHg = false;
         _coordinate.latitude  = [decoder decodeFloatForKey:@"latitude"];
         _coordinate.longitude = [decoder decodeFloatForKey:@"longitude"];
 
-        _call      = [decoder decodeObjectForKey:@"call"];
-        _address   = [decoder decodeObjectForKey:@"address"];
-        _info      = [decoder decodeObjectForKey:@"info"];
-        _type      = [decoder decodeObjectForKey:@"type"];
-        _symbol    = [decoder decodeObjectForKey:@"symbol"];
-        _comment   = [decoder decodeObjectForKey:@"comment"];
-        _weather   = [decoder decodeObjectForKey:@"weather"];
-        _timeStamp = [decoder decodeObjectForKey:@"timeStamp"];
+        _call        = [decoder decodeObjectForKey:@"call"];
+        _address     = [decoder decodeObjectForKey:@"address"];
+        _destination = [decoder decodeObjectForKey:@"destination"];
+        _path        = [decoder decodeObjectForKey:@"path"];
+        _info        = [decoder decodeObjectForKey:@"info"];
+        _type        = [decoder decodeObjectForKey:@"type"];
+        _symbol      = [decoder decodeObjectForKey:@"symbol"];
+        _comment     = [decoder decodeObjectForKey:@"comment"];
+        _weather     = [decoder decodeObjectForKey:@"weather"];
+        _timeStamp   = [decoder decodeObjectForKey:@"timeStamp"];
     }
     return self;
 }
@@ -65,16 +69,18 @@ static bool s_displayMmHg = false;
     Packet* pkt = [[self class] allocWithZone:zone];
 
     // !!@ add missing items
-    pkt.coordinate = _coordinate;
-    pkt.flags      = _flags;
-    pkt.call       = [_call copyWithZone:zone];
-    pkt.address    = [_address copyWithZone:zone];
-    pkt.info       = [_info copyWithZone:zone];
-    pkt.type       = [_type copyWithZone:zone];
-    pkt.symbol     = [_symbol copyWithZone:zone];
-    pkt.comment    = [_comment copyWithZone:zone];
-    pkt.weather    = [_weather copyWithZone:zone];
-    pkt.timeStamp  = [_timeStamp copyWithZone:zone];
+    pkt.coordinate  = _coordinate;
+    pkt.flags       = _flags;
+    pkt.call        = [_call copyWithZone:zone];
+    pkt.address     = [_address copyWithZone:zone];
+    pkt.destination = [_destination copyWithZone:zone];
+    pkt.path        = [_path copyWithZone:zone];
+    pkt.info        = [_info copyWithZone:zone];
+    pkt.type        = [_type copyWithZone:zone];
+    pkt.symbol      = [_symbol copyWithZone:zone];
+    pkt.comment     = [_comment copyWithZone:zone];
+    pkt.weather     = [_weather copyWithZone:zone];
+    pkt.timeStamp   = [_timeStamp copyWithZone:zone];
     return pkt;
 }
 
@@ -103,26 +109,36 @@ static bool s_displayMmHg = false;
     if( !us )
         return nil;
 
-    char           addrs[AX25_MAX_ADDRS*AX25_MAX_ADDR_LEN] = {};    // Like source>dest,digi,...,digi:
     unsigned char* pinfo = NULL;
 
-    ax25_format_addrs( packet, addrs );
 
     int info_len = ax25_get_info( packet, &pinfo );
     if( info_len )
     {
+        char addrs[AX25_MAX_ADDRS*AX25_MAX_ADDR_LEN] = {};    // Like source>dest,digi,...,digi:
+        ax25_format_addrs( packet, addrs );
         NSLog( @"%s%s\n", addrs, pinfo );
-
+        
         decode_aprs_t decode_state = {};
         decode_aprs( &decode_state, packet, true );
         
+        char dest[AX25_MAX_ADDR_LEN] = {};
+        ax25_get_addr_with_ssid( packet, AX25_DESTINATION, dest );
+        
         // http://www.aprs.org/symbols/symbols-new.txt
-        us.call    = [NSString stringWithUTF8String:decode_state.g_src];
-        us.address = [NSString stringWithUTF8String:addrs];
-        us.type    = [NSString stringWithUTF8String:decode_state.g_msg_type];
-        us.info    = [NSString stringWithUTF8String:(const char*)pinfo];
-        us.comment = [NSString stringWithUTF8String:decode_state.g_comment];
-        us.symbol  = [NSString stringWithFormat:@"%c%c",decode_state.g_symbol_table,decode_state.g_symbol_code];
+        us.call        = [NSString stringWithUTF8String:decode_state.g_src];
+        us.address     = [NSString stringWithUTF8String:addrs];
+        us.destination = [NSString stringWithUTF8String:dest];
+        us.type        = [NSString stringWithUTF8String:decode_state.g_msg_type];
+        us.info        = [NSString stringWithUTF8String:(const char*)pinfo];
+        us.symbol      = [NSString stringWithFormat:@"%c%c",decode_state.g_symbol_table,decode_state.g_symbol_code];
+
+        if( decode_state.g_flags & kDataFlag_Comment )
+            us.comment = [NSString stringWithUTF8String:decode_state.g_comment];
+        
+        addrs[0] = 0;   // clear buffer lazy way
+        ax25_format_via_path( packet, addrs, sizeof( addrs ) );
+        us.path = [NSString stringWithUTF8String:addrs];
         
         // ok let's do some transcribing...
         if( (decode_state.g_flags & kDataFlag_Latitude) && (decode_state.g_flags & kDataFlag_Longitude) )
@@ -194,8 +210,10 @@ static bool s_displayMmHg = false;
     if( _speed.length )
         return _speed;
 
-    NSString* typeDebug = [NSString stringWithFormat:@"%@-%@",  _type, _address];
-    return _comment.length ? _comment : typeDebug;
+//    NSString* typeDebug = [NSString stringWithFormat:@"%@-%@",  _type, _path];
+//    return _comment.length ? _comment : typeDebug;
+
+    return _comment.length ? _comment : _path;
 }
 
 

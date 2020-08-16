@@ -17,7 +17,8 @@ enum
     kPacketFlag_Longitude        = 1 << 1,
     kPacketFlag_Course           = 1 << 2,
     kPacketFlag_Speed            = 1 << 3,
-    kPacketFlag_Weather          = 1 << 4
+    kPacketFlag_Weather          = 1 << 4,
+    kPacketFlag_Telemetry        = 1 << 5
 };
 
 
@@ -38,6 +39,8 @@ enum
 
 @property (nonatomic, copy, nullable) NSString* call;
 @property (nonatomic, copy, nullable) NSString* address;
+@property (nonatomic, copy, nullable) NSString* destination;
+@property (nonatomic, copy, nullable) NSString* path;
 @property (nonatomic, copy, nullable) NSString* info;
 @property (nonatomic, copy, nullable) NSString* type;
 @property (nonatomic, copy, nullable) NSString* symbol;

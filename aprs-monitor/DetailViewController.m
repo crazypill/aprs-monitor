@@ -17,7 +17,9 @@ enum
     kDetailSection_Weather,
     kDetailSection_Position,
     kDetailSection_Properties,
-    kDetailSection_Telemetry
+    kDetailSection_Telemetry,
+    
+    kDetailSection_NumSections // leave last
 };
 
 
@@ -127,7 +129,7 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     
-    NSInteger sections = 0;
+    NSInteger sections = 1; // we always have the properties section...
 
     // let's see how many sections we have - only two at the moment tops
     if( (_detail.flags & kCoordinatesMask) | (_detail.flags & kCourseSpeedMask) )
@@ -136,6 +138,9 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
     if( (_detail.flags & kPacketFlag_Weather) && _detail.wx )
         ++sections;
     
+    if( (_detail.flags & kPacketFlag_Telemetry) )
+        ++sections;
+
     return sections;
 }
 
@@ -147,15 +152,38 @@ static uint32_t s_position_state = 0;
 
 - (NSInteger)getSection:(NSInteger)raw
 {
-    if( [self numberOfSectionsInTableView:self.tableView] == 2 )
+    NSInteger sections = [self numberOfSectionsInTableView:self.tableView];
+    // four sections we don't have to do anything.  Also the same for three sections
+    if( sections >= (kDetailSection_NumSections - 1) )
         return raw;
-    else
+
+    if( sections == 2 )
     {
-        if( (_detail.flags & kCoordinatesMask) | (_detail.flags & kCourseSpeedMask) )
-            return kDetailSection_Position;
+        // if there are only two sections, they can be either weather and properties, or position and properties
+        if( (_detail.flags & kPacketFlag_Weather) )
+        {
+            if( raw == 0 )
+                return kDetailSection_Weather;
+            else
+                return kDetailSection_Properties;
+        }
         else
-            return kDetailSection_Weather;
+        {
+            if( raw == 0 )
+                return kDetailSection_Position;
+            else
+                return kDetailSection_Properties;
+        }
     }
+    else if( sections == 1 )
+    {
+        if( (_detail.flags & kPacketFlag_Weather) )
+            return kDetailSection_Weather;
+        else
+            return kDetailSection_Position;
+    }
+    
+    return -1; // will surely cause a crash
 }
 
 
@@ -182,7 +210,16 @@ static uint32_t s_position_state = 0;
         // mask out weather and things
         return count_bits( _detail.flags & kPositionMask );
     }
-
+    else if( [self getSection:section] == kDetailSection_Properties )
+    {
+        // there are always these row in the properties: timestamp, type, destination, and path.
+        NSInteger rows = 4;
+        // there might also be a status message and a comment...
+        if( _detail.comment )
+            ++rows;
+        
+        return rows;
+    }
     return 0;
 }
 
@@ -191,8 +228,10 @@ static uint32_t s_position_state = 0;
 {
     if( [self getSection:section] == kDetailSection_Weather )
         return @"Weather";
-    else
+    else if( [self getSection:section] == kDetailSection_Position )
         return @"Position";
+    else
+        return @"Properties";
 }
 
 
@@ -339,23 +378,52 @@ static uint32_t s_position_state = 0;
             return cell;
         }
     }
-
+    else if( [self getSection:indexPath.section] == kDetailSection_Properties )
+    {
+        if( indexPath.row == 0 )
+        {
+            DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
+            cell.name.text = @"Received";
+            cell.data.text = [self getDateString:_detail.timeStamp];
+            return cell;
+        }
+        if( indexPath.row == 1 )
+        {
+            DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
+            cell.name.text = @"Type";
+            cell.data.text = _detail.type;
+            return cell;
+        }
+        else if( indexPath.row == 2 )
+        {
+            DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
+            cell.name.text = @"Destination";
+            cell.data.text = _detail.destination;
+            return cell;
+        }
+        else if( indexPath.row == 3 )
+        {
+            DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
+            cell.name.text = @"Path";
+            cell.data.text = _detail.path;
+            return cell;
+        }
+        else if( indexPath.row == 4 )
+        {
+            DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
+            cell.name.text = @"Comment";
+            cell.data.text = _detail.comment;
+            return cell;
+        }
+//        else if( indexPath.row == 4 )
+//        {
+//            DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
+//            cell.name.text = @"Status";
+//            cell.data.text = ??
+//            return cell;
+//        }
+    }
     
-    // section properties:
-    //        if( indexPath.row == 9 )
-    //        {
-    //            DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
-    //            cell.name.text = @"Received";
-    //            cell.data.text = [self getDateString:[NSDate now]];
-    //            return cell;
-    //        }
-    //        else if( indexPath.row == 15 )
-    //        {
-    //            DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
-    //            cell.name.text = @"Path";
-    //            cell.data.text = @"WEER>WEREWR-DSFDSF->BEER";
-    //            return cell;
-    //        }
 
     
     

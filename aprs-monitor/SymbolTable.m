@@ -195,7 +195,7 @@ static const SymbolEntry s_symbol_table[] =
 //     \e  SE  Sleet (& future ovrly codes)
 //     \f  SF  Funnel Cloud
 //     \g  SG  Gale Flags
-    { @"\\h", @"Store. or HAMFST",                       @"🛒",           0, 1, kNGry, kNGry, 1.0f,  kAlpha },
+    { @"\\h", @"Store. or HAMFST",                       @"🛒",           0, 1, 0.40f, 0.40f, 0.40f,  kAlpha },
 //     \i  SI# BOX or points of Interest
 //     \j  SJ  WorkZone (Steam Shovel)
     { @"\\k", @"Special Vehicle SUV,ATV,4x4",            @"🚙",           0, 1, kNGry, kNGry, kNGry, kAlpha },
