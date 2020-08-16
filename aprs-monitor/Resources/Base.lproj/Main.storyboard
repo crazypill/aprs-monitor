@@ -44,12 +44,12 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" text="field:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="onf-Ry-mu5">
-                                            <rect key="frame" x="15.999999999999996" y="11.000000000000002" width="37.666666666666657" height="20.666666666666671"/>
+                                            <rect key="frame" x="15.999999999999996" y="10.999999999999998" width="37.666666666666657" height="21.333333333333329"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="data" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CoJ-g5-GuH">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="data" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CoJ-g5-GuH">
                                             <rect key="frame" x="61.666666666666657" y="11.000000000000002" width="297.33333333333337" height="20.666666666666671"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" systemColor="secondaryLabelColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
@@ -63,7 +63,6 @@
                                         <constraint firstAttribute="bottom" secondItem="CoJ-g5-GuH" secondAttribute="bottom" constant="11.666667938232422" id="Sns-R5-rZW"/>
                                         <constraint firstItem="onf-Ry-mu5" firstAttribute="top" secondItem="Ecq-90-S9H" secondAttribute="top" constant="11" id="T4a-8B-hcD"/>
                                         <constraint firstAttribute="trailing" secondItem="CoJ-g5-GuH" secondAttribute="trailing" constant="16" id="XK0-Df-7lL"/>
-                                        <constraint firstAttribute="bottom" secondItem="onf-Ry-mu5" secondAttribute="bottom" constant="11.666667938232422" id="wVX-1A-5rm"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
