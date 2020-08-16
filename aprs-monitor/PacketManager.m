@@ -8,6 +8,7 @@
 #import "PacketManager.h"
 #import "ErrorController.h"
 
+#define kDocType @"Packet Log"
 
 
 @implementation ArrayDocument
@@ -19,7 +20,7 @@
     _items = [NSKeyedUnarchiver unarchiveObjectWithData:contents];
     if( *outError )
     {
-        [[ErrorController shared] showError:[*outError localizedDescription] withTitle:@"Invites" inWindow:nil];
+        [[ErrorController shared] showError:[*outError localizedDescription] withTitle:kDocType inWindow:nil];
         NSLog( @"loadFromContents: %@, err: %@, items: %@\n", typeName, *outError, _items );
     }
     return YES;
@@ -31,7 +32,7 @@
     NSData* data =  [NSKeyedArchiver archivedDataWithRootObject:_items requiringSecureCoding:NO error:outError];
     if( *outError )
     {
-        [[ErrorController shared] showError:[*outError localizedDescription] withTitle:@"Invites" inWindow:nil];
+        [[ErrorController shared] showError:[*outError localizedDescription] withTitle:kDocType inWindow:nil];
         NSLog( @"contentsForType: %@, err: %@, items: %@\n", typeName, *outError, _items );
     }
     return data;
@@ -180,13 +181,13 @@ static PacketManager* s_shared = NULL;
 
 - (NSString*)documentPath
 {
-    return [[PacketManager applicationDocumentsDirectory] stringByAppendingString:@"/PacketList"];
+    return [[PacketManager applicationDocumentsDirectory] stringByAppendingString:@"/RawPacket.log"];
 }
 
 
 - (NSString*)documentType
 {
-    return @"PacketList";
+    return kDocType;
 }
 
 

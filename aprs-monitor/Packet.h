@@ -46,10 +46,10 @@ enum
 @property (nonatomic, copy, nullable) NSString* symbol;
 @property (nonatomic, copy, nullable) NSString* comment;
 @property (nonatomic, copy, nullable) NSString* weather;
-@property (nonatomic, copy, nullable) NSString* course;
-@property (nonatomic, copy, nullable) NSString* speed;
 @property (nonatomic, copy, nullable) NSDate*   timeStamp;
 @property (nonatomic, nullable)       wx_data*  wx;
+@property (nonatomic)                 CGFloat   course;
+@property (nonatomic)                 CGFloat   speed;
 
 
 + (_Nullable id)initWithPacket_t:(packet_t _Nullable)packet;

@@ -145,11 +145,6 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
 }
 
 
-static bool     s_wind_latch     = false;
-static uint32_t s_weather_state  = 0;
-static uint32_t s_position_state = 0;
-
-
 - (NSInteger)getSection:(NSInteger)raw
 {
     NSInteger sections = [self numberOfSectionsInTableView:self.tableView];
@@ -187,38 +182,103 @@ static uint32_t s_position_state = 0;
 }
 
 
+- (NSInteger)getNumberOfWeatherRows
+{
+    int bitsToRemove = 0;
+    
+    // count the number of weather bits we have -- if we have any weather bits we need to pay special attention
+    // we do this because we have three bits of data that fit into one cell
+    int numWindBits = count_bits( _detail.wx->wxflags & kWindMask );
+    if( numWindBits > 1 )
+        bitsToRemove = numWindBits - 1;
+    
+    return count_bits( _detail.wx->wxflags ) - bitsToRemove;
+}
+
+
+- (NSInteger)getNumberOfPositionRows
+{
+    return count_bits( _detail.flags & kPositionMask );
+}
+
+
+- (NSInteger)getNumberOfPropertyRows
+{
+    // there are always these row in the properties: timestamp, type, destination, and path.
+    NSInteger rows = 4;
+    // there might also be a status message and a comment...
+    if( _detail.comment )
+        ++rows;
+
+    return rows;
+}
+
+
+- (NSInteger)getWeatherFlagForRow:(NSInteger)raw
+{
+    // weather goes in this order, wind, temp, humidity, pressure, rain/rain/rain, snow.
+    // if any are missing we just go to the next one.  So if we determined that we have three rows,
+    // and the code asks for raw row 2, we need to go thru our weather field list 2 times and see which
+    // one we land on based on that index and return the bit for it--
+    
+    // do we special-case wind?
+    if( raw == 0 )
+    {
+        // wind can exist from any of three wind bits, wind, dir, gust
+        if( _detail.wx->wxflags & kWindMask )
+            return kWxDataFlag_wind; // just one flags for any of them because the list view expects only one
+    }
+
+    // if we are still here, mask out wind and walk bits
+    uint16_t weatherBits = _detail.wx->wxflags & ~kWindMask;
+    uint32_t startingBit = 0;
+    
+    // we are just dealing with anything beyond wind at this point...
+    for( NSInteger i = 0; i < raw; i++ )
+        startingBit = get_next_on_bit( weatherBits, startingBit );
+
+    return startingBit;
+}
+
+
+- (NSInteger)getPositionFlagForRow:(NSInteger)raw
+{
+    uint32_t startingBit = 0;
+    startingBit = get_next_on_bit( _detail.flags, startingBit );
+    
+    for( NSInteger i = 0; i < raw; i++ )
+        startingBit = get_next_on_bit( _detail.flags, startingBit );
+
+    return startingBit;
+}
+
+
+- (NSInteger)getPropertiesFlagForRow:(NSInteger)raw
+{
+    return raw;
+}
+
+
+- (NSInteger)getTelemetryFlagForRow:(NSInteger)raw
+{
+    return raw;
+}
+
+
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-
     if( [self getSection:section] == kDetailSection_Weather )
     {
-        s_weather_state = 0;
-        s_wind_latch = false;
-        int bitsToRemove = 0;
-        
-        // count the number of weather bits we have -- if we have any weather bits we need to pay special attention
-        // we do this because we have three bits of data that fit into one cell
-        int numWindBits = count_bits( _detail.wx->wxflags & kWindMask );
-        if( numWindBits > 1 )
-            bitsToRemove = numWindBits - 1;
-        
-        return count_bits( _detail.wx->wxflags ) - bitsToRemove;
+        return [self getNumberOfWeatherRows];
     }
     else if( [self getSection:section] == kDetailSection_Position )
     {
-        s_position_state = 0;
-        // mask out weather and things
-        return count_bits( _detail.flags & kPositionMask );
+        return [self getNumberOfPositionRows];
     }
     else if( [self getSection:section] == kDetailSection_Properties )
     {
-        // there are always these row in the properties: timestamp, type, destination, and path.
-        NSInteger rows = 4;
-        // there might also be a status message and a comment...
-        if( _detail.comment )
-            ++rows;
-        
-        return rows;
+        return [self getNumberOfPropertyRows];
     }
     return 0;
 }
@@ -237,23 +297,13 @@ static uint32_t s_position_state = 0;
 
 - (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
 {
+    const char* compass[] = { "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW" };
+
     if( [self getSection:indexPath.section] == kDetailSection_Weather )
     {
-        s_weather_state = get_next_on_bit( _detail.wx->wxflags, s_weather_state );
-        
-        if( s_wind_latch && (s_weather_state & kWindMask) )
+        NSInteger flags = [self getWeatherFlagForRow:indexPath.row];
+        if( flags & kWxDataFlag_wind )  // we only look for one flag as this is the only one that will be set even if there are others after calling getWeatherFlagForRow
         {
-            // skip over bits - there are three of them, one counts, the others we toss
-            s_weather_state = get_next_on_bit( _detail.wx->wxflags, s_weather_state );
-            if( s_weather_state & kWindMask )
-                s_weather_state = get_next_on_bit( _detail.wx->wxflags, s_weather_state );
-        }
-        
-        // only do this once
-        if( s_weather_state & kWindMask )
-        {
-            s_wind_latch = true;
-            
             WindCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.wind.cell" forIndexPath:indexPath];
 
             // Configure the cell...
@@ -268,7 +318,6 @@ static uint32_t s_position_state = 0;
             else if( _detail.wx->wxflags & kWxDataFlag_windDir )
             {
                 int windIndex = (int)(_detail.wx->windDirection / 22.5f); // truncate
-                const char* compass[] = { "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW" };
                 
                 // !!@ use attributed string here to make data part grey !!@
                 cell.line1.text = [NSString stringWithFormat:@"Wind    🧭%s  %.0f°", compass[windIndex], _detail.wx->windDirection];
@@ -288,56 +337,56 @@ static uint32_t s_position_state = 0;
             cell.windIcon.image = [_detail getWindIndicatorIcon:CGRectMake( 0, 0,  40, 40 )];
             return cell;
         }
-        else if( s_weather_state & kWxDataFlag_temp )
+        else if( flags & kWxDataFlag_temp )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Temperature";
-            cell.data.text = [NSString stringWithFormat:@"🌡%.2f °F", _detail.wx->tempF];
+            cell.data.text = [NSString stringWithFormat:@"🌡 %.2f °F", _detail.wx->tempF];
             return cell;
         }
-        else if( s_weather_state & kWxDataFlag_humidity )
+        else if( flags & kWxDataFlag_humidity )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Humidity";
             cell.data.text = [NSString stringWithFormat:@"💧%.2d%%", _detail.wx->humidity];
             return cell;
         }
-        else if( s_weather_state & kWxDataFlag_pressure )
+        else if( flags & kWxDataFlag_pressure )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Pressure";
             cell.data.text = [NSString stringWithFormat:@"🔻%.2f InHg", _detail.wx->pressure * millibar2inchHg];
             return cell;
         }
-        else if( s_weather_state & kWxDataFlag_rainHr )
+        else if( flags & kWxDataFlag_rainHr )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Rain last hour";
             cell.data.text = [NSString stringWithFormat:@"🌧 %.2f inches", _detail.wx->rainLastHour];
             return cell;
         }
-        else if( s_weather_state & kWxDataFlag_rain24 )
+        else if( flags & kWxDataFlag_rain24 )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Rain over 24 hours";
             cell.data.text = [NSString stringWithFormat:@"☔️ %.2f inches", _detail.wx->rainLast24Hrs];
             return cell;
         }
-        else if( s_weather_state & kWxDataFlag_rainMid )
+        else if( flags & kWxDataFlag_rainMid )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Rain since midnight";
             cell.data.text = [NSString stringWithFormat:@"☂️ %.2f inches", _detail.wx->rainSinceMidnight];
             return cell;
         }
-        else if( s_weather_state & kWxDataFlag_rainRaw )
+        else if( flags & kWxDataFlag_rainRaw )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Raw rain count";
             cell.data.text = [NSString stringWithFormat:@"%.0f buckets", _detail.wx->rainRaw];
             return cell;
         }
-        else if( s_weather_state & kWxDataFlag_snow24 )
+        else if( flags & kWxDataFlag_snow24 )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Snow over 24 hours";
@@ -347,34 +396,35 @@ static uint32_t s_position_state = 0;
     }
     else if( [self getSection:indexPath.section] == kDetailSection_Position )
     {
-        s_position_state = get_next_on_bit( _detail.flags & kPositionMask, s_position_state );
-        
-        if( s_position_state & kPacketFlag_Latitude )
+        NSInteger flags = [self getPositionFlagForRow:indexPath.row];
+        if( flags & kPacketFlag_Latitude )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Latitude";
             cell.data.text = [NSString stringWithFormat:@"%0.4f", _detail.coordinate.latitude]; // use a formatter so this read in degrees, minutes, seconds
             return cell;
         }
-        else if( s_position_state & kPacketFlag_Longitude )
+        else if( flags & kPacketFlag_Longitude )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Longitude";
             cell.data.text = [NSString stringWithFormat:@"%0.4f", _detail.coordinate.longitude]; // use a formatter so this read in degrees, minutes, seconds
             return cell;
         }
-        else if( s_position_state & kPacketFlag_Course )
+        else if( flags & kPacketFlag_Course )
         {
+            int courseIndex = (int)(_detail.course / 22.5f); // truncate
+
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Course";
-            cell.data.text = _detail.course;
+            cell.data.text = [NSString stringWithFormat:@"🧭%s %.0f°", compass[courseIndex], _detail.course];
             return cell;
         }
-        else if( s_position_state & kPacketFlag_Speed )
+        else if( flags & kPacketFlag_Speed )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Speed";
-            cell.data.text = _detail.speed;
+            cell.data.text = [NSString stringWithFormat:@"%.2f mph", _detail.speed];
             return cell;
         }
     }
