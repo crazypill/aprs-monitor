@@ -184,15 +184,15 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
 
 - (NSInteger)getNumberOfWeatherRows
 {
-    int bitsToRemove = 0;
-    
-    // count the number of weather bits we have -- if we have any weather bits we need to pay special attention
-    // we do this because we have three bits of data that fit into one cell
-    int numWindBits = count_bits( _detail.wx->wxflags & kWindMask );
-    if( numWindBits > 1 )
-        bitsToRemove = numWindBits - 1;
-    
-    return count_bits( _detail.wx->wxflags ) - bitsToRemove;
+    int flags = _detail.wx->wxflags;
+    if( flags & kWindMask )
+    {
+        // if we have any weather flags, only set a single bit instead of any combo of 3
+        flags &= ~kWindMask;
+        flags |= kWxDataFlag_wind;  // only one bit
+    }
+        
+    return count_bits( flags );
 }
 
 
@@ -220,18 +220,18 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
     // if any are missing we just go to the next one.  So if we determined that we have three rows,
     // and the code asks for raw row 2, we need to go thru our weather field list 2 times and see which
     // one we land on based on that index and return the bit for it--
-    uint16_t weatherBits = _detail.wx->wxflags & ~kWindMask;
+    uint16_t weatherBits = _detail.wx->wxflags;
     uint32_t startingBit = 0;
+    
+    if( weatherBits & kWindMask )
+    {
+        // if we have any weather flags, only set a single bit instead of any combo of 3
+        weatherBits &= ~kWindMask;
+        weatherBits |= kWxDataFlag_wind;  // only one bit
+    }
+
     startingBit = get_next_on_bit( weatherBits, startingBit );
 
-    // wind can exist from any of three wind bits, wind, dir, gust
-    if( (raw == 0) && (_detail.wx->wxflags & kWindMask) )
-    {
-        // just one flags for any of them because the list view expects only one
-        return kWxDataFlag_wind;
-    }
-    
-    // we are just dealing with anything beyond wind at this point...
     for( NSInteger i = 0; i < raw; i++ )
         startingBit = get_next_on_bit( weatherBits, startingBit );
 
@@ -474,8 +474,9 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
     
 
     
-    
-    return nil;
+    DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
+    cell.name.text = [NSString stringWithFormat:@"ERROR-> unknown: %@", indexPath];
+    return cell;
 }
 
 
