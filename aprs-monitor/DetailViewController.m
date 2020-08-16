@@ -220,18 +220,18 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
     // if any are missing we just go to the next one.  So if we determined that we have three rows,
     // and the code asks for raw row 2, we need to go thru our weather field list 2 times and see which
     // one we land on based on that index and return the bit for it--
-    
-    // do we special-case wind?
+    uint16_t weatherBits = _detail.wx->wxflags & ~kWindMask;
+    uint32_t startingBit = 0;
+
     if( raw == 0 )
     {
         // wind can exist from any of three wind bits, wind, dir, gust
         if( _detail.wx->wxflags & kWindMask )
             return kWxDataFlag_wind; // just one flags for any of them because the list view expects only one
+        else
+            startingBit = get_next_on_bit( weatherBits, startingBit );
     }
 
-    // if we are still here, mask out wind and walk bits
-    uint16_t weatherBits = _detail.wx->wxflags & ~kWindMask;
-    uint32_t startingBit = 0;
     
     // we are just dealing with anything beyond wind at this point...
     for( NSInteger i = 0; i < raw; i++ )
@@ -313,14 +313,14 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
                 const char* compass[] = { "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW" };
                 
                 // !!@ use attributed string here to make data part grey !!@
-                cell.line1.text = [NSString stringWithFormat:@"Wind    🧭%s  %.0f°  %0.1f mph", compass[windIndex], _detail.wx->windDirection, _detail.wx->windSpeedMph];
+                cell.line1.text = [NSString stringWithFormat:@"Wind    🧭 %s  %.0f°  %0.1f mph", compass[windIndex], _detail.wx->windDirection, _detail.wx->windSpeedMph];
             }
             else if( _detail.wx->wxflags & kWxDataFlag_windDir )
             {
                 int windIndex = (int)(_detail.wx->windDirection / 22.5f); // truncate
                 
                 // !!@ use attributed string here to make data part grey !!@
-                cell.line1.text = [NSString stringWithFormat:@"Wind    🧭%s  %.0f°", compass[windIndex], _detail.wx->windDirection];
+                cell.line1.text = [NSString stringWithFormat:@"Wind    🧭 %s  %.0f°", compass[windIndex], _detail.wx->windDirection];
             }
             else if( _detail.wx->wxflags & kWxDataFlag_wind )
             {
@@ -330,7 +330,7 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
                 cell.line1.text = nil;
             
             if( _detail.wx->wxflags & kWxDataFlag_gust )
-                cell.line2.text = [NSString stringWithFormat:@"Gusts   💨%0.1f mph", _detail.wx->windGustMph];
+                cell.line2.text = [NSString stringWithFormat:@"Gusts   💨 %0.1f mph", _detail.wx->windGustMph];
             else
                 cell.line2.text = nil;
 
@@ -417,7 +417,7 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
 
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Course";
-            cell.data.text = [NSString stringWithFormat:@"🧭%s %.0f°", compass[courseIndex], _detail.course];
+            cell.data.text = [NSString stringWithFormat:@"🧭 %s %.0f°", compass[courseIndex], _detail.course];
             return cell;
         }
         else if( flags & kPacketFlag_Speed )
