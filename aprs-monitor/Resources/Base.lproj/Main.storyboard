@@ -123,7 +123,17 @@
                             <outlet property="delegate" destination="34p-ly-gHe" id="pBB-cs-muZ"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Callsign" id="Ndy-GW-mu5"/>
+                    <navigationItem key="navigationItem" title="Callsign" id="Ndy-GW-mu5">
+                        <barButtonItem key="leftBarButtonItem" image="globe" catalog="system" style="plain" id="gTF-w4-LJc"/>
+                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="gUb-A1-oh0">
+                            <connections>
+                                <action selector="doneButtonPressed:" destination="34p-ly-gHe" id="wro-hf-vTU"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="icon" destination="gTF-w4-LJc" id="TsB-tb-jip"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vnv-8i-v7r" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -331,5 +341,6 @@
     </inferredMetricsTieBreakers>
     <resources>
         <image name="envelope" catalog="system" width="128" height="93"/>
+        <image name="globe" catalog="system" width="128" height="121"/>
     </resources>
 </document>

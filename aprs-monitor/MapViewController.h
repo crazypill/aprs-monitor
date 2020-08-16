@@ -19,6 +19,10 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem* status;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem* connect;
 
++ (UIImage*)getSymbolImage:(NSString*)symbol;
++ (UIColor*)getSymbolTint:(NSString*)symbol;
++ (void)setButtonBar:(UIBarButtonItem*)item fromSymbol:(NSString*)symbol;
+
 - (void)blinkMessageButton;
 - (void)plotMessage:(const Packet*)packet;
 //- (void)plotMessage:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude sender:(NSString*)sender;

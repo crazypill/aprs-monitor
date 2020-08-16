@@ -110,10 +110,11 @@ static const SymbolEntry s_symbol_table[] =
 //    /( BI  Mobile Satellite Station
 //    /) BJ  Wheelchair (handicapped)
 //    /* BK  SnowMobile
-//    /+ BL  Red Cross
+    { @"/+", @"Red Cross",             @"＋",            1, 1, 1.00f, 0.00f, 0.00f, kAlpha },   // red
 //    /, BM  Boy Scouts
 //    /. BO  X
-    { @"//", @"Red Dot",               @"●",             1, 1, 1.00f, 0.00f, 0.00f, kAlpha },  // red
+    { @"/.", @"X",                     @"❌",            0, 1, kNGry, kNGry, kNGry, kAlpha },
+    { @"//", @"Red Dot",               @"●",             1, 1, 1.00f, 0.00f, 0.00f, kAlpha },   // red
 
      
      

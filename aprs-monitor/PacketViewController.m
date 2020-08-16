@@ -8,6 +8,7 @@
 
 #import "PacketViewController.h"
 #import "DetailViewController.h"
+#import "MapViewController.h"
 #import "PacketManager.h"
 #import "Packet.h"
 
@@ -169,7 +170,10 @@
     {
         detail.detail = [_pm.items objectAtIndex:[self.tableView indexPathForSelectedRow].row];
         if( detail.detail )
+        {
             detail.title = detail.detail.call;
+            [MapViewController setButtonBar:detail.icon fromSymbol:detail.detail.symbol];
+        }
     }
 }
 

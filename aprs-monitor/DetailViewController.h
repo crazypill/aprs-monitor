@@ -12,7 +12,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface DetailViewController : UITableViewController
-@property (nonatomic, strong) Packet* detail;
+@property (nonatomic, strong)        Packet*          detail;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem* icon;
 @end
 
 NS_ASSUME_NONNULL_END

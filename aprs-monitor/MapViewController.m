@@ -263,6 +263,71 @@ void map_callback( packet_t packet )
 }
 
 
++ (UIImage*)getSymbolImage:(NSString*)symbol
+{
+    UIImage* image = nil;
+    const SymbolEntry* sym = getSymbolEntry( symbol );
+    if( sym )
+    {
+        UIColor* tintColor = [UIColor colorWithRed:sym->red green:sym->grn blue:sym->blu alpha:sym->alpha];
+        
+        if( sym->emoji && sym->glyph )
+        {
+            image = emojiToImage( sym->glyph );
+        }
+        else
+        {
+            image = sym->glyph ? [UIImage systemImageNamed:sym->glyph withConfiguration:[UIImageSymbolConfiguration configurationWithScale:UIImageSymbolScaleLarge]] : nil;
+        }
+            
+        if( sym->tint )
+            image = [image imageWithTintColor:tintColor];
+    }
+    return image;
+}
+
+
++ (UIColor*)getSymbolTint:(NSString*)symbol
+{
+    const SymbolEntry* sym = getSymbolEntry( symbol );
+    if( sym )
+    {
+        UIColor* tintColor = [UIColor colorWithRed:sym->red green:sym->grn blue:sym->blu alpha:sym->alpha];
+        if( sym->tint )
+            return tintColor;
+    }
+    return nil;
+}
+
+
++ (void)setButtonBar:(UIBarButtonItem*)item fromSymbol:(NSString*)symbol
+{
+    const SymbolEntry* sym = getSymbolEntry( symbol );
+    if( sym )
+    {
+        item.tintColor = [UIColor colorWithRed:sym->red green:sym->grn blue:sym->blu alpha:sym->alpha];
+//        UIImage* leftCallout = nil;
+        
+        if( sym->emoji && sym->glyph )
+        {
+            item.image = nil;
+            item.title = sym->glyph;
+//            leftCallout = emojiToImage( sym->glyph );
+        }
+        else
+        {
+            item.image = sym->glyph ? [UIImage systemImageNamed:sym->glyph withConfiguration:[UIImageSymbolConfiguration configurationWithScale:UIImageSymbolScaleLarge]] : nil;
+            item.title  = nil;
+//            leftCallout = item.image;
+        }
+            
+//        if( sym->tint )
+//            anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:[leftCallout imageWithTintColor:anno.markerTintColor]];
+//        else
+//            anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:leftCallout];
+    }
+}
+
 
 #pragma mark -
 
@@ -343,6 +408,7 @@ void map_callback( packet_t packet )
             DetailViewController* dvc = detailNavController.viewControllers.firstObject;
             dvc.detail = pkt;
             dvc.title  = pkt.title;
+            [MapViewController setButtonBar:dvc.icon fromSymbol:pkt.symbol];
         }
         
         detailNavController.modalPresentationStyle = UIModalPresentationPopover;
