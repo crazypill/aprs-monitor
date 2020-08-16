@@ -321,7 +321,7 @@ void map_callback( packet_t packet )
     {
         // generic marker case...
 //        anno.markerTintColor = [UIColor colorNamed:@"internationalOrange"];
-        anno.markerTintColor = [anno.markerTintColor colorWithAlphaComponent:0.7f];
+//        anno.markerTintColor = [anno.markerTintColor colorWithAlphaComponent:0.7f];
         anno.glyphImage = nil;
         anno.glyphText  = nil;
         anno.leftCalloutAccessoryView = nil;
