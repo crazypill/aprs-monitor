@@ -156,7 +156,7 @@ static bool s_displayMmHg = false;
         us.info        = [NSString stringWithUTF8String:(const char*)pinfo];
         us.symbol      = [NSString stringWithFormat:@"%c%c",decode_state.g_symbol_table,decode_state.g_symbol_code];
 
-        if( decode_state.g_flags & kDataFlag_Comment )
+        if( (decode_state.g_flags & kDataFlag_Comment) && strlen( decode_state.g_comment ) )
             us.comment = [NSString stringWithUTF8String:decode_state.g_comment];
         
         addrs[0] = 0;   // clear buffer lazy way

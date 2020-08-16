@@ -2557,8 +2557,11 @@ static void weather_data (decode_aprs_t *A, char *wdata, int wind_prefix)
         }
         else
         {
-            A->g_wxdata.windDirection = fval;
-            A->g_wxdata.wxflags |= kWxDataFlag_windDir;
+            if( fval != G_UNKNOWN )
+            {
+                A->g_wxdata.windDirection = fval;
+                A->g_wxdata.wxflags |= kWxDataFlag_windDir;
+            }
         }
 
 
@@ -2573,8 +2576,11 @@ static void weather_data (decode_aprs_t *A, char *wdata, int wind_prefix)
         }
         else
         {
-            A->g_wxdata.windSpeedMph = fval;
-            A->g_wxdata.wxflags |= kWxDataFlag_wind;
+            if( fval != G_UNKNOWN )
+            {
+                A->g_wxdata.windSpeedMph = fval;
+                A->g_wxdata.wxflags |= kWxDataFlag_wind;
+            }
         }
     }
 
@@ -2813,6 +2819,20 @@ static void weather_data (decode_aprs_t *A, char *wdata, int wind_prefix)
 	  A->g_weather[n - 1] = '\0';
 
 	strlcat( A->g_weather, "\"", sizeof( A->g_weather ) );
+    
+    
+    // do something similar to the appending comment to weather statement thing above
+    strlcat( A->g_comment, wp, sizeof( A->g_comment ) );
+    A->g_flags |= kDataFlag_Comment;
+    
+    // Drop any CR / LF character at the end
+    n = (int)strlen( A->g_comment );
+    if( n >= 1 && A->g_comment[n - 1] == '\n' )
+        A->g_comment[n - 1] = '\0';
+
+    n = (int)strlen( A->g_comment );
+    if( n >= 1 && A->g_comment[n - 1] == '\r')
+      A->g_comment[n - 1] = '\0';
 }
 
 

@@ -187,7 +187,7 @@ void map_callback( packet_t packet )
 {
     Packet* pkt = [[Packet alloc] init];
     pkt.flags |= (kCoordinatesMask | kPacketFlag_Weather);
-    pkt.coordinate = CLLocationCoordinate2DMake( -34.5, 118.20 );
+    pkt.coordinate = CLLocationCoordinate2DMake( 34.108, -118.335 ); // folabs hq
     pkt.call = @"K6TEST";
     pkt.weather = @"fake weather";
     pkt.symbol = @"/_";
