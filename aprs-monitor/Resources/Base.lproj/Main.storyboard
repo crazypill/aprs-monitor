@@ -293,6 +293,11 @@
                                 <action selector="trashButtonPressed:" destination="Sbp-zo-ean" id="t8J-i3-qPf"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="7gQ-kf-rcd">
+                            <connections>
+                                <action selector="doneButtonPressed:" destination="Sbp-zo-ean" id="T3U-Ue-eZw"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="agX-8A-jbM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

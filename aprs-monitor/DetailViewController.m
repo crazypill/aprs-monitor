@@ -113,6 +113,9 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+
+//    self.navigationController.navigationBar.prefersLargeTitles = true;
+//    self.navigationController.navigationBar.largeTitleTextAttributes = @{NSForegroundColorAttributeName: [UIColor colorWithRed:0.0 green:0.757 blue:1.0 alpha:1.0], NSFontAttributeName: [UIFont systemFontOfSize:36.0 weight:UIFontWeightThin]};
 }
 
 
@@ -293,6 +296,15 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
         return @"Properties";
 }
 
+//- (NSAttributedString*)getNameWithCloud:(NSString*)name
+//{
+//    NSTextAttachment* imageAttachment = [[NSTextAttachment alloc] init];
+//    imageAttachment.image = [[UIImage systemImageNamed:@"icloud.circle"] imageWithTintColor:[UIColor grayColor]];
+//    NSMutableAttributedString* cloudString = [[NSMutableAttributedString alloc] initWithString:[name stringByAppendingString:@" "]];
+//    [cloudString appendAttributedString:[NSMutableAttributedString attributedStringWithAttachment:imageAttachment]];
+//    return cloudString;
+//}
+
 
 - (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
 {
@@ -309,29 +321,40 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
             if( (_detail.wx->wxflags & (kWxDataFlag_windDir | kWxDataFlag_wind)) == (kWxDataFlag_windDir | kWxDataFlag_wind) )
             {
                 int windIndex = (int)(_detail.wx->windDirection / 22.5f); // truncate
-                const char* compass[] = { "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW" };
                 
-                // !!@ use attributed string here to make data part grey !!@
-                cell.line1.text = [NSString stringWithFormat:@"Wind    🧭 %s  %.0f°  %0.1f mph", compass[windIndex], _detail.wx->windDirection, _detail.wx->windSpeedMph];
+                NSMutableAttributedString* windPrefix = [[NSMutableAttributedString alloc] initWithString:@"Wind    🧭 "];
+                NSMutableAttributedString* windString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%s  %.0f°  %0.1f mph", compass[windIndex], _detail.wx->windDirection, _detail.wx->windSpeedMph] attributes:@{ NSForegroundColorAttributeName : [UIColor secondaryLabelColor] }];
+                [windPrefix appendAttributedString:windString];
+                cell.line1.attributedText = windPrefix;
             }
             else if( _detail.wx->wxflags & kWxDataFlag_windDir )
             {
                 int windIndex = (int)(_detail.wx->windDirection / 22.5f); // truncate
                 
-                // !!@ use attributed string here to make data part grey !!@
-                cell.line1.text = [NSString stringWithFormat:@"Wind    🧭 %s  %.0f°", compass[windIndex], _detail.wx->windDirection];
+                NSMutableAttributedString* windPrefix = [[NSMutableAttributedString alloc] initWithString:@"Wind    🧭 "];
+                NSMutableAttributedString* windString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%s  %.0f°", compass[windIndex], _detail.wx->windDirection] attributes:@{ NSForegroundColorAttributeName : [UIColor secondaryLabelColor] }];
+                [windPrefix appendAttributedString:windString];
+                cell.line1.attributedText = windPrefix;
             }
             else if( _detail.wx->wxflags & kWxDataFlag_wind )
             {
-                cell.line1.text = [NSString stringWithFormat:@"Wind    %0.1f mph", _detail.wx->windSpeedMph];
+                NSMutableAttributedString* windPrefix = [[NSMutableAttributedString alloc] initWithString:@"Wind    "];
+                NSMutableAttributedString* windString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%0.1f mph", _detail.wx->windSpeedMph] attributes:@{ NSForegroundColorAttributeName : [UIColor secondaryLabelColor] }];
+                [windPrefix appendAttributedString:windString];
+                cell.line1.attributedText = windPrefix;
             }
             else
-                cell.line1.text = nil;
+                cell.line1.attributedText = nil;
             
             if( _detail.wx->wxflags & kWxDataFlag_gust )
-                cell.line2.text = [NSString stringWithFormat:@"Gusts   💨 %0.1f mph", _detail.wx->windGustMph];
+            {
+                NSMutableAttributedString* windPrefix = [[NSMutableAttributedString alloc] initWithString:@"Gusts   💨 "];
+                NSMutableAttributedString* windString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%0.1f mph", _detail.wx->windGustMph] attributes:@{ NSForegroundColorAttributeName : [UIColor secondaryLabelColor] }];
+                [windPrefix appendAttributedString:windString];
+                cell.line2.attributedText = windPrefix;
+            }
             else
-                cell.line2.text = nil;
+                cell.line2.attributedText = nil;
 
             cell.windIcon.image = [_detail getWindIndicatorIcon:CGRectMake( 0, 0,  40, 40 )];
             return cell;
