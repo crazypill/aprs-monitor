@@ -216,7 +216,7 @@ static const SymbolEntry s_symbol_table[] =
 //     \v  SV# OVERLAYED Van
 //     \w  SWO Flooding (Avalanches/Slides)
 //     \x  SX  Wreck or Obstruction ->X<-
-//     \y  SY  Skywarn
+    { @"\\y",  @"Skywarn",                              @"⚡️",           0, 1, kNGry, kNGry, kNGry, kAlpha },
 //     \z  SZ# OVERLAYED Shelter
 //     \{  Q1  AVAIL? (Fog ==> E ovly F)
 //     \|  Q2  TNC Stream Switch

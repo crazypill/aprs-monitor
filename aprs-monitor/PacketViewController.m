@@ -165,7 +165,12 @@
         return;
     
     DetailViewController* detail = segue.destinationViewController;
-    detail.detail = [_pm.items objectAtIndex:[self.tableView indexPathForSelectedRow].row];
+    if( detail )
+    {
+        detail.detail = [_pm.items objectAtIndex:[self.tableView indexPathForSelectedRow].row];
+        if( detail.detail )
+            detail.title = detail.detail.call;
+    }
 }
 
 
