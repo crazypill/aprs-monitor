@@ -2526,50 +2526,60 @@ static void weather_data (decode_aprs_t *A, char *wdata, int wind_prefix)
 	int keep_going;
 
 	
-	if (wp[3] == '/')
-	{
-	  if (sscanf (wp, "%3d", &n))
-	  {
-	    // Data Extension format.
-	    // Fine point:  Officially, should be values of 001-360.
-	    // "000" or "..." or "   " means unknown. 
-	    // In practice we see do see "000" here.
-          A->g_wxdata.windDirection = n;
-          A->g_wxdata.wxflags |= kWxDataFlag_windDir;
-	  }
-	  if (sscanf (wp+4, "%3d", &n))
-	  {
-          A->g_wxdata.windSpeedMph = DW_KNOTS_TO_MPH(n);  /* yes, in knots */
-          A->g_wxdata.wxflags |= kWxDataFlag_wind;
-	  }
-	  wp += 7;
-	}
-	else if( !(A->g_wxdata.wxflags & kWxDataFlag_wind) )
+    if( wp[3] == '/' )
     {
-	  if( !getwdata( &wp, 'c', 3, &A->g_wxdata.windDirection ) )
-      {
-	    if ( ! A->g_quiet) {
-	      text_color_set(DW_COLOR_ERROR);
-	      dw_printf("Didn't find wind direction in form c999.\n");
-	    }
-	  }
-      else
-          A->g_wxdata.wxflags |= kWxDataFlag_windDir;
-
+        if( sscanf( wp, "%3d", &n ) )
+        {
+            // Data Extension format.
+            // Fine point:  Officially, should be values of 001-360.
+            // "000" or "..." or "   " means unknown.
+            // In practice we see do see "000" here.
+            A->g_wxdata.windDirection = n;
+            A->g_wxdata.wxflags |= kWxDataFlag_windDir;
+        }
         
-	  if( !getwdata( &wp, 's', 3, &A->g_wxdata.windSpeedMph ) )
-      {
-        /* MPH here */
-	    if ( ! A->g_quiet) {
-	      text_color_set(DW_COLOR_ERROR);
-	      dw_printf("Didn't find wind speed in form s999.\n");
-	    }
-	  }
-      else
-          A->g_wxdata.wxflags |= kWxDataFlag_wind;
-	}
+        if( sscanf( wp + 4, "%3d", &n ) )
+        {
+            A->g_wxdata.windSpeedMph = DW_KNOTS_TO_MPH(n);  /* yes, in knots */
+            A->g_wxdata.wxflags |= kWxDataFlag_wind;
+        }
+        wp += 7;
+    }
+    else if( !(A->g_wxdata.wxflags & kWxDataFlag_wind) )
+    {
+        if( !getwdata( &wp, 'c', 3, &fval ) )
+        {
+            if( !A->g_quiet )
+            {
+                text_color_set( DW_COLOR_ERROR );
+                dw_printf("Didn't find wind direction in form c999.\n");
+            }
+        }
+        else
+        {
+            A->g_wxdata.windDirection = fval;
+            A->g_wxdata.wxflags |= kWxDataFlag_windDir;
+        }
+
+
+        if( !getwdata( &wp, 's', 3, &fval ) )
+        {
+            // MPH here
+            if( !A->g_quiet )
+            {
+                text_color_set(DW_COLOR_ERROR);
+                dw_printf("Didn't find wind speed in form s999.\n");
+            }
+        }
+        else
+        {
+            A->g_wxdata.windSpeedMph = fval;
+            A->g_wxdata.wxflags |= kWxDataFlag_wind;
+        }
+    }
 
     // At this point, we should have the wind direction and speed from one of three methods.
+    // direwolf code we probably don't need anymore...as we don't use the weather string as it is out of order that we desire
 	if( A->g_wxdata.wxflags & kWxDataFlag_wind )
     {
         char ctemp[40];
@@ -2588,44 +2598,46 @@ static void weather_data (decode_aprs_t *A, char *wdata, int wind_prefix)
     //  next two must be in fixed positions:
     //  - gust (peak in mph last 5 minutes)
     //  - temperature, degrees F, can be negative e.g. -01
-	if( getwdata( &wp, 'g', 3, &A->g_wxdata.windGustMph ) )
+	if( getwdata( &wp, 'g', 3, &fval ) )
     {
-	  if( A->g_wxdata.windGustMph != G_UNKNOWN )
-      {
-        A->g_wxdata.wxflags |= kWxDataFlag_gust;
+        if( fval != G_UNKNOWN )
+        {
+            A->g_wxdata.windGustMph = fval;
+            A->g_wxdata.wxflags |= kWxDataFlag_gust;
 
-	    char ctemp[40];
-	    snprintf( ctemp, sizeof(ctemp), " 💨 %.0f", A->g_wxdata.windGustMph );
-	    strlcat (A->g_weather, ctemp, sizeof(A->g_weather));
-	  }
+            char ctemp[40];
+            snprintf( ctemp, sizeof(ctemp), " 💨 %.0f", A->g_wxdata.windGustMph );
+            strlcat (A->g_weather, ctemp, sizeof(A->g_weather));
+        }
 	}
 	else
     {
-	  if( !A->g_quiet )
-      {
-	    text_color_set(DW_COLOR_ERROR);
-	    dw_printf("Didn't find wind gust in form g999.\n");
-	  }
+        if( !A->g_quiet )
+        {
+            text_color_set(DW_COLOR_ERROR);
+            dw_printf("Didn't find wind gust in form g999.\n");
+        }
 	}
 
-    if( getwdata( &wp, 't', 3, &A->g_wxdata.tempF ) )
+    if( getwdata( &wp, 't', 3, &fval ) )
     {
-      if( A->g_wxdata.tempF != G_UNKNOWN )
-      {
+        if( fval != G_UNKNOWN )
+        {
+            A->g_wxdata.tempF = fval;
           A->g_wxdata.wxflags |= kWxDataFlag_temp;
           
           char ctemp[40];
           snprintf( ctemp, sizeof( ctemp ), " %.0f°F🌡", A->g_wxdata.tempF );
           strlcat( A->g_weather, ctemp, sizeof( A->g_weather ) );
-      }
+        }
     }
     else
     {
-      if( !A->g_quiet )
-      {
-        text_color_set(DW_COLOR_ERROR);
-        dw_printf("Didn't find temperature in form t999.\n");
-      }
+        if( !A->g_quiet )
+        {
+            text_color_set(DW_COLOR_ERROR);
+            dw_printf("Didn't find temperature in form t999.\n");
+        }
     }
 
     
@@ -4250,7 +4262,7 @@ static void process_comment (decode_aprs_t *A, char *pstart, int clen)
  * Otherwise, take it all.
  */
 	if (clen < 0) {
-	  clen = strlen(pstart);
+	  clen = (int)strlen(pstart);
 	}
 
 /*
@@ -4270,8 +4282,9 @@ static void process_comment (decode_aprs_t *A, char *pstart, int clen)
 	}
 
 	if (clen > 0) {
-	  memcpy (A->g_comment, pstart, (size_t)clen);
-	  A->g_comment[clen] = '\0';
+        memcpy (A->g_comment, pstart, (size_t)clen);
+        A->g_comment[clen] = '\0';
+        A->g_flags |= kDataFlag_Comment;
 	}
 	else {
 	  A->g_comment[0] = '\0';
