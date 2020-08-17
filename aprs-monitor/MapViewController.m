@@ -213,7 +213,29 @@ void map_callback( packet_t packet )
 
 - (IBAction)statusButtonPressed:(id)sender
 {
+    Packet* pkt = [[Packet alloc] init];
+    pkt.flags |= kCoordinatesMask;
+    pkt.coordinate = CLLocationCoordinate2DMake( 34.108, -118.336 ); // near folabs hq
+    pkt.call = @"K6TEST";
+    pkt.weather = @"fake symbol test";
+    pkt.symbol = @"/8";
     
+    pkt.wx = malloc( sizeof( wx_data ) );
+    if( pkt.wx )
+    {
+        pkt.wx->wxflags |= (kWxDataFlag_gust | kWxDataFlag_windDir | kWxDataFlag_wind | kWxDataFlag_temp | kWxDataFlag_humidity | kWxDataFlag_pressure);
+        pkt.wx->windGustMph = 10;
+        pkt.wx->windSpeedMph = 2;
+        pkt.wx->windDirection = 195;
+
+        pkt.wx->tempF    = 100;
+        pkt.wx->humidity = 55;
+        pkt.wx->pressure = 1013;
+     
+        pkt.weather = [Packet makeWeatherString:pkt.wx];
+        [self plotMessage:pkt];
+    }
+    pkt = nil;
 }
 
 

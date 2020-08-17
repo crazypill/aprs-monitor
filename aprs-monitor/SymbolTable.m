@@ -18,18 +18,18 @@ static const SymbolEntry s_symbol_table[] =
 {
 //     /- ???
     
-//     /0 P0  # circle (obsolete)
-//     /1 P1  TBD (these were numbered)
-//     /2 P2  TBD (circles like pool)
-//     /3 P3  TBD (balls.  But with)
-//     /4 P4  TBD (overlays, we can)
-//     /5 P5  TBD (put all #'s on one)
-//     /6 P6  TBD (So 1-9 are available)
-//     /7 P7  TBD (for new uses?)
-    { @"/8", @"Circle with 8 overlay",  @"🎱",             0, 1, kNGry, kNGry, kNGry, kAlpha },
-//     /9 P9  TBD (as mobiles at events)
+    { @"/0", @"Circle with 0 overlay",  @"⓿",             1, 1,    0.00f,    0.00f,    0.00f, kAlpha },
+    { @"/1", @"Circle with 1 overlay",  @"❶",             1, 1,  96/255.,  49/255.,   5/255., kAlpha },
+    { @"/2", @"Circle with 2 overlay",  @"❷",             1, 1, 199/255.,    0.00f,  18/255., kAlpha },
+    { @"/3", @"Circle with 3 overlay",  @"❸",             1, 1, 247/255., 132/255.,  82/255., kAlpha },
+    { @"/4", @"Circle with 4 overlay",  @"❹",             1, 1, 252/255., 255/255.,  34/255., kAlpha },
+    { @"/5", @"Circle with 5 overlay",  @"❺",             1, 1,  45/255., 211/255.,  13/255., kAlpha },
+    { @"/6", @"Circle with 6 overlay",  @"❻",             1, 1,  37/255.,    0.00f, 205/255., kAlpha },
+    { @"/7", @"Circle with 7 overlay",  @"❼",             1, 1, 248/255.,    0.00f, 157/255., kAlpha },
+    { @"/8", @"Circle with 8 overlay",  @"🎱",            0, 1,  93/255.,  93/255., 148/255., kAlpha },
+    { @"/9", @"Circle with 9 overlay",  @"❾",             1, 1,    1.00f,    1.00f,    1.00f, kAlpha },
 
-//     /; MS  Campground (Portable ops)
+    { @"/'", @"Campground (Portable ops)",  @"🏕",        0, 1, kNGry, kNGry, kNGry, kAlpha },
 
 //     /= MU  RAILROAD ENGINE
 
@@ -37,7 +37,7 @@ static const SymbolEntry s_symbol_table[] =
 //     /@ MX  HC FUTURE predict (dot)
 //     /A PA  Aid Station
 //     /B PB  BBS or PBBS
-//     /C PC  Canoe
+    { @"/C", @"Canoe",                  @"🛶",             0, 1, kNGry, kNGry, kNGry, kAlpha },
 //     /D PD
     { @"/E", @"Eyeball",                @"👀",             0, 1, kNGry, kNGry, kNGry, kAlpha },
 //     /F PF  Farm Vehicle (tractor)
@@ -134,7 +134,7 @@ static const SymbolEntry s_symbol_table[] =
 //     \-  ONO House (H=HF) (O = Op Present)
 //     \.  OO  Ambiguous (Big Question mark)
 //     \/  OP  Waypoint Destination
-    { @"\\/", @"Waypoint Destination",         @"・",            1, 1, 162/255, 86/255, 55/255, kAlpha },  // brown
+    { @"\\/", @"Waypoint Destination",         @"・",            1, 1, 162/255., 86/255., 55/255., kAlpha },  // brown
 //
 //     \0  A0# CIRCLE (IRLP/Echolink/WIRES)
 //     \1  A1  AVAIL
@@ -367,8 +367,8 @@ static const SymbolEntry s_symbol_table[] =
     { @"W&", @"WIRES-X as opposed to W0 for WiresII", @"♦︎",            1, 1, 0.00f, 0.00f, 0.00f, kAlpha },
     { @"2&", @"TX igate with path set to 2 hops",     @"♦︎",            1, 1, 0.00f, 0.00f, 0.00f, kAlpha },
     
-    { @"&&", @"Winlink Gateway",                      @"♦︎",            1, 1, 232/255, 0.00f, 23/255, kAlpha }, // need overlay W
-    { @"Ba", @"BPQ32 IGate",                          @"♦︎",            1, 1, 232/255, 0.00f, 23/255, kAlpha }, // need overlay B
+    { @"&&", @"Winlink Gateway",                      @"♦︎",            1, 1, 232/255., 0.00f, 23/255., kAlpha }, // need overlay W
+    { @"Ba", @"BPQ32 IGate",                          @"♦︎",            1, 1, 232/255., 0.00f, 23/255., kAlpha }, // need overlay B
 
 //    GPS devices: #\
 //    /\ = Triangle DF primary symbol
