@@ -325,7 +325,7 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
                 int windIndex = (int)(_detail.wx->windDirection / 22.5f); // truncate
                 
                 NSMutableAttributedString* windPrefix = [[NSMutableAttributedString alloc] initWithString:@"Wind    🧭 "];
-                NSMutableAttributedString* windString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%s  %.0f°  %0.1f mph", compass[windIndex], _detail.wx->windDirection, _detail.wx->windSpeedMph] attributes:@{ NSForegroundColorAttributeName : [UIColor secondaryLabelColor] }];
+                NSMutableAttributedString* windString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%.0f°  %s  %0.1f mph", _detail.wx->windDirection, compass[windIndex], _detail.wx->windSpeedMph] attributes:@{ NSForegroundColorAttributeName : [UIColor secondaryLabelColor] }];
                 [windPrefix appendAttributedString:windString];
                 cell.line1.attributedText = windPrefix;
             }
@@ -334,7 +334,7 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
                 int windIndex = (int)(_detail.wx->windDirection / 22.5f); // truncate
                 
                 NSMutableAttributedString* windPrefix = [[NSMutableAttributedString alloc] initWithString:@"Wind    🧭 "];
-                NSMutableAttributedString* windString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%s  %.0f°", compass[windIndex], _detail.wx->windDirection] attributes:@{ NSForegroundColorAttributeName : [UIColor secondaryLabelColor] }];
+                NSMutableAttributedString* windString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%.0f°  %s", _detail.wx->windDirection, compass[windIndex]] attributes:@{ NSForegroundColorAttributeName : [UIColor secondaryLabelColor] }];
                 [windPrefix appendAttributedString:windString];
                 cell.line1.attributedText = windPrefix;
             }
@@ -465,7 +465,7 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
 
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Course";
-            cell.data.text = [NSString stringWithFormat:@"🧭 %s %.0f°", compass[courseIndex], _detail.course];
+            cell.data.text = [NSString stringWithFormat:@"🧭 %.0f° %s", _detail.course, compass[courseIndex]];
             return cell;
         }
         else if( flags & kPacketFlag_Speed )
