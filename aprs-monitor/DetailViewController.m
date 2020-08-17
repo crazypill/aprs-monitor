@@ -444,7 +444,7 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
             float fraction = fabs( (_detail.coordinate.latitude - floor) * 60.0f );
             bool  ns = floor >= 0;
             
-            cell.data.text = [NSString stringWithFormat:@"%.0f°%05.2f' %s", fabsf( floor ), fraction, ns ? "N" : "S"];
+            cell.data.text = [NSString stringWithFormat:@"%.0f° %05.2f' %s", fabsf( floor ), fraction, ns ? "N" : "S"];
             return cell;
         }
         else if( flags & kPacketFlag_Longitude )
@@ -456,7 +456,7 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
             float fraction = fabs( (_detail.coordinate.longitude - floor) * 60.0f );
             bool  ew = floor >= 0;
 
-            cell.data.text = [NSString stringWithFormat:@"%.0f°%05.2f' %s", fabsf( floor ), fraction, ew ? "E" : "W"];
+            cell.data.text = [NSString stringWithFormat:@"%.0f° %05.2f' %s", fabsf( floor ), fraction, ew ? "E" : "W"];
             return cell;
         }
         else if( flags & kPacketFlag_Course )
