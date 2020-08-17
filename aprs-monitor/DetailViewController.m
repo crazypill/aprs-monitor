@@ -108,6 +108,8 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
     _timeFormatter.dateStyle = NSDateFormatterNoStyle;
     _timeFormatter.locale    = [NSLocale currentLocale];
     
+    self.navigationItem.titleView = _customView;
+    
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     

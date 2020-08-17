@@ -124,7 +124,6 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Callsign" id="Ndy-GW-mu5">
-                        <barButtonItem key="leftBarButtonItem" image="globe" catalog="system" style="plain" id="gTF-w4-LJc"/>
                         <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="gUb-A1-oh0">
                             <connections>
                                 <action selector="doneButtonPressed:" destination="34p-ly-gHe" id="wro-hf-vTU"/>
@@ -132,12 +131,40 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="icon" destination="gTF-w4-LJc" id="TsB-tb-jip"/>
+                        <outlet property="customIcon" destination="77L-hv-DT9" id="j2s-tG-qwJ"/>
+                        <outlet property="customTitle" destination="rfu-Pw-rAF" id="JKl-Cg-dGW"/>
+                        <outlet property="customView" destination="qhA-vg-ouP" id="5fi-XI-4tm"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vnv-8i-v7r" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qhA-vg-ouP">
+                    <rect key="frame" x="0.0" y="0.0" width="240" height="34"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Callsign" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rfu-Pw-rAF">
+                            <rect key="frame" x="81.666666666666671" y="26" width="77.000000000000014" height="26.333333333333329"/>
+                            <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="77L-hv-DT9">
+                            <rect key="frame" x="45.666666666666664" y="23" width="31.999999999999993" height="32"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="32" id="XeF-HD-hTU"/>
+                                <constraint firstAttribute="width" constant="32" id="ojb-fX-W7R"/>
+                            </constraints>
+                        </imageView>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="rfu-Pw-rAF" firstAttribute="centerX" secondItem="wLs-cY-NJ8" secondAttribute="centerX" id="7zm-uh-E8V"/>
+                        <constraint firstItem="rfu-Pw-rAF" firstAttribute="leading" secondItem="77L-hv-DT9" secondAttribute="trailing" constant="4" id="BSY-Lx-bXh"/>
+                        <constraint firstItem="77L-hv-DT9" firstAttribute="centerY" secondItem="rfu-Pw-rAF" secondAttribute="centerY" id="PVh-O8-kan"/>
+                        <constraint firstItem="rfu-Pw-rAF" firstAttribute="centerY" secondItem="wLs-cY-NJ8" secondAttribute="centerY" id="slh-ei-CSo"/>
+                    </constraints>
+                    <viewLayoutGuide key="safeArea" id="wLs-cY-NJ8"/>
+                </view>
             </objects>
-            <point key="canvasLocation" x="45.600000000000001" y="536.45320197044339"/>
+            <point key="canvasLocation" x="46" y="653"/>
         </scene>
         <!--MainViewController-->
         <scene sceneID="lek-xW-eY6">
@@ -215,7 +242,7 @@
             </objects>
             <point key="canvasLocation" x="46" y="-188"/>
         </scene>
-        <!--Raw Packets-->
+        <!--Raw-->
         <scene sceneID="Drg-ni-PKU">
             <objects>
                 <tableViewController id="Sbp-zo-ean" customClass="PacketViewController" sceneMemberID="viewController">
@@ -287,7 +314,7 @@
                             <outlet property="delegate" destination="Sbp-zo-ean" id="fYo-UO-9QS"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Raw Packets" id="wgT-Zo-gUV">
+                    <navigationItem key="navigationItem" title="Raw" id="wgT-Zo-gUV">
                         <barButtonItem key="leftBarButtonItem" systemItem="trash" id="Cdd-j7-tW6">
                             <connections>
                                 <action selector="trashButtonPressed:" destination="Sbp-zo-ean" id="t8J-i3-qPf"/>
@@ -346,6 +373,5 @@
     </inferredMetricsTieBreakers>
     <resources>
         <image name="envelope" catalog="system" width="128" height="93"/>
-        <image name="globe" catalog="system" width="128" height="121"/>
     </resources>
 </document>

@@ -176,8 +176,8 @@
         detail.detail = [_pm.items objectAtIndex:[self.tableView indexPathForSelectedRow].row];
         if( detail.detail )
         {
-            detail.title = detail.detail.call;
-            [MapViewController setButtonBar:detail.icon fromSymbol:detail.detail.symbol];
+            detail.customTitle.text = detail.detail.call;
+            detail.customIcon.image = [MapViewController getSymbolImage:detail.detail.symbol];
         }
     }
 }

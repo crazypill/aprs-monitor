@@ -407,8 +407,8 @@ void map_callback( packet_t packet )
         {
             DetailViewController* dvc = detailNavController.viewControllers.firstObject;
             dvc.detail = pkt;
-            dvc.title  = pkt.title;
-            [MapViewController setButtonBar:dvc.icon fromSymbol:pkt.symbol];
+            dvc.customTitle.text = pkt.title;
+            dvc.customIcon.image = [MapViewController getSymbolImage:pkt.symbol];
         }
         
         detailNavController.modalPresentationStyle = UIModalPresentationPopover;
