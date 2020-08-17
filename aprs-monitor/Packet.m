@@ -225,11 +225,16 @@ static bool s_displayMmHg = false;
 
 - (NSString*)subtitle
 {
+    const char* compass[] = { "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW" };
+
     if( _weather.length )
         return _weather;
 
     if( (_flags & kPacketFlag_Course) &&  (_flags & kPacketFlag_Speed) && _speed != 0.0f )
-        return [NSString stringWithFormat:@"Course: %.0f°   Speed: %.0f mph",  _course, _speed];
+    {
+        int dir = (int)(_course / 22.5f); // truncate
+        return [NSString stringWithFormat:@"Course: %.0f° %s  Speed: %.0f mph",  _course, compass[dir], _speed];
+    }
 
 //    if( (_flags & kPacketFlag_Course) && _comment.length )
 //       return [NSString stringWithFormat:@"Course: %.0f°  %@", _course, _comment];
@@ -239,8 +244,11 @@ static bool s_displayMmHg = false;
         return _comment;
 
     if( _flags & kPacketFlag_Course )
-        return [NSString stringWithFormat:@"Course: %.0f°", _course];
-
+    {
+        int dir = (int)(_course / 22.5f); // truncate
+        return [NSString stringWithFormat:@"Course: %.0f° %s", _course, compass[dir]];
+    }
+    
     if( _flags & kPacketFlag_Speed && _speed != 0.0f && _comment.length )
         return [NSString stringWithFormat:@"Speed: %.0f mph  %@", _speed, _comment];
 
