@@ -92,7 +92,7 @@ static const SymbolEntry s_symbol_table[] =
 //  { @"/o", @"EOC",                   @"",              0, 0, kNGry, kNGry, kNGry, kAlpha },
     { @"/p", @"Rover (dog)",           @"🐶",            0, 1, kNGry, kNGry, kNGry, kAlpha },
 //  { @"/q", @"Grid Square",           @"",              0, 0, kNGry, kNGry, kNGry, kAlpha },
-    { @"/r", @"Repeater",              @"",              0, 0, kNGry, kNGry, kNGry, kAlpha },
+    { @"/r", @"Repeater",              @"∆",             1, 1, 88/255., 70/255., 253/255., kAlpha },
     { @"/s", @"Power Boat",            @"🚤",            0, 1, kNGry, kNGry, kNGry, kAlpha },
 //  { @"/t", @"Truck Stop",            @"",              0, 0, kNGry, kNGry, kNGry, kAlpha },
     { @"/u", @"Tractor trailer",       @"🚚",            0, 1, kNGry, kNGry, kNGry, kAlpha },
