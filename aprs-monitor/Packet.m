@@ -231,11 +231,15 @@ static bool s_displayMmHg = false;
     if( (_flags & kPacketFlag_Course) &&  (_flags & kPacketFlag_Speed) && _speed != 0.0f )
         return [NSString stringWithFormat:@"Course: %.0f°   Speed: %.0f mph",  _course, _speed];
 
+//    if( (_flags & kPacketFlag_Course) && _comment.length )
+//       return [NSString stringWithFormat:@"Course: %.0f°  %@", _course, _comment];
+
+    // just return comment, course isn't important when you aren't moving...
     if( (_flags & kPacketFlag_Course) && _comment.length )
-       return [NSString stringWithFormat:@"Course: %.0f°  %@", _course, _comment];
+        return _comment;
 
     if( _flags & kPacketFlag_Course )
-       return [NSString stringWithFormat:@"Course: %.0f°", _course];
+        return [NSString stringWithFormat:@"Course: %.0f°", _course];
 
     if( _flags & kPacketFlag_Speed && _speed != 0.0f && _comment.length )
         return [NSString stringWithFormat:@"Speed: %.0f mph  %@", _speed, _comment];
