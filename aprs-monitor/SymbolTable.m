@@ -26,7 +26,7 @@ static const SymbolEntry s_symbol_table[] =
 //     /5 P5  TBD (put all #'s on one)
 //     /6 P6  TBD (So 1-9 are available)
 //     /7 P7  TBD (for new uses?)
-//     /8 P8  TBD (They are often used)
+    { @"/8", @"Circle with 8 overlay",  @"🎱",             0, 1, kNGry, kNGry, kNGry, kAlpha },
 //     /9 P9  TBD (as mobiles at events)
 
 //     /; MS  Campground (Portable ops)

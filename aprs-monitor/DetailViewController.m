@@ -415,6 +415,20 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
             cell.data.text = [NSString stringWithFormat:@"❄️ %.2f inches", _detail.wx->snowLast24Hrs];
             return cell;
         }
+        else if( flags & kWxDataFlag_luminosity )
+        {
+            DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
+            cell.name.text = @"Luminosity";
+            cell.data.text = [NSString stringWithFormat:@"☀️ %.2f watts/m2", _detail.wx->luminosity];
+            return cell;
+        }
+        else if( flags & kWxDataFlag_radiation )
+        {
+            DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
+            cell.name.text = @"Radiation";
+            cell.data.text = [NSString stringWithFormat:@"☢️ %.2f counts", _detail.wx->radiation];
+            return cell;
+        }
     }
     else if( [self getSection:indexPath.section] == kDetailSection_Position )
     {
