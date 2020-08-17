@@ -11,11 +11,11 @@
 
 #define kNSBundleVersionKey         @"CFBundleVersion"
 #define kNSApplicationVersionKey    @"CFBundleShortVersionString"
-#define kPrefsAboutFormat           @"APRS Monitor v%@\n© 2020 Far Out Labs, LLC\nWritten by: Alex Lelièvre"
+#define kPrefsAboutFormat           @"APRS Monitor v%@\n© 2020 Far Out Labs, LLC\nWritten by: Alex Lelièvre K6LOT"
 
 static const float kPrefsTableTitleHeight       = 60.0f;
 static const float kPrefsTableAboutHeight       = 69.0f;
-static const float kPrefsTableAboutFooterHeight = 220.0f;
+static const float kPrefsTableAboutFooterHeight = 260.0f;
 
 
 enum
@@ -25,8 +25,18 @@ enum
 };
 
 
+enum
+{
+    kSettings_KissServer,
+    kSettings_KissPort,
+    kSettings_Connect
+};
 
-@implementation SettingsChevronCell
+
+@implementation SettingsCell
+@end
+
+@implementation SettingsButtonCell
 @end
 
 @implementation SettingsAboutCell
@@ -81,7 +91,7 @@ enum
 
 - (NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)section {
     if( section == kSettingsSection_Settings )
-        return 2;
+        return 3;
     
     return 1;
 }
@@ -94,22 +104,30 @@ enum
     // Configure the cell...
     if( indexPath.section == kSettingsSection_Settings )
     {
-        SettingsChevronCell* cell = nil;
-        if( indexPath.row == 0 )
+        SettingsCell* cell = nil;
+        if( indexPath.row == kSettings_KissServer )
         {
-            cell = [tableView dequeueReusableCellWithIdentifier:@"harmony.settings.theory.cell" forIndexPath:indexPath];
-            cell.text.text = @"KISS Server";
+            cell = [tableView dequeueReusableCellWithIdentifier:@"settings.text.cell" forIndexPath:indexPath];
+            cell.label.text = @"KISS Server";
+        }
+        else if( indexPath.row == kSettings_KissPort )
+        {
+            cell = [tableView dequeueReusableCellWithIdentifier:@"settings.number.cell" forIndexPath:indexPath];
+            cell.label.text = @"KISS Port";
         }
         else
         {
-            cell = [tableView dequeueReusableCellWithIdentifier:@"harmony.settings.help.cell" forIndexPath:indexPath];
-            cell.text.text = @"KISS Port";
+            SettingsButtonCell* button = [tableView dequeueReusableCellWithIdentifier:@"settings.button.cell" forIndexPath:indexPath];
+            [button.button setTitle:@"Connect" forState:UIControlStateNormal];
+            [button.button setTitle:@"Disconnect" forState:UIControlStateSelected];
+            button.label.text = @"Status text here";
+            return button;
         }
         return cell;
     }
     else
     {
-        SettingsAboutCell* cell = [tableView dequeueReusableCellWithIdentifier:@"harmony.settings.about.cell" forIndexPath:indexPath];
+        SettingsAboutCell* cell = [tableView dequeueReusableCellWithIdentifier:@"settings.about.cell" forIndexPath:indexPath];
         cell.text.font             = [UIFont systemFontOfSize:11];
         cell.text.text             = [self aboutVersionString];
 
