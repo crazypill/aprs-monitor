@@ -439,14 +439,24 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Latitude";
-            cell.data.text = [NSString stringWithFormat:@"%0.4f", _detail.coordinate.latitude]; // use a formatter so this read in degrees, minutes, seconds
+            
+            float floor = (int)_detail.coordinate.latitude;  // we use typecasting instead of floor to better deal with negative numbers
+            float fraction = fabs( (_detail.coordinate.latitude - floor) * 60.0f );
+            bool  ns = floor >= 0;
+            
+            cell.data.text = [NSString stringWithFormat:@"%.0f°%05.2f' %s", fabsf( floor ), fraction, ns ? "N" : "S"];
             return cell;
         }
         else if( flags & kPacketFlag_Longitude )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Longitude";
-            cell.data.text = [NSString stringWithFormat:@"%0.4f", _detail.coordinate.longitude]; // use a formatter so this read in degrees, minutes, seconds
+
+            float floor = (int)_detail.coordinate.longitude;
+            float fraction = fabs( (_detail.coordinate.longitude - floor) * 60.0f );
+            bool  ew = floor >= 0;
+
+            cell.data.text = [NSString stringWithFormat:@"%.0f°%05.2f' %s", fabsf( floor ), fraction, ew ? "E" : "W"];
             return cell;
         }
         else if( flags & kPacketFlag_Course )
