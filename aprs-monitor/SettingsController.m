@@ -109,11 +109,13 @@ enum
         {
             cell = [tableView dequeueReusableCellWithIdentifier:@"settings.text.cell" forIndexPath:indexPath];
             cell.label.text = @"KISS Server";
+            cell.field.placeholder = @"aprs.local"; // my server :)
         }
         else if( indexPath.row == kSettings_KissPort )
         {
             cell = [tableView dequeueReusableCellWithIdentifier:@"settings.number.cell" forIndexPath:indexPath];
             cell.label.text = @"KISS Port";
+            cell.field.placeholder = @"8001";     // standard KISS port
         }
         else
         {

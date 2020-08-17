@@ -181,7 +181,7 @@ static PacketManager* s_shared = NULL;
 
 - (NSString*)documentPath
 {
-    return [[PacketManager applicationDocumentsDirectory] stringByAppendingString:@"/RawPacket.log"];
+    return [[PacketManager applicationDocumentsDirectory] stringByAppendingString:@"/RawPacket.plist"];
 }
 
 

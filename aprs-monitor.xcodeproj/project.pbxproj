@@ -80,6 +80,8 @@
 		FAA7EB0724E0E6470016674B /* ax25_pad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ax25_pad.h; sourceTree = "<group>"; };
 		FAACD7C724EA171100463418 /* SettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsController.h; sourceTree = "<group>"; };
 		FAACD7C824EA171100463418 /* SettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsController.m; sourceTree = "<group>"; };
+		FAACD7CA24EB1E4D00463418 /* APRS Monitor.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "APRS Monitor.entitlements"; sourceTree = "<group>"; };
+		FAACD7CB24EB1F9A00463418 /* APRS MonitorDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "APRS MonitorDebug.entitlements"; sourceTree = "<group>"; };
 		FAAD91B724E1B21B0000896D /* tq.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tq.c; sourceTree = "<group>"; };
 		FAAD91B924E1B7680000896D /* dtime_now.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dtime_now.h; sourceTree = "<group>"; };
 		FAAD91BA24E1B7680000896D /* dtime_now.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dtime_now.c; sourceTree = "<group>"; };
@@ -140,6 +142,8 @@
 		60898E83213884F3003248F3 /* aprs-monitor */ = {
 			isa = PBXGroup;
 			children = (
+				FAACD7CB24EB1F9A00463418 /* APRS MonitorDebug.entitlements */,
+				FAACD7CA24EB1E4D00463418 /* APRS Monitor.entitlements */,
 				FA2A20AC24E2570E0090A087 /* main.m */,
 				FACC8B9524E32FCB007BA389 /* Packet.h */,
 				FACC8B9324E32FCB007BA389 /* Packet.m */,
@@ -472,7 +476,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = "aprs-monitor/APRS MonitorDebug.entitlements";
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = S555K9VRCW;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -486,7 +491,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.folabs.aprs-monitor";
 				PRODUCT_NAME = "APRS Monitor";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "APRS Monitor development";
 				SWIFT_OBJC_BRIDGING_HEADER = "aprs-monitor-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -499,7 +504,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = "aprs-monitor/APRS Monitor.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = S555K9VRCW;
 				GCC_PREPROCESSOR_DEFINITIONS = KISSUTIL;
 				INFOPLIST_FILE = "$(SRCROOT)/aprs-monitor/Resources/Info.plist";
@@ -510,7 +517,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.folabs.aprs-monitor";
 				PRODUCT_NAME = "APRS Monitor";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "APRS Monitor distribution";
 				SWIFT_OBJC_BRIDGING_HEADER = "aprs-monitor-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
