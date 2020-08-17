@@ -236,9 +236,6 @@ static bool s_displayMmHg = false;
         return [NSString stringWithFormat:@"Course: %.0f° %s  Speed: %.0f mph",  _course, compass[dir], _speed];
     }
 
-//    if( (_flags & kPacketFlag_Course) && _comment.length )
-//       return [NSString stringWithFormat:@"Course: %.0f°  %@", _course, _comment];
-
     // just return comment, course isn't important when you aren't moving...
     if( (_flags & kPacketFlag_Course) && _comment.length )
         return _comment;
