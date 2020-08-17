@@ -10,7 +10,7 @@ This code was really written for me to be able to see what my radio is hearing w
 
 There are many things that aren't complete yet.  Most noticably are the overlay symbols.  I have only implemented a few symbols mainly because I'm looking for high quality icons or I couldn't find a proper emoji or glyph to communicate the same icon as the standard APRS icon set.   I might just give up and use the standard set, but not without a fight first.  Of course, this being open source, you can go ahead and do that work for me!  Please be sure to make it a user settable preference as I like my icons better than the standard set.  I hope you do too.
 
-Thank you for contributing to this project.  It is not ment to replace the excellent APRS.fi iOS app.  For some reason I could not get that app to see my RPi bluetooth KISS port so I wrote my own app.  I've spent about a week solid writing this and this current feature set will be released as v1.0.  I plan to add more features later depending on how many people find this app valuable or how much feedback I get.  
+Thank you for contributing to this project.  It is not meant to replace the excellent APRS.fi iOS app.  For some reason I could not get that app to see my RPi bluetooth KISS port so I wrote my own app.  I've spent about a week solid writing this and this current feature set will be released as v1.0.  I plan to add more features later depending on how many people find this app valuable or how much feedback I get.  
 
 There are no iOS apps that let you connect to a remote TNC.  There's APRSDroid on Android that I found which actually found my RPi but then crashed connecting to it, and subsequently crashed ever launch thereafter.
 
