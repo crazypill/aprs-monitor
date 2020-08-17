@@ -23,6 +23,7 @@
 		FAA7EB0C24E0E64E0016674B /* fcs_calc.c in Sources */ = {isa = PBXBuildFile; fileRef = FAA7EAFF24E0E6470016674B /* fcs_calc.c */; };
 		FAA7EB0D24E0E64E0016674B /* wx_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = FAA7EB0024E0E6470016674B /* wx_thread.c */; };
 		FAA7EB0E24E0E64E0016674B /* ax25_pad.c in Sources */ = {isa = PBXBuildFile; fileRef = FAA7EB0524E0E6470016674B /* ax25_pad.c */; };
+		FAACD7C924EA171100463418 /* SettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAACD7C824EA171100463418 /* SettingsController.m */; };
 		FAAD91B824E1B21B0000896D /* tq.c in Sources */ = {isa = PBXBuildFile; fileRef = FAAD91B724E1B21B0000896D /* tq.c */; };
 		FAAD91BB24E1B7680000896D /* dtime_now.c in Sources */ = {isa = PBXBuildFile; fileRef = FAAD91BA24E1B7680000896D /* dtime_now.c */; };
 		FACC8B9724E32FCB007BA389 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FACC8B9124E32FCB007BA389 /* MapViewController.m */; };
@@ -77,6 +78,8 @@
 		FAA7EB0424E0E6470016674B /* latlong.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = latlong.h; sourceTree = "<group>"; };
 		FAA7EB0524E0E6470016674B /* ax25_pad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ax25_pad.c; sourceTree = "<group>"; };
 		FAA7EB0724E0E6470016674B /* ax25_pad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ax25_pad.h; sourceTree = "<group>"; };
+		FAACD7C724EA171100463418 /* SettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsController.h; sourceTree = "<group>"; };
+		FAACD7C824EA171100463418 /* SettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsController.m; sourceTree = "<group>"; };
 		FAAD91B724E1B21B0000896D /* tq.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tq.c; sourceTree = "<group>"; };
 		FAAD91B924E1B7680000896D /* dtime_now.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dtime_now.h; sourceTree = "<group>"; };
 		FAAD91BA24E1B7680000896D /* dtime_now.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dtime_now.c; sourceTree = "<group>"; };
@@ -148,6 +151,8 @@
 				FACC8B9A24E334BA007BA389 /* ErrorController.m */,
 				FACC8B9224E32FCB007BA389 /* PacketManager.h */,
 				FACC8B9624E32FCB007BA389 /* PacketManager.m */,
+				FAACD7C724EA171100463418 /* SettingsController.h */,
+				FAACD7C824EA171100463418 /* SettingsController.m */,
 				FACC8B9424E32FCB007BA389 /* MapViewController.h */,
 				FACC8B9124E32FCB007BA389 /* MapViewController.m */,
 				FA46CD3224E7AD700043B98B /* DetailViewController.h */,
@@ -293,6 +298,7 @@
 				FAA7EB0B24E0E64E0016674B /* stubs.c in Sources */,
 				FAA7EB0924E0E64E0016674B /* aprs-is.c in Sources */,
 				FACC8BAE24E3894C007BA389 /* dwgpsnmea.c in Sources */,
+				FAACD7C924EA171100463418 /* SettingsController.m in Sources */,
 				FACC8BB124E38978007BA389 /* dwgps.c in Sources */,
 				FA2A20B224E2570E0090A087 /* AppDelegate.m in Sources */,
 				FAAD91B824E1B21B0000896D /* tq.c in Sources */,
