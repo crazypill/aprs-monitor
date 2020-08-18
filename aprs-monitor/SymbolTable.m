@@ -565,6 +565,22 @@ NSString* getGlyphForSymbol( NSString* symbol )
 }
 
 
+NSString* getNameForSymbol( NSString* symbol )
+{
+    const SymbolEntry* entry = s_symbol_table;
+    
+    while( entry->symbol )
+    {
+        if( [entry->symbol isEqualToString:symbol] )
+            return entry->name;
+        
+        entry++;
+    }
+    
+    return nil;
+}
+
+
 const SymbolEntry* getSymbolEntry( NSString* symbol )
 {
     const SymbolEntry* entry = s_symbol_table;

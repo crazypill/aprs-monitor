@@ -31,7 +31,7 @@ enum
 #define kWindMask        (kWxDataFlag_wind | kWxDataFlag_windDir | kWxDataFlag_gust)
 #define kCoordinatesMask (kPacketFlag_Latitude | kPacketFlag_Longitude)
 #define kCourseSpeedMask (kPacketFlag_Course | kPacketFlag_Speed)
-#define kPositionMask    (kCoordinatesMask | kCourseSpeedMask)
+#define kPositionMask    (kCoordinatesMask | kCourseSpeedMask | kPacketFlag_Altitude)
 
 
 

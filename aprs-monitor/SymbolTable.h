@@ -28,6 +28,7 @@ typedef struct
 
 const SymbolEntry* getSymbolEntry( NSString* symbol );
 NSString*          getGlyphForSymbol( NSString* symbol );
+NSString*          getNameForSymbol( NSString* symbol );
 UIImage*           emojiToImage( NSString* emoji );
 
 #endif /* SymbolTable_h */

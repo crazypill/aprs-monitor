@@ -9,6 +9,7 @@
 #import "DetailViewController.h"
 #import "MapViewController.h"
 #import "RemoteTNC.h"
+#import "SymbolTable.h"
 #import "Packet.h"
 
 
@@ -211,7 +212,7 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
 - (NSInteger)getNumberOfPropertyRows
 {
     // there are always these row in the properties: timestamp, type, destination, and path.
-    NSInteger rows = 4;
+    NSInteger rows = 6;
     // there might also be a status message and a comment...
     if( _detail.comment )
         ++rows;
@@ -475,6 +476,13 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
             cell.data.text = [NSString stringWithFormat:@"%.2f mph", _detail.speed];
             return cell;
         }
+        else if( flags & kPacketFlag_Altitude )
+        {
+            DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
+            cell.name.text = @"Altitude";
+            cell.data.text = [NSString stringWithFormat:@"%.0f feet", _detail.altitude];
+            return cell;
+        }
     }
     else if( [self getSection:indexPath.section] == kDetailSection_Properties )
     {
@@ -485,35 +493,51 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
             cell.data.text = [self getDateString:_detail.timeStamp];
             return cell;
         }
-        if( indexPath.row == 1 )
+        else if( indexPath.row == 1 )
+        {
+            DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
+            cell.name.text = @"Age";
+            cell.data.text = @"calculate age!"; // !!@ do what it says
+            return cell;
+        }
+        else if( indexPath.row == 2 )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Type";
             cell.data.text = _detail.type;
             return cell;
         }
-        else if( indexPath.row == 2 )
+        else if( indexPath.row == 3 )
+        {
+            DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
+            cell.name.text = @"Symbol";
+            
+            NSString* symName = getNameForSymbol( _detail.symbol );
+            cell.data.text = symName ? symName : _detail.symbol;
+            return cell;
+        }
+        else if( indexPath.row == 4 )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Destination";
             cell.data.text = _detail.destination;
             return cell;
         }
-        else if( indexPath.row == 3 )
+        else if( indexPath.row == 5 )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Path";
             cell.data.text = _detail.path;
             return cell;
         }
-        else if( indexPath.row == 4 )
+        else if( indexPath.row == 6 )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Comment";
             cell.data.text = _detail.comment;
             return cell;
         }
-//        else if( indexPath.row == 4 )
+//        else if( indexPath.row == 7 )
 //        {
 //            DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
 //            cell.name.text = @"Status";
