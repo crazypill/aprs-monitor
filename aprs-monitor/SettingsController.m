@@ -160,7 +160,9 @@ enum
             _connectButton = button.button;
             _statusLabel = button.label;
             
-            if( [MapViewController shared].thread_running )
+            // we probably should disable the button if we are in progress??
+            
+            if( [MapViewController shared].thread_running || [MapViewController shared].in_progress )
             {
                 _connectButton.selected = YES; // this changes the text to disconnect...
                 _statusLabel.text = kConnectedString;

@@ -41,8 +41,10 @@ void stat_callback( bool running )
         return;
     }
 
+    s_map_controller.in_progress = NO;
+    s_map_controller.thread_running = running;
+
     dispatch_async( dispatch_get_main_queue(), ^{
-        s_map_controller.thread_running = running;
         if( s_connect_completion )
             s_connect_completion( running, 0 );
     });
@@ -152,6 +154,8 @@ void map_callback( packet_t packet )
 {
     if( !_thread_running )
     {
+        _in_progress = YES;
+        
         // get server name and port from settings...
         NSString* server = [[NSUserDefaults standardUserDefaults] objectForKey:kPrefsServerKey];
         NSInteger port   = [[NSUserDefaults standardUserDefaults] integerForKey:kPrefsServerPortKey];

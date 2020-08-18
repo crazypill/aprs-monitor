@@ -23,6 +23,7 @@ typedef void (^ __nullable netStatusBlock)( bool isConnected, int errorCode );
 @property (weak, nonatomic) IBOutlet MKMapView* __nullable       mapView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem* __nullable status;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem* __nullable connect;
+@property (atomic)                   bool                        in_progress;
 @property (atomic)                   bool                        thread_running;
 
 + (MapViewController* __nullable)shared;
