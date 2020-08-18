@@ -164,9 +164,13 @@ enum
             {
                 _connectButton.selected = YES; // this changes the text to disconnect...
                 _statusLabel.text = kConnectedString;
+                _portField.enabled = NO;
+                _addressField.enabled = NO;
             }
             else
+            {
                 _statusLabel.text = kDisconnectedString;
+            }
 
             return button;
         }
@@ -259,15 +263,22 @@ enum
 
 - (IBAction)connectButtonPressed:(id)sender
 {
-    [self dismissKeyboard:nil];
+    if( _portField && _portField.self.isFirstResponder )
+        [_portField endEditing:NO];
 
+    if( _addressField && _addressField.self.isFirstResponder )
+        [_addressField endEditing:NO];
+
+    
     // focus the fields if they are empty... (leaving port field empty is fine, but not server)
     if( ![MapViewController shared].thread_running && (!_serverAddress || !_serverAddress.length) )
     {
         [_addressField becomeFirstResponder];
         return;
     }
-    
+
+    [self dismissKeyboard:nil];
+
     // make sure to set the server address in the prefs as this routine will read it before connecting async...
     [[NSUserDefaults standardUserDefaults] setObject:_serverAddress forKey:kPrefsServerKey];
     [[NSUserDefaults standardUserDefaults] setInteger:_serverPort forKey:kPrefsServerPortKey];
@@ -291,6 +302,8 @@ enum
                 {
                     weakself.connectButton.enabled = YES;
                     weakself.connectButton.selected = NO;
+                    weakself.portField.enabled = YES;
+                    weakself.addressField.enabled = YES;
                 }
             });
         }];
@@ -308,8 +321,10 @@ enum
                     
                     if( weakself.connectButton )
                     {
-                        weakself.connectButton.enabled = YES;
+                        weakself.connectButton.enabled  = YES;
                         weakself.connectButton.selected = YES; // this changes the text to disconnect...
+                        weakself.portField.enabled      = NO;
+                        weakself.addressField.enabled   = NO;
                     }
                 });
             }
@@ -319,8 +334,10 @@ enum
                     weakself.statusLabel.text = kDisconnectedString;
                 if( weakself.connectButton )
                 {
-                    weakself.connectButton.enabled = YES;
+                    weakself.connectButton.enabled  = YES;
                     weakself.connectButton.selected = NO;
+                    weakself.portField.enabled      = YES;
+                    weakself.addressField.enabled   = YES;
                 }
             }
         }];
