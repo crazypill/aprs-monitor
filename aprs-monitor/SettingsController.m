@@ -14,8 +14,9 @@
 #define kNSApplicationVersionKey    @"CFBundleShortVersionString"
 #define kPrefsAboutFormat           @"APRS Monitor v%@\n© 2020 Far Out Labs, LLC\nWritten by: Alex Lelièvre K6LOT"
 
-#define kConnectedString            @"Connected..."
-#define kDisconnectedString         @"Disconnected..."
+#define kConnectedString            @"Connected"
+#define kConnectingString           @"Connecting..."
+#define kDisconnectedString         @"Not connected"
 #define kConnectErrorFormat         @"Error connecting... %d"
 
 
@@ -129,6 +130,11 @@ enum
             cell.field.delegate    = self;
             _addressField = cell.field;
             [_addressField addTarget:self action:@selector(nextField:) forControlEvents:UIControlEventEditingDidEndOnExit];
+            
+            // load actual data if there is some...
+            NSString* server = [[NSUserDefaults standardUserDefaults] objectForKey:kPrefsServerKey];
+            if( server )
+                cell.field.text = server;
         }
         else if( indexPath.row == kSettings_KissPort )
         {
@@ -138,6 +144,10 @@ enum
             cell.field.delegate    = self;
             _portField = cell.field;
             [_portField addTarget:self action:@selector(dismissKeyboard:) forControlEvents:UIControlEventEditingDidEndOnExit];
+            
+            NSInteger port = [[NSUserDefaults standardUserDefaults] integerForKey:kPrefsServerPortKey];
+            if( port )
+                cell.field.text = [NSString stringWithFormat:@"%d", (int)port];
         }
         else
         {
@@ -149,11 +159,14 @@ enum
             _connectButton = button.button;
             _statusLabel = button.label;
             
-            if( [MapViewController shared].connected )
+            if( [MapViewController shared].thread_running )
             {
                 _connectButton.selected = YES; // this changes the text to disconnect...
                 _statusLabel.text = kConnectedString;
             }
+            else
+                _statusLabel.text = kDisconnectedString;
+
             return button;
         }
         return cell;
@@ -245,22 +258,31 @@ enum
 
 - (IBAction)connectButtonPressed:(id)sender
 {
+    [self dismissKeyboard:nil];
+
     // focus the fields if they are empty... (leaving port field empty is fine, but not server)
-    if( ![MapViewController shared].connected && !_serverAddress )
+    if( ![MapViewController shared].thread_running && !_serverAddress )
     {
         [_addressField becomeFirstResponder];
         return;
     }
     
-    [self dismissKeyboard:nil];
-    
     // make sure to set the server address in the prefs as this routine will read it before connecting async...
+    [[NSUserDefaults standardUserDefaults] setObject:_serverAddress forKey:kPrefsServerKey];
+    [[NSUserDefaults standardUserDefaults] setInteger:_serverPort forKey:kPrefsServerPortKey];
+
+//    [self dismissKeyboard:nil];
+
+    if( _statusLabel )
+        _statusLabel.text = kConnectingString;
+    
+    // disable the connect button while we are connecting in the background...
     if( _connectButton )
         _connectButton.enabled = NO;
     
     __weak SettingsController* weakself = self;
 
-    if( [MapViewController shared].connected )
+    if( [MapViewController shared].thread_running )
     {
         [[MapViewController shared] disconnectFromServer:^( bool wasConnecting, int errorCode ) {
             dispatch_async( dispatch_get_main_queue(), ^{

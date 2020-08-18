@@ -11,8 +11,10 @@
 
 #import "Packet.h"
 
+#define kPrefsServerKey      @"server"
+#define kPrefsServerPortKey  @"port"
 
-typedef void (^ __nullable netStatusBlock)( bool wasConnecting, int errorCode );        // wasConnecting just tells you if we were trying to connect or disconnect
+typedef void (^ __nullable netStatusBlock)( bool isConnected, int errorCode ); 
 
 
 @interface MapViewController : UIViewController <MKMapViewDelegate>
@@ -21,7 +23,7 @@ typedef void (^ __nullable netStatusBlock)( bool wasConnecting, int errorCode );
 @property (weak, nonatomic) IBOutlet MKMapView* __nullable       mapView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem* __nullable status;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem* __nullable connect;
-@property (atomic)                   bool                        connected;
+@property (atomic)                   bool                        thread_running;
 
 + (MapViewController* __nullable)shared;
 

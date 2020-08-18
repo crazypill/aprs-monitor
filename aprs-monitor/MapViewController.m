@@ -21,15 +21,13 @@
 
 
 
-static MapViewController* s_map_controller   = nil;
-static bool               s_have_location    = false;
-static CGFloat            s_default_map_span = 10.0f;
-
-
+static MapViewController* s_map_controller     = nil;
+static bool               s_have_location      = false;
+static CGFloat            s_default_map_span   = 10.0f;
+static netStatusBlock     s_connect_completion = NULL;
 
 
 @interface MapViewController ()
-@property (atomic)            bool             thread_running;
 @property (strong, nonatomic) NSTimer*         timer;
 @property (strong, nonatomic) dispatch_queue_t netQueue;
 @end
@@ -44,18 +42,9 @@ void stat_callback( bool running )
     }
 
     dispatch_async( dispatch_get_main_queue(), ^{
-//        if( running )
-//        {
-//            s_map_controller.connect.enabled = YES;
-//            s_map_controller.connect.title = @"Disconnect";
-//        }
-//        else
-//        {
-//            s_map_controller.connect.enabled = YES;
-//            s_map_controller.connect.title = @"Connect";
-//        }
-
         s_map_controller.thread_running = running;
+        if( s_connect_completion )
+            s_connect_completion( running, 0 );
     });
 }
 
@@ -146,35 +135,38 @@ void map_callback( packet_t packet )
 #pragma mark -
 
 
+// connect and disconnect cannot overlap due to sharing a static block
 - (void)connectToServer:(netStatusBlock)completionHandler
 {
-    // get server name and port from settings...  !!@
-    __weak MapViewController* weakself = self;
-
     if( !_thread_running )
     {
+        // get server name and port from settings...
+        NSString* server = [[NSUserDefaults standardUserDefaults] objectForKey:kPrefsServerKey];
+        NSInteger port   = [[NSUserDefaults standardUserDefaults] integerForKey:kPrefsServerPortKey];
+        
+        if( completionHandler )
+            s_connect_completion = completionHandler;
+        
         dispatch_async( _netQueue, ^{
-            int result = init_socket_layer( "aprs.local", 8001, map_callback, stat_callback );
-            if( completionHandler )
-                completionHandler( true, result );
-
-            weakself.connected = (result == EXIT_SUCCESS);
+            init_socket_layer( server.UTF8String, (int)port, map_callback, stat_callback );
         });
+    }
+    else
+    {
+        NSLog( @"Already connected!\n" );
     }
 }
 
 
 - (void)disconnectFromServer:(netStatusBlock)completionHandler
 {
-    __weak MapViewController* weakself = self;
-
     if( _thread_running )
     {
+        if( completionHandler )
+            s_connect_completion = completionHandler;
+
         dispatch_async( _netQueue, ^{
-            int result = shutdown_socket_layer();
-            if( completionHandler )
-                completionHandler( false, result );
-            weakself.connected = NO;    // error or not--
+            shutdown_socket_layer();
         });
     }
 }
