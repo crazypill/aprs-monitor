@@ -138,9 +138,9 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
     // if `date` is before "now" (i.e. in the past) then the components will be positive
     NSDateComponents* components = [[NSCalendar currentCalendar] components:units fromDate:date toDate:[NSDate date] options:0];
     if( components.hour > 1 )
-        return [NSString stringWithFormat:@"%dh%02dm%02ds ago", (int)components.hour, (int)components.minute, (int)components.second];
+        return [NSString stringWithFormat:@"%dh %02dm %02ds ago", (int)components.hour, (int)components.minute, (int)components.second];
     if( components.minute > 1 )
-        return [NSString stringWithFormat:@"%dm%02ds  ago", (int)components.minute, (int)components.second];
+        return [NSString stringWithFormat:@"%dm %02ds ago", (int)components.minute, (int)components.second];
     if( components.second > 1 )
         return [NSString stringWithFormat:@"%ds ago", (int)components.second];
 
