@@ -16,6 +16,7 @@
 
 #define kConnectedString            @"Connected"
 #define kConnectingString           @"Connecting..."
+#define kDisconnectingString        @"Disconnecting..."
 #define kDisconnectedString         @"Not connected"
 #define kConnectErrorFormat         @"Error connecting... %d"
 
@@ -261,7 +262,7 @@ enum
     [self dismissKeyboard:nil];
 
     // focus the fields if they are empty... (leaving port field empty is fine, but not server)
-    if( ![MapViewController shared].thread_running && !_serverAddress )
+    if( ![MapViewController shared].thread_running && (!_serverAddress || !_serverAddress.length) )
     {
         [_addressField becomeFirstResponder];
         return;
@@ -271,10 +272,8 @@ enum
     [[NSUserDefaults standardUserDefaults] setObject:_serverAddress forKey:kPrefsServerKey];
     [[NSUserDefaults standardUserDefaults] setInteger:_serverPort forKey:kPrefsServerPortKey];
 
-//    [self dismissKeyboard:nil];
-
     if( _statusLabel )
-        _statusLabel.text = kConnectingString;
+        _statusLabel.text = [MapViewController shared].thread_running ? kDisconnectingString : kConnectingString;
     
     // disable the connect button while we are connecting in the background...
     if( _connectButton )
@@ -284,7 +283,7 @@ enum
 
     if( [MapViewController shared].thread_running )
     {
-        [[MapViewController shared] disconnectFromServer:^( bool wasConnecting, int errorCode ) {
+        [[MapViewController shared] disconnectFromServer:^( bool isConnected, int errorCode ) {
             dispatch_async( dispatch_get_main_queue(), ^{
                 if( weakself.statusLabel )
                     weakself.statusLabel.text = kDisconnectedString;
@@ -298,8 +297,8 @@ enum
     }
     else
     {
-        [[MapViewController shared] connectToServer:^( bool wasConnecting, int errorCode ) {
-            if( wasConnecting && weakself.statusLabel )
+        [[MapViewController shared] connectToServer:^( bool isConnected, int errorCode ) {
+            if( isConnected && weakself.statusLabel )
             {
                 dispatch_async( dispatch_get_main_queue(), ^{
                     if( !errorCode )
@@ -313,6 +312,16 @@ enum
                         weakself.connectButton.selected = YES; // this changes the text to disconnect...
                     }
                 });
+            }
+            else
+            {
+                if( weakself.statusLabel )
+                    weakself.statusLabel.text = kDisconnectedString;
+                if( weakself.connectButton )
+                {
+                    weakself.connectButton.enabled = YES;
+                    weakself.connectButton.selected = NO;
+                }
             }
         }];
     }

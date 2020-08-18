@@ -769,7 +769,9 @@ int connectToDireWolf( void )
         {
             log_error( "error in getaddrinfo: %s\n", s_kiss_server );
         }
-        return error;
+        if( error > 0)
+            error = -error; // make errors negative
+        goto exit_gracefully;
     }
 
     for( result = results; result != NULL; result = result->ai_next )
@@ -807,6 +809,8 @@ int connectToDireWolf( void )
             close( socket_desc );
         }
     }
+    
+exit_gracefully:
     freeaddrinfo( results );
     if( foundValidServerIP == 0 )
     {
