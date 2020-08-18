@@ -29,8 +29,9 @@ static CGFloat            s_default_map_span = 10.0f;
 
 
 @interface MapViewController ()
-@property (nonatomic)         bool     thread_running;
-@property (strong, nonatomic) NSTimer* timer;
+@property (atomic)            bool             thread_running;
+@property (strong, nonatomic) NSTimer*         timer;
+@property (strong, nonatomic) dispatch_queue_t netQueue;
 @end
 
 
@@ -43,16 +44,16 @@ void stat_callback( bool running )
     }
 
     dispatch_async( dispatch_get_main_queue(), ^{
-        if( running )
-        {
-            s_map_controller.connect.enabled = YES;
-            s_map_controller.connect.title = @"Disconnect";
-        }
-        else
-        {
-            s_map_controller.connect.enabled = YES;
-            s_map_controller.connect.title = @"Connect";
-        }
+//        if( running )
+//        {
+//            s_map_controller.connect.enabled = YES;
+//            s_map_controller.connect.title = @"Disconnect";
+//        }
+//        else
+//        {
+//            s_map_controller.connect.enabled = YES;
+//            s_map_controller.connect.title = @"Connect";
+//        }
 
         s_map_controller.thread_running = running;
     });
@@ -98,6 +99,16 @@ void map_callback( packet_t packet )
 
 @implementation MapViewController
 
+
++ (MapViewController*)shared
+{
+    if( !s_map_controller )
+        NSLog( @"Calling MapViewController*)shared too early, is nil!\n" );
+    
+    return s_map_controller;
+}
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -109,25 +120,62 @@ void map_callback( packet_t packet )
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
 
+    _netQueue = dispatch_queue_create( "networkqueue", NULL );
     if( !s_map_controller )
     {
         s_map_controller = self;
-        [self connectButtonPressed:nil];    // when we start, automatically connect !!@
+        [self connectToServer:nil];    // when we start, automatically connect
     }
 }
 
 
 - (void)applicationDidEnterBackground:(UIApplication*)application
 {
-    if( _thread_running )
-        shutdown_socket_layer();
+    [self disconnectFromServer:nil];
 }
 
 
 - (void)applicationWillEnterForeground:(UIApplication*)application
 {
     // reconnect automatically...
-    [self connectButtonPressed:nil];
+    [self connectToServer:nil];
+}
+
+
+#pragma mark -
+
+
+- (void)connectToServer:(netStatusBlock)completionHandler
+{
+    // get server name and port from settings...  !!@
+    __weak MapViewController* weakself = self;
+
+    if( !_thread_running )
+    {
+        dispatch_async( _netQueue, ^{
+            int result = init_socket_layer( "aprs.local", 8001, map_callback, stat_callback );
+            if( completionHandler )
+                completionHandler( true, result );
+
+            weakself.connected = (result == EXIT_SUCCESS);
+        });
+    }
+}
+
+
+- (void)disconnectFromServer:(netStatusBlock)completionHandler
+{
+    __weak MapViewController* weakself = self;
+
+    if( _thread_running )
+    {
+        dispatch_async( _netQueue, ^{
+            int result = shutdown_socket_layer();
+            if( completionHandler )
+                completionHandler( false, result );
+            weakself.connected = NO;    // error or not--
+        });
+    }
 }
 
 
@@ -160,20 +208,6 @@ void map_callback( packet_t packet )
     _status.tintColor = [UIColor systemBlueColor];
     [_timer invalidate];
     _timer = nil;
-}
-
-
-- (IBAction)connectButtonPressed:(id)sender
-{
-    s_map_controller.connect.enabled = NO;  // grey button while connecting or disconnecting...
-    if( !_thread_running )
-    {
-        init_socket_layer( map_callback, stat_callback );
-    }
-    else
-    {
-        shutdown_socket_layer();
-    }
 }
 
 

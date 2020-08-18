@@ -7,6 +7,7 @@
 //
 
 #import "SettingsController.h"
+#import "MapViewController.h"
 
 
 #define kNSBundleVersionKey         @"CFBundleVersion"
@@ -45,6 +46,8 @@ enum
 
 
 @interface SettingsController ()
+@property (weak, nonatomic) UIButton* __nullable connectButton;
+@property (weak, nonatomic) UILabel* __nullable  statusLabel;
 @end
 
 
@@ -52,6 +55,7 @@ enum
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     // Do any additional setup after loading the view.
 }
 
@@ -100,7 +104,6 @@ enum
 
 - (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    
     // Configure the cell...
     if( indexPath.section == kSettingsSection_Settings )
     {
@@ -122,7 +125,16 @@ enum
             SettingsButtonCell* button = [tableView dequeueReusableCellWithIdentifier:@"settings.button.cell" forIndexPath:indexPath];
             [button.button setTitle:@"Connect" forState:UIControlStateNormal];
             [button.button setTitle:@"Disconnect" forState:UIControlStateSelected];
-            button.label.text = @"Status text here";
+            [button.button addTarget:self action:@selector(connectButtonPressed:) forControlEvents:UIControlEventPrimaryActionTriggered];
+            button.label.text = nil;
+            _connectButton = button.button;
+            _statusLabel = button.label;
+            
+            if( [MapViewController shared].connected )
+            {
+                _connectButton.selected = YES; // this changes the text to disconnect...
+                _statusLabel.text = @"Connected...";    // !!@ remove literals
+            }
             return button;
         }
         return cell;
@@ -176,7 +188,54 @@ enum
     return 0.0f;
 }
 
-#pragma mark - Navigation
+#pragma mark -
+
+
+- (IBAction)connectButtonPressed:(id)sender
+{
+    // make sure to set the server address in the prefs as this routine will read it before connecting async...
+    if( _connectButton )
+        _connectButton.enabled = NO;
+    
+    __weak SettingsController* weakself = self;
+
+    if( [MapViewController shared].connected )
+    {
+        [[MapViewController shared] disconnectFromServer:^( bool wasConnecting, int errorCode ) {
+            dispatch_async( dispatch_get_main_queue(), ^{
+                if( weakself.statusLabel )
+                    weakself.statusLabel.text = @"Disconnected...\n";
+                if( weakself.connectButton )
+                {
+                    weakself.connectButton.enabled = YES;
+                    weakself.connectButton.selected = NO;
+                }
+            });
+        }];
+    }
+    else
+    {
+        [[MapViewController shared] connectToServer:^( bool wasConnecting, int errorCode ) {
+            if( wasConnecting && weakself.statusLabel )
+            {
+                dispatch_async( dispatch_get_main_queue(), ^{
+                    if( !errorCode )
+                        weakself.statusLabel.text = @"Connected...\n";
+                    else
+                        weakself.statusLabel.text = [NSString stringWithFormat:@"Error connecting... %d\n", errorCode];
+                    
+                    if( weakself.connectButton )
+                    {
+                        weakself.connectButton.enabled = YES;
+                        weakself.connectButton.selected = YES; // this changes the text to disconnect...
+                    }
+                });
+            }
+        }];
+    }
+}
+
+
 
 /*
 #pragma mark - Navigation

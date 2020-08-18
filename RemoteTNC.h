@@ -19,10 +19,6 @@
 //#define TRACE_STATS
 
 
-
-//#define PORT_DEVICE "/dev/cu.usbserial-0001"  // blue usb->serial adapter, use command line interface instead of changing this. this is here to remind me of the port name.
-#define PORT_DEVICE   "/dev/serial0"
-#define PORT_ERROR    -1
 #define PROGRAM_NAME  "aprs-monitor"
 #define VERSION       "100"
 
@@ -104,7 +100,7 @@
 
 typedef void (*status_callback)( bool thread_running );
 
-int  init_socket_layer( frame_callback callback, status_callback status );
+int  init_socket_layer( const char* server_address, int server_port, frame_callback callback, status_callback status );
 int  shutdown_socket_layer( void );
 
 bool debug_mode( void );

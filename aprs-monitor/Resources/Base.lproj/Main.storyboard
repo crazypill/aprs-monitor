@@ -219,7 +219,7 @@
                         </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="Monitor" id="jVU-xi-FZF">
-                        <barButtonItem key="leftBarButtonItem" title="Connect" id="Rgw-9H-VhC">
+                        <barButtonItem key="leftBarButtonItem" image="gear" catalog="system" id="Rgw-9H-VhC">
                             <connections>
                                 <segue destination="Czy-Wa-JvW" kind="presentation" id="1st-rQ-8fi"/>
                             </connections>
@@ -545,5 +545,6 @@ Written by: Alex Lelièvre</string>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="envelope" catalog="system" width="128" height="93"/>
+        <image name="gear" catalog="system" width="128" height="119"/>
     </resources>
 </document>

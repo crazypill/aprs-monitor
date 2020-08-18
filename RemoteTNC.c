@@ -69,12 +69,10 @@ static const char* s_logFilePath = NULL;
 static FILE*       s_logFile     = NULL;
 
 
-static const char* s_port_device  = PORT_DEVICE;
-//static const char* s_kiss_server  = "localhost";
-static const char* s_kiss_server  = "aprs.local";
-static uint16_t    s_kiss_port    = 8001;
-static uint8_t     s_num_retries  = 10;
-static bool        s_test_mode    = false;
+static char        s_kiss_server[1024] = {};
+static uint16_t    s_kiss_port         = 8001;
+static uint8_t     s_num_retries       = 10;
+static bool        s_test_mode         = false;
 
 static wx_thread_t  s_read_thread = 0;
 static sig_atomic_t s_read_thread_quit = 0;
@@ -331,10 +329,20 @@ void log_unix_error( const char* prefix )
 
 #pragma mark -
 
-int init_socket_layer( frame_callback callback, status_callback status )
+
+int init_socket_layer( const char* server_address, int server_port, frame_callback callback, status_callback status )
 {
     if( s_read_thread )
         return EXIT_FAILURE;
+    
+    if( server_port )
+        s_kiss_port = server_port;
+
+    if( server_address )
+        strlcpy( s_kiss_server, server_address, sizeof( s_kiss_server ) );
+    else
+        strlcpy( s_kiss_server, "localhost", sizeof( s_kiss_server ) );
+
     
     int err = ignoreSIGPIPE();
     if( err == 0 )
@@ -367,9 +375,10 @@ int init_socket_layer( frame_callback callback, status_callback status )
     if( !info )
         return EXIT_FAILURE;
     
-    info->callback = callback;
-    info->status   = status;
-
+    memset( info, 0, sizeof( ReadThreadInfo ) );
+    info->callback   = callback;
+    info->status     = status;
+    
     s_read_thread_quit = false;
     s_read_thread = wx_create_thread_detached( tnc_read_thread, info );
     return EXIT_SUCCESS;
