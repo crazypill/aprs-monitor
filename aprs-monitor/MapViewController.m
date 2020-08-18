@@ -19,7 +19,9 @@
 
 #define kBlinkColor [UIColor redColor]
 #define kInitialSettingDelaySecs  2.5
-
+#define kExpirePacketTimeHours    2
+#define kAgePacketTimeHours       1
+#define kAgePacketTimeMinutes     30
 
 static MapViewController* s_map_controller     = nil;
 static bool               s_have_location      = false;
@@ -28,9 +30,11 @@ static netStatusBlock     s_connect_completion = NULL;
 
 
 @interface MapViewController ()
-@property (strong, nonatomic) NSTimer*         timer;
-@property (strong, nonatomic) dispatch_queue_t netQueue;
+@property (strong, nonatomic) NSTimer*          timer;
+@property (strong, nonatomic) dispatch_queue_t  netQueue;
+@property (strong, nonatomic) dispatch_source_t reaper;
 @end
+
 
 
 void stat_callback( bool running )
@@ -45,6 +49,11 @@ void stat_callback( bool running )
     s_map_controller.thread_running = running;
 
     dispatch_async( dispatch_get_main_queue(), ^{
+        if( running )
+            dispatch_resume( s_map_controller.reaper );
+        else
+            dispatch_suspend( s_map_controller.reaper );
+
         if( s_connect_completion )
             s_connect_completion( running, 0 );
     });
@@ -84,6 +93,8 @@ void map_callback( unsigned char* frame_data, size_t data_length )
 
 
 #pragma mark -
+
+
 
 
 
@@ -128,6 +139,17 @@ void map_callback( unsigned char* frame_data, size_t data_length )
         }
         else
             [self connectToServer:nil];    // when we start, automatically connect
+    }
+    
+    _reaper = dispatch_source_create( DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue() );
+    if( _reaper )
+    {
+        uint64_t interval = 30;
+        dispatch_source_set_timer( _reaper, dispatch_time( DISPATCH_TIME_NOW, interval * NSEC_PER_SEC ), interval * NSEC_PER_SEC, (1ull * NSEC_PER_SEC) / 10 );
+        dispatch_source_set_event_handler( _reaper, ^{
+            [self expireAnnotations];
+            [self ageAnnotations];
+        });
     }
 }
 
@@ -310,20 +332,20 @@ void map_callback( unsigned char* frame_data, size_t data_length )
         if( index != NSNotFound )
         {
             Packet* pkt = (Packet*)[weakself.mapView.annotations objectAtIndex:index];
-            MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[weakself.mapView viewForAnnotation:pkt];
-
+            MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[weakself.mapView viewForAnnotation:pkt];   // this supposedly only works for visible pins
             if( anno )
             {
                 [self setupAnnotationView:anno forAnnotation:pkt];
                 return;
             }
             
-            
             // yank the old one, we will stick a new one in its place
             [weakself.mapView removeAnnotation:[weakself.mapView.annotations objectAtIndex:index]];
             
             // note: for moving objects, we should be updating the paths here I think !!@
         }
+        
+        // check to see if we are filtering packets and if so possibly skip adding this one (unless it matches the current filter) !!@
         
         [weakself.mapView addAnnotations:@[packet]];
         
@@ -335,6 +357,49 @@ void map_callback( unsigned char* frame_data, size_t data_length )
         }
     });
 }
+
+
+// this routine goes thru the currently visible annotations and finds the old ones and makes them greyer until they die (and are removed)
+- (void)expireAnnotations
+{
+    NSIndexSet* deadPins = [self.mapView.annotations indexesOfObjectsPassingTest:^BOOL ( __kindof Packet* _Nonnull pkt, NSUInteger idx, BOOL* stop )
+    {
+        NSCalendarUnit units = (NSCalendarUnitHour | NSCalendarUnitMinute);
+        NSDateComponents* components = [[NSCalendar currentCalendar] components:units fromDate:pkt.timeStamp toDate:[NSDate now] options:0];
+        return (components.hour > kExpirePacketTimeHours);
+    }];
+    
+    if( !deadPins.count )
+        return;
+
+    NSArray* deathRow = [self.mapView.annotations objectsAtIndexes:deadPins];
+    if( deathRow )
+        [self.mapView removeAnnotations:deathRow];
+}
+
+
+- (void)ageAnnotations
+{
+    NSIndexSet* dyingPins = [self.mapView.annotations indexesOfObjectsPassingTest:^BOOL ( __kindof Packet* _Nonnull pkt, NSUInteger idx, BOOL* stop )
+    {
+        NSCalendarUnit units = (NSCalendarUnitHour | NSCalendarUnitMinute);
+        NSDateComponents* components = [[NSCalendar currentCalendar] components:units fromDate:pkt.timeStamp toDate:[NSDate now] options:0];
+        return ((components.hour > kAgePacketTimeHours) && (components.minute > kAgePacketTimeMinutes));
+    }];
+    
+    if( !dyingPins.count )
+        return;
+
+    NSArray* agingStation = [self.mapView.annotations objectsAtIndexes:dyingPins];
+    if( agingStation )
+    {
+        [agingStation enumerateObjectsUsingBlock:^( Packet* pkt, NSUInteger idx, BOOL* stop ) {
+            MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[self.mapView viewForAnnotation:pkt];
+            anno.alpha = 0.4f;
+        }];
+    }
+}
+
 
 
 + (UIImage*)getSymbolImage:(NSString*)symbol
