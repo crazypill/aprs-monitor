@@ -88,6 +88,7 @@
 
     [actionSheet addAction:[UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
         [pvc.pm removeAllItemsAndNotify:YES];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"PacketLogWiped" object:nil];
     }]];
     [actionSheet addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
 

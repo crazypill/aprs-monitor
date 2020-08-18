@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 
-@interface SettingsController : UITableViewController
+@interface SettingsController : UITableViewController <UITextFieldDelegate>
 @end
 
 NS_ASSUME_NONNULL_END

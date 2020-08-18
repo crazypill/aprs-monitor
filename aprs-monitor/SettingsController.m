@@ -14,6 +14,12 @@
 #define kNSApplicationVersionKey    @"CFBundleShortVersionString"
 #define kPrefsAboutFormat           @"APRS Monitor v%@\n© 2020 Far Out Labs, LLC\nWritten by: Alex Lelièvre K6LOT"
 
+#define kConnectedString            @"Connected..."
+#define kDisconnectedString         @"Disconnected..."
+#define kConnectErrorFormat         @"Error connecting... %d"
+
+
+
 static const float kPrefsTableTitleHeight       = 60.0f;
 static const float kPrefsTableAboutHeight       = 69.0f;
 static const float kPrefsTableAboutFooterHeight = 260.0f;
@@ -118,16 +124,18 @@ enum
         if( indexPath.row == kSettings_KissServer )
         {
             cell = [tableView dequeueReusableCellWithIdentifier:@"settings.text.cell" forIndexPath:indexPath];
-            cell.label.text = @"KISS Server";
+            cell.label.text        = @"KISS Server";
             cell.field.placeholder = @"aprs.local"; // my server :)
+            cell.field.delegate    = self;
             _addressField = cell.field;
             [_addressField addTarget:self action:@selector(nextField:) forControlEvents:UIControlEventEditingDidEndOnExit];
         }
         else if( indexPath.row == kSettings_KissPort )
         {
             cell = [tableView dequeueReusableCellWithIdentifier:@"settings.number.cell" forIndexPath:indexPath];
-            cell.label.text = @"KISS Port";
+            cell.label.text        = @"KISS Port";
             cell.field.placeholder = @"8001";     // standard KISS port
+            cell.field.delegate    = self;
             _portField = cell.field;
             [_portField addTarget:self action:@selector(dismissKeyboard:) forControlEvents:UIControlEventEditingDidEndOnExit];
         }
@@ -144,7 +152,7 @@ enum
             if( [MapViewController shared].connected )
             {
                 _connectButton.selected = YES; // this changes the text to disconnect...
-                _statusLabel.text = @"Connected...";    // !!@ remove literals
+                _statusLabel.text = kConnectedString;
             }
             return button;
         }
@@ -208,6 +216,21 @@ enum
 }
 
 
+- (void)textFieldDidEndEditing:(UITextField*)textField
+{
+    if( textField == _portField )
+    {
+        _serverPort = textField.text.integerValue;
+    }
+    else if( textField == _addressField )
+    {
+        _serverAddress = textField.text;
+    }
+}
+
+
+
+
 - (void)dismissKeyboard:(UITextField*)sender
 {
     if( _portField && _portField.self.isFirstResponder )
@@ -216,6 +239,8 @@ enum
     if( _addressField && _addressField.self.isFirstResponder )
         [_addressField resignFirstResponder];
 }
+
+
 
 
 - (IBAction)connectButtonPressed:(id)sender
@@ -240,7 +265,7 @@ enum
         [[MapViewController shared] disconnectFromServer:^( bool wasConnecting, int errorCode ) {
             dispatch_async( dispatch_get_main_queue(), ^{
                 if( weakself.statusLabel )
-                    weakself.statusLabel.text = @"Disconnected...\n";
+                    weakself.statusLabel.text = kDisconnectedString;
                 if( weakself.connectButton )
                 {
                     weakself.connectButton.enabled = YES;
@@ -256,9 +281,9 @@ enum
             {
                 dispatch_async( dispatch_get_main_queue(), ^{
                     if( !errorCode )
-                        weakself.statusLabel.text = @"Connected...\n";
+                        weakself.statusLabel.text = kConnectedString;
                     else
-                        weakself.statusLabel.text = [NSString stringWithFormat:@"Error connecting... %d\n", errorCode];
+                        weakself.statusLabel.text = [NSString stringWithFormat:kConnectErrorFormat, errorCode];
                     
                     if( weakself.connectButton )
                     {

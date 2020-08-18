@@ -119,6 +119,7 @@ void map_callback( packet_t packet )
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(packetsWiped:) name:@"PacketLogWiped" object:nil];
 
     _netQueue = dispatch_queue_create( "networkqueue", NULL );
     if( !s_map_controller )
@@ -480,6 +481,14 @@ void map_callback( packet_t packet )
             [self presentViewController:detailNavController animated:YES completion:nil];
         }
     }
+}
+
+
+#pragma mark -
+
+- (IBAction)packetsWiped:(id)sender
+{
+    [self.mapView removeAnnotations:self.mapView.annotations];
 }
 
 
