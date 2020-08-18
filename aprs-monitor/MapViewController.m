@@ -423,14 +423,18 @@ void map_callback( unsigned char* frame_data, size_t data_length )
     NSArray* wx = [self.mapView.annotations objectsAtIndexes:wxPins];
     [self.mapView removeAnnotations:self.mapView.annotations];
     if( wx )
-        [self.mapView addAnnotations:wx];
+    {
+        [wx enumerateObjectsUsingBlock:^( __kindof Packet* _Nonnull pkt, NSUInteger idx, BOOL* stop )
+        {
+            [self plotMessage:pkt];
+        }];
+    }
 }
-
 
 
 - (void)filterForAll
 {
-    NSIndexSet* wxPins = [[PacketManager shared].items indexesOfObjectsPassingTest:^BOOL ( __kindof Packet* _Nonnull pkt, NSUInteger idx, BOOL* stop )
+    [[PacketManager shared].items enumerateObjectsUsingBlock:^( __kindof Packet* _Nonnull pkt, NSUInteger idx, BOOL* stop )
     {
         NSCalendarUnit units = NSCalendarUnitHour;
         NSDateComponents* components = [[NSCalendar currentCalendar] components:units fromDate:pkt.timeStamp toDate:[NSDate now] options:0];
@@ -439,16 +443,13 @@ void map_callback( unsigned char* frame_data, size_t data_length )
         if( components.hour > kExpirePacketTimeHours )
         {
             *stop = YES;
-            return false;
+            return;
         }
         
-        return true;
+        // we do this instead of adding them all at once (which is in the last checkin) so that we get the
+        // checks for existing pins (and eventually so we plot routes correctly)
+        [self plotMessage:pkt];
     }];
-    
-    NSArray* wx = [[PacketManager shared].items objectsAtIndexes:wxPins];
-    [self.mapView removeAnnotations:self.mapView.annotations];
-    if( wx )
-        [self.mapView addAnnotations:wx];
 }
 
 
