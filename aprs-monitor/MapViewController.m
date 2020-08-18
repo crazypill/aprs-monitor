@@ -249,29 +249,30 @@ void map_callback( unsigned char* frame_data, size_t data_length )
 
 - (IBAction)weatherButtonPressed:(id)sender
 {
-    Packet* pkt = [[Packet alloc] init];
-    pkt.flags |= (kCoordinatesMask | kPacketFlag_Weather);
-    pkt.coordinate = CLLocationCoordinate2DMake( 34.108, -118.335 ); // folabs hq
-    pkt.call = @"K6TEST";
-    pkt.weather = @"fake weather";
-    pkt.symbol = @"/_";
-    
-    pkt.wx = malloc( sizeof( wx_data ) );
-    if( pkt.wx )
-    {
-        pkt.wx->wxflags |= (kWxDataFlag_gust | kWxDataFlag_windDir | kWxDataFlag_wind | kWxDataFlag_temp | kWxDataFlag_humidity | kWxDataFlag_pressure);
-        pkt.wx->windGustMph = 10;
-        pkt.wx->windSpeedMph = 2;
-        pkt.wx->windDirection = 195;
-
-        pkt.wx->tempF    = 100;
-        pkt.wx->humidity = 55;
-        pkt.wx->pressure = 1013;
-     
-        pkt.weather = [Packet makeWeatherString:pkt.wx];
-        [self plotMessage:pkt];
-    }
-    pkt = nil;
+    [self filterForWeather];
+//    Packet* pkt = [[Packet alloc] init];
+//    pkt.flags |= (kCoordinatesMask | kPacketFlag_Weather);
+//    pkt.coordinate = CLLocationCoordinate2DMake( 34.108, -118.335 ); // folabs hq
+//    pkt.call = @"K6TEST";
+//    pkt.weather = @"fake weather";
+//    pkt.symbol = @"/_";
+//
+//    pkt.wx = malloc( sizeof( wx_data ) );
+//    if( pkt.wx )
+//    {
+//        pkt.wx->wxflags |= (kWxDataFlag_gust | kWxDataFlag_windDir | kWxDataFlag_wind | kWxDataFlag_temp | kWxDataFlag_humidity | kWxDataFlag_pressure);
+//        pkt.wx->windGustMph = 10;
+//        pkt.wx->windSpeedMph = 2;
+//        pkt.wx->windDirection = 195;
+//
+//        pkt.wx->tempF    = 100;
+//        pkt.wx->humidity = 55;
+//        pkt.wx->pressure = 1013;
+//
+//        pkt.weather = [Packet makeWeatherString:pkt.wx];
+//        [self plotMessage:pkt];
+//    }
+//    pkt = nil;
 }
 
 
@@ -311,7 +312,7 @@ void map_callback( unsigned char* frame_data, size_t data_length )
 
 - (IBAction)allButtonPressed:(id)sender
 {
-    
+    [self filterForAll];
 }
 
 
@@ -364,7 +365,7 @@ void map_callback( unsigned char* frame_data, size_t data_length )
 {
     NSIndexSet* deadPins = [self.mapView.annotations indexesOfObjectsPassingTest:^BOOL ( __kindof Packet* _Nonnull pkt, NSUInteger idx, BOOL* stop )
     {
-        NSCalendarUnit units = (NSCalendarUnitHour | NSCalendarUnitMinute);
+        NSCalendarUnit units = NSCalendarUnitHour;
         NSDateComponents* components = [[NSCalendar currentCalendar] components:units fromDate:pkt.timeStamp toDate:[NSDate now] options:0];
         return (components.hour > kExpirePacketTimeHours);
     }];
@@ -399,6 +400,61 @@ void map_callback( unsigned char* frame_data, size_t data_length )
         }];
     }
 }
+
+
+
+- (void)filterForWeather
+{
+    NSIndexSet* wxPins = [self.mapView.annotations indexesOfObjectsPassingTest:^BOOL ( __kindof Packet* _Nonnull pkt, NSUInteger idx, BOOL* stop )
+    {
+        NSCalendarUnit units = NSCalendarUnitHour;
+        NSDateComponents* components = [[NSCalendar currentCalendar] components:units fromDate:pkt.timeStamp toDate:[NSDate now] options:0];
+        
+        // don't go too far back in time (nothing older than the oldest showing pins)
+        if( components.hour > kExpirePacketTimeHours )
+        {
+            *stop = YES;
+            return false;
+        }
+        
+        return [pkt.symbol isEqualToString:@"/_"]; // really need a type field that's not a string !!@
+    }];
+    
+    NSArray* wx = [self.mapView.annotations objectsAtIndexes:wxPins];
+    [self.mapView removeAnnotations:self.mapView.annotations];
+    if( wx )
+        [self.mapView addAnnotations:wx];
+}
+
+
+
+- (void)filterForAll
+{
+    NSIndexSet* wxPins = [[PacketManager shared].items indexesOfObjectsPassingTest:^BOOL ( __kindof Packet* _Nonnull pkt, NSUInteger idx, BOOL* stop )
+    {
+        NSCalendarUnit units = NSCalendarUnitHour;
+        NSDateComponents* components = [[NSCalendar currentCalendar] components:units fromDate:pkt.timeStamp toDate:[NSDate now] options:0];
+        
+        // don't go too far back in time (nothing older than the oldest showing pins)
+        if( components.hour > kExpirePacketTimeHours )
+        {
+            *stop = YES;
+            return false;
+        }
+        
+        return true;
+    }];
+    
+    NSArray* wx = [[PacketManager shared].items objectsAtIndexes:wxPins];
+    [self.mapView removeAnnotations:self.mapView.annotations];
+    if( wx )
+        [self.mapView addAnnotations:wx];
+}
+
+
+
+
+#pragma mark -
 
 
 
