@@ -302,6 +302,16 @@ void map_callback( packet_t packet )
         
         if( index != NSNotFound )
         {
+            Packet* pkt = (Packet*)[weakself.mapView.annotations objectAtIndex:index];
+            MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[weakself.mapView viewForAnnotation:pkt];
+
+            if( anno )
+            {
+                [self setupAnnotationView:anno forAnnotation:pkt];
+                return;
+            }
+            
+            
             // yank the old one, we will stick a new one in its place
             [weakself.mapView removeAnnotation:[weakself.mapView.annotations objectAtIndex:index]];
             
@@ -388,11 +398,12 @@ void map_callback( packet_t packet )
 
 #pragma mark -
 
-- (nullable MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
+
+- (void)setupAnnotationView:(MKAnnotationView*)view forAnnotation:(id <MKAnnotation>)annotation
 {
     Packet* pkt = (Packet*)annotation;
-    MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:@"marker.pin" forAnnotation:annotation];
-
+    MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)view;
+    
     anno.canShowCallout  = true;
     anno.animatesWhenAdded = true;
     
@@ -448,12 +459,18 @@ void map_callback( packet_t packet )
         anno.glyphText  = nil;
         anno.leftCalloutAccessoryView = nil;
     }
-   
+}
+
+
+- (nullable MKAnnotationView*)mapView:(MKMapView*)mapView viewForAnnotation:(id <MKAnnotation>)annotation
+{
+    MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:@"marker.pin" forAnnotation:annotation];
+    [self setupAnnotationView:anno forAnnotation:annotation];
     return anno;
 }
 
 
-- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
+- (void)mapView:(MKMapView*)mapView annotationView:(MKAnnotationView*)view calloutAccessoryControlTapped:(UIControl*)control
 {
     // This illustrates how to detect which annotation type was tapped on for its callout.
     UINavigationController* detailNavController = [self.storyboard instantiateViewControllerWithIdentifier:@"DetailNavController"];
