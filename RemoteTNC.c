@@ -723,25 +723,6 @@ int read_from_kiss_tnc( int server_sock, frame_callback callback )
           kiss_rec_byte( &kstate, raw_buffer[j], false, 0, NULL, callback );
         }
     }
-    
-//    int err = 0;
-//    if( bytesRead > 0 )
-//    {
-//        uint8_t unwrapped[AX25_MAX_PACKET_LEN] = {};
-//        int len = kiss_unwrap( raw_buffer, (int)bytesRead, unwrapped );
-//
-//        if( !len )
-//            log_error( "err: \n" );
-//        else
-//        {
-//            char packetFormat = UNCOMPRESSED_PACKET;
-//
-//            // reuse raw_buffer now
-//            printAPRSPacket( (APRSPacket*)&unwrapped, (char*)raw_buffer, packetFormat, 0, false );
-////            ax25_safe_print( (char*)unwrapped, len, false );
-//            log_error( "%s\n", raw_buffer );
-//        }
-//    }
     return 0;
 }
 

@@ -17,8 +17,13 @@ enum
     kPacketFlag_Longitude        = 1 << 1,
     kPacketFlag_Course           = 1 << 2,
     kPacketFlag_Speed            = 1 << 3,
-    kPacketFlag_Weather          = 1 << 4,
-    kPacketFlag_Telemetry        = 1 << 5
+    kPacketFlag_Altitude         = 1 << 4,
+    kPacketFlag_Weather          = 1 << 5,
+    kPacketFlag_Power            = 1 << 6,
+    kPacketFlag_Height           = 1 << 7,
+    kPacketFlag_Gain             = 1 << 8,
+    kPacketFlag_Range            = 1 << 9,
+    kPacketFlag_Telemetry        = 1 << 10
 };
 
 
@@ -32,7 +37,7 @@ enum
 
 @interface Packet : NSObject <MKAnnotation, NSCoding, NSCopying>
 
-@property (nonatomic) uint8_t                             flags;
+@property (nonatomic) uint16_t                            flags;
 @property (nonatomic) CLLocationCoordinate2D              coordinate;
 @property (nonatomic, readonly, copy, nullable) NSString* title;
 @property (nonatomic, readonly, copy, nullable) NSString* subtitle;
@@ -41,6 +46,7 @@ enum
 @property (nonatomic, copy, nullable) NSString* address;
 @property (nonatomic, copy, nullable) NSString* destination;
 @property (nonatomic, copy, nullable) NSString* path;
+@property (nonatomic, copy, nullable) NSData*   raw;            // this and the timestamp are the only things that go to disk
 @property (nonatomic, copy, nullable) NSString* info;
 @property (nonatomic, copy, nullable) NSString* type;
 @property (nonatomic, copy, nullable) NSString* symbol;
@@ -50,9 +56,14 @@ enum
 @property (nonatomic, nullable)       wx_data*  wx;
 @property (nonatomic)                 CGFloat   course;
 @property (nonatomic)                 CGFloat   speed;
+@property (nonatomic)                 CGFloat   altitude;
+@property (nonatomic)                 NSInteger power;
+@property (nonatomic)                 NSInteger height;
+@property (nonatomic)                 NSInteger gain;
+@property (nonatomic)                 CGFloat   range;
 
 
-+ (_Nullable id)initWithPacket_t:(packet_t _Nullable)packet;
++ (_Nullable id)initWithData:(NSData* _Nullable)data;
 + (NSString* _Nullable)makeWeatherString:(wx_data* _Nullable)wxdata;
 - (UIImage* _Nullable)getWindIndicatorIcon:(CGRect)imageBounds;
 

@@ -28,7 +28,7 @@
 #define KISS_CMD_END_KISS	15
 
 
-typedef void (*frame_callback)( packet_t packetData );
+typedef void (*frame_callback)( unsigned char* frame_data, size_t data_length );
 
 
 /*

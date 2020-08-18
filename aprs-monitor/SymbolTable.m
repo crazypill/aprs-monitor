@@ -29,7 +29,7 @@ static const SymbolEntry s_symbol_table[] =
     { @"/8", @"Circle with 8 overlay",  @"🎱",            0, 1,  93/255.,  93/255., 148/255., kAlpha },
     { @"/9", @"Circle with 9 overlay",  @"❾",             1, 1,    1.00f,    1.00f,    1.00f, kAlpha },
 
-    { @"/'", @"Campground (Portable ops)",  @"🏕",        0, 1, kNGry, kNGry, kNGry, kAlpha },
+    { @"/;", @"Campground (Portable ops)",  @"🏕",        0, 1, kNGry, kNGry, kNGry, kAlpha },
 
 //     /= MU  RAILROAD ENGINE
 
@@ -406,7 +406,7 @@ static const SymbolEntry s_symbol_table[] =
 //    W- = Wind power
 //
 //    INCIDENT SITES: #'
-//    /' = Small Aircraft (original primary symbol)
+    { @"/'", @"Small Aircraft",   @"✈︎",     1, 1, 0.518, 0.518, 0.518, kAlpha },
 //    \' = Airplane Crash Site  <= the original alternate deifinition
 //    A' = Automobile crash site
 //    H' = Hazardous incident

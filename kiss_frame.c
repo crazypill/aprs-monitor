@@ -98,7 +98,7 @@
 
 
 
-static char timestamp_format[60] = "";        /* -T option */
+//static char timestamp_format[60] = "";        /* -T option */
 /* Precede received frames with timestamp. */
 /* Command line option uses "strftime" format string. */
 
@@ -542,50 +542,9 @@ void kiss_process_msg (unsigned char *kiss_msg, int kiss_len, int debug, int cli
 
 	switch (cmd) 
 	{
-	  case KISS_CMD_DATA_FRAME:				/* 0 = Data Frame */
-
-            memset (&alevel, 0, sizeof(alevel));
-            pp = ax25_from_frame (kiss_msg+1, kiss_len-1, alevel);
-            if (pp == NULL) {
-               text_color_set(DW_COLOR_ERROR);
-               printf ("ERROR - Invalid KISS data frame from TNC.\n");
-            }
-            else {
-              char prefix[100];        // Channel and optional timestamp.
-                        // Like [0] or [2 12:34:56]
-
-              char addrs[AX25_MAX_ADDRS*AX25_MAX_ADDR_LEN];    // Like source>dest,digi,...,digi:
-              unsigned char *pinfo;
-              int info_len;
-
-//              if (strlen(timestamp_format) > 0) {
-//                  char ts[100];
-//                  timestamp_user_format (ts, sizeof(ts), timestamp_format);
-//                  snprintf (prefix, sizeof(prefix), "[%d %s]", 0, ts);
-//              }
-//              else {
-//                snprintf (prefix, sizeof(prefix), "[%d]", 0);
-//              }
-
-              ax25_format_addrs (pp, addrs);
-
-              info_len = ax25_get_info (pp, &pinfo);
-
-              text_color_set(DW_COLOR_REC);
-
-//              dw_printf ("%s %s", prefix, addrs);        // [channel] Addresses followed by :
-//
-//              // Safe print will replace any unprintable characters with
-//              // hexadecimal representation.
-//
-//              ax25_safe_print ((char *)pinfo, info_len, 0);
-//              dw_printf ("\n");
-                
-              if( callback )
-                  callback( pp );   // callback must delete packet
-              else
-                  ax25_delete (pp);
-            }
+        case KISS_CMD_DATA_FRAME:				/* 0 = Data Frame */
+            if( callback )
+                callback( kiss_msg + 1, kiss_len - 1 );
             break;
 
 #ifndef KISSUTIL

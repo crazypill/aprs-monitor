@@ -51,7 +51,7 @@ void stat_callback( bool running )
 }
 
 
-void map_callback( packet_t packet )
+void map_callback( unsigned char* frame_data, size_t data_length )
 {
     if( !s_map_controller )
     {
@@ -59,9 +59,9 @@ void map_callback( packet_t packet )
         return;
     }
     
-    if( !packet )
+    if( !frame_data || !data_length )
     {
-        NSLog( @"map_callback: no iput packet!\n" );
+        NSLog( @"map_callback: no input data!\n" );
         return;
     }
     
@@ -71,7 +71,8 @@ void map_callback( packet_t packet )
     PacketManager* pm = [PacketManager shared];
     if( pm )
     {
-        Packet* pkt = [Packet initWithPacket_t:packet];
+        NSData* data = [NSData dataWithBytes:frame_data length:data_length];
+        Packet* pkt = [Packet initWithData:data];
         if( pkt )
         {
             [pm addItem:pkt];
@@ -79,8 +80,6 @@ void map_callback( packet_t packet )
                 [s_map_controller plotMessage:pkt];
         }
     }
-
-    ax25_delete( packet );
 }
 
 
