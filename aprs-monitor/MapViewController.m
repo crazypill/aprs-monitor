@@ -434,7 +434,7 @@ void map_callback( packet_t packet )
             if( windIcon )
             {
                 anno.leftCalloutAccessoryView = [[UIImageView alloc] initWithImage:windIcon];
-//                anno.detailCalloutAccessoryView = [[UIImageView alloc] initWithImage:windIcon]; // test code to see if we can easily attach custom view (yes!)
+//              anno.detailCalloutAccessoryView = [[UIImageView alloc] initWithImage:windIcon]; // test code to see if we can easily attach custom view (yes!)
             }
         }
     }

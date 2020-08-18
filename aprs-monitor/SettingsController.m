@@ -46,8 +46,13 @@ enum
 
 
 @interface SettingsController ()
-@property (weak, nonatomic) UIButton* __nullable connectButton;
-@property (weak, nonatomic) UILabel* __nullable  statusLabel;
+@property (weak, nonatomic)   UIButton*     __nullable connectButton;
+@property (weak, nonatomic)   UILabel*      __nullable statusLabel;
+@property (weak, nonatomic)   UITextField*  __nullable addressField;
+@property (weak, nonatomic)   UITextField*  __nullable portField;
+
+@property (strong, nonatomic) NSString* __nullable serverAddress;
+@property (nonatomic)         NSInteger            serverPort;
 @end
 
 
@@ -57,6 +62,8 @@ enum
     [super viewDidLoad];
     
     // Do any additional setup after loading the view.
+    UITapGestureRecognizer* tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard:)];
+    [self.tableView addGestureRecognizer:tap];
 }
 
 
@@ -113,12 +120,16 @@ enum
             cell = [tableView dequeueReusableCellWithIdentifier:@"settings.text.cell" forIndexPath:indexPath];
             cell.label.text = @"KISS Server";
             cell.field.placeholder = @"aprs.local"; // my server :)
+            _addressField = cell.field;
+            [_addressField addTarget:self action:@selector(nextField:) forControlEvents:UIControlEventEditingDidEndOnExit];
         }
         else if( indexPath.row == kSettings_KissPort )
         {
             cell = [tableView dequeueReusableCellWithIdentifier:@"settings.number.cell" forIndexPath:indexPath];
             cell.label.text = @"KISS Port";
             cell.field.placeholder = @"8001";     // standard KISS port
+            _portField = cell.field;
+            [_portField addTarget:self action:@selector(dismissKeyboard:) forControlEvents:UIControlEventEditingDidEndOnExit];
         }
         else
         {
@@ -190,9 +201,34 @@ enum
 
 #pragma mark -
 
+- (void)nextField:(UITextField*)sender
+{
+    if( _portField )
+        [_portField becomeFirstResponder];
+}
+
+
+- (void)dismissKeyboard:(UITextField*)sender
+{
+    if( _portField && _portField.self.isFirstResponder )
+        [_portField resignFirstResponder];
+
+    if( _addressField && _addressField.self.isFirstResponder )
+        [_addressField resignFirstResponder];
+}
+
 
 - (IBAction)connectButtonPressed:(id)sender
 {
+    // focus the fields if they are empty... (leaving port field empty is fine, but not server)
+    if( ![MapViewController shared].connected && !_serverAddress )
+    {
+        [_addressField becomeFirstResponder];
+        return;
+    }
+    
+    [self dismissKeyboard:nil];
+    
     // make sure to set the server address in the prefs as this routine will read it before connecting async...
     if( _connectButton )
         _connectButton.enabled = NO;
