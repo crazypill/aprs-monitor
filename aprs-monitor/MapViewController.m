@@ -18,7 +18,7 @@
 
 
 #define kBlinkColor [UIColor redColor]
-
+#define kInitialSettingDelaySecs  2.5
 
 
 static MapViewController* s_map_controller     = nil;
@@ -114,7 +114,19 @@ void map_callback( packet_t packet )
     if( !s_map_controller )
     {
         s_map_controller = self;
-        [self connectToServer:nil];    // when we start, automatically connect
+        
+        NSString* server = [[NSUserDefaults standardUserDefaults] objectForKey:kPrefsServerKey];
+        if( !server || !server.length )
+        {
+            // !!@ change this to display a dialog that the user can then read some stuff, and choose to do the setup... !!@
+
+            // wait a few seconds for things to "load", then display prefs...
+            dispatch_after( dispatch_time( DISPATCH_TIME_NOW, kInitialSettingDelaySecs * NSEC_PER_SEC ), dispatch_get_main_queue(), ^{
+                [self performSegueWithIdentifier:@"settings.segue" sender:self];
+            });
+        }
+        else
+            [self connectToServer:nil];    // when we start, automatically connect
     }
 }
 

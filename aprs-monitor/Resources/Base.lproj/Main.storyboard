@@ -221,7 +221,7 @@
                     <navigationItem key="navigationItem" title="Monitor" id="jVU-xi-FZF">
                         <barButtonItem key="leftBarButtonItem" image="gear" catalog="system" id="Rgw-9H-VhC">
                             <connections>
-                                <segue destination="Czy-Wa-JvW" kind="presentation" id="1st-rQ-8fi"/>
+                                <segue destination="Czy-Wa-JvW" kind="presentation" identifier="settings.segue" id="1st-rQ-8fi"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" image="envelope" catalog="system" style="plain" id="Sit-M5-HgY">
