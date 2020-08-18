@@ -131,6 +131,23 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
 }
 
 
+- (NSString*)getRelativeTimeString:(NSDate*)date
+{
+    NSCalendarUnit units = (NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond);
+
+    // if `date` is before "now" (i.e. in the past) then the components will be positive
+    NSDateComponents* components = [[NSCalendar currentCalendar] components:units fromDate:date toDate:[NSDate date] options:0];
+    if( components.hour > 1 )
+        return [NSString stringWithFormat:@"%dh%02dm%02ds ago", (int)components.hour, (int)components.minute, (int)components.second];
+    if( components.minute > 1 )
+        return [NSString stringWithFormat:@"%dm%02ds  ago", (int)components.minute, (int)components.second];
+    if( components.second > 1 )
+        return [NSString stringWithFormat:@"%ds ago", (int)components.second];
+
+    return @"now";  // haha
+}
+
+
 #pragma mark - Table view data source
 
 
@@ -307,6 +324,7 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
 //    [cloudString appendAttributedString:[NSMutableAttributedString attributedStringWithAttachment:imageAttachment]];
 //    return cloudString;
 //}
+
 
 
 - (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
@@ -497,7 +515,7 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Age";
-            cell.data.text = @"calculate age!"; // !!@ do what it says
+            cell.data.text = [self getRelativeTimeString:_detail.timeStamp];
             return cell;
         }
         else if( indexPath.row == 2 )

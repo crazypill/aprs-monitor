@@ -229,16 +229,28 @@ static bool s_displayMmHg = false;
     if( _weather.length )
         return _weather;
 
-    if( (_flags & kPacketFlag_Course) &&  (_flags & kPacketFlag_Speed) && _speed != 0.0f )
+    if( (_flags & kPacketFlag_Course) && (_flags & kPacketFlag_Speed) && _speed != 0.0f )
     {
         int dir = (int)(_course / 22.5f); // truncate
         return [NSString stringWithFormat:@"Course: %.0f° %s  Speed: %.0f mph",  _course, compass[dir], _speed];
     }
-
+    
     // just return comment, course isn't important when you aren't moving...
     if( (_flags & kPacketFlag_Course) && _comment.length )
         return _comment;
 
+    // perhaps course & altitude
+    if( (_flags & kPacketFlag_Altitude) && (_flags & kPacketFlag_Course) )
+    {
+        int dir = (int)(_course / 22.5f); // truncate
+        return [NSString stringWithFormat:@"Course: %.0f° %s  Altitude: %.0f ft", _course, compass[dir], _altitude];
+    }
+    
+    // perhaps altitude and comment
+    if( (_flags & kPacketFlag_Altitude) && _comment.length )
+        return [NSString stringWithFormat:@"Altitude: %.0f feet  %@", _altitude, _comment];
+    
+    // solo stuff
     if( _flags & kPacketFlag_Course )
     {
         int dir = (int)(_course / 22.5f); // truncate
@@ -250,6 +262,9 @@ static bool s_displayMmHg = false;
 
     if( _flags & kPacketFlag_Speed && _speed != 0.0f )
         return [NSString stringWithFormat:@"Speed: %.0f mph", _speed];
+
+    if( (_flags & kPacketFlag_Altitude) )
+        return [NSString stringWithFormat:@"Altitude: %.0f feet", _altitude];
 
     return _comment.length ? _comment : _path;
 }
