@@ -34,3 +34,5 @@ There are no iOS apps that let you connect to a remote TNC.  There's APRSDroid o
 I hope you enjoy the app-  you can purchase it on the Apple Appstore if you don't want to build it yourself.  If you aren't an Apple Developer, please remember you cannot run this code on your device without paying the yearly membership fee-  this is much greater than the cost of this software.  You can however run this code in the Simulator, it works fine there and doesn't require a membership fee.
 
 73, K6LOT
+
+![](https://raw.githubusercontent.com/crazypill/aprs-monitor/master/aprs-monitor.jpg)
