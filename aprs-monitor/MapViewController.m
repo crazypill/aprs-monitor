@@ -86,7 +86,7 @@ void map_callback( unsigned char* frame_data, size_t data_length )
         if( pkt )
         {
             [pm addItem:pkt];
-            if( s_map_controller && (pkt.flags & kCoordinatesMask) )
+            if( s_map_controller )
                 [s_map_controller plotMessage:pkt];
         }
     }
@@ -303,6 +303,10 @@ void map_callback( unsigned char* frame_data, size_t data_length )
 
 - (void)plotMessage:(const Packet*)packet
 {
+    // this is why packets were disappearing, you can't plot packets with no location and if we find an old one and remove it, well then they disappear!
+    if( !(packet.flags & kCoordinatesMask) )
+        return;
+    
     __weak MapViewController* weakself = self;
     
     dispatch_async( dispatch_get_main_queue(), ^{
