@@ -8,9 +8,9 @@
 #import "Packet.h"
 #import "RemoteTNC.h"
 
-
+#ifdef DEBUG
 #define DEBUG_LOG_PACKET
-
+#endif
 
 
 // eventually this will be hooked up to routines that can be called that set this from settings or prefs. !!@

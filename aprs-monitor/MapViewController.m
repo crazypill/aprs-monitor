@@ -363,7 +363,9 @@ void map_callback( unsigned char* frame_data, size_t data_length )
         
         if( components.hour >= kExpirePacketTimeHours )
         {
+#ifdef DEBUG
             NSLog( @"expiring: %@, %@\n", pkt.call, pkt.timeStamp );
+#endif
             [self.mapView removeAnnotation:pkt];
         }
     }];
@@ -381,7 +383,9 @@ void map_callback( unsigned char* frame_data, size_t data_length )
             MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[self.mapView viewForAnnotation:pkt];
             if( anno )
                 anno.alpha = 0.60f;
+#ifdef DEBUG
             NSLog( @"aging: %@, %@\n", pkt.call, pkt.timeStamp );
+#endif
         }
     }];
 }
