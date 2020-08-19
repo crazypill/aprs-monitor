@@ -285,7 +285,8 @@ void map_callback( unsigned char* frame_data, size_t data_length )
 
 - (IBAction)objectButtonPressed:(id)sender
 {
-    
+    // make this a clear button ?
+    [self.mapView removeAnnotations:self.mapView.annotations];
 }
 
 
