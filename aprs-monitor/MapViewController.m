@@ -318,7 +318,9 @@ void map_callback( unsigned char* frame_data, size_t data_length )
             MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[weakself.mapView viewForAnnotation:pkt];   // this supposedly only works for visible pins
             if( anno )
             {
-                [self setupAnnotationView:anno forAnnotation:pkt];
+                // point this view to our new packet
+                anno.annotation = packet;
+                [self setupAnnotationView:anno forAnnotation:packet];
                 anno.alpha = 1.0f; // return alpha to normal as we just refreshed this pin and it may have aged
                 return;
             }
@@ -360,7 +362,13 @@ void map_callback( unsigned char* frame_data, size_t data_length )
 
     NSArray* deathRow = [self.mapView.annotations objectsAtIndexes:deadPins];
     if( deathRow )
+    {
+        [deathRow enumerateObjectsUsingBlock:^( Packet* pkt, NSUInteger idx, BOOL* stop ) {
+            NSLog( @"removing: %@, %@\n", pkt.call, pkt.timeStamp );
+        }];
+
         [self.mapView removeAnnotations:deathRow];
+    }
 }
 
 

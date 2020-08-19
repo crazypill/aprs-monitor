@@ -926,7 +926,8 @@ static void aprs_raw_nmea (decode_aprs_t *A, unsigned char *info, int ilen)
 
 	  (void) dwgpsnmea_gprmc ((char*)info, A->g_quiet, &(A->g_lat), &(A->g_lon), &speed_knots, &(A->g_course));
 	  A->g_speed_mph = DW_KNOTS_TO_MPH(speed_knots);
-      A->g_flags |= kDataFlag_Speed;
+      if( A->g_speed_mph != G_UNKNOWN )
+          A->g_flags |= kDataFlag_Speed;
 	}
 	else if (strncmp((char*)info, "$GPGGA,", 7) == 0)
 	{
