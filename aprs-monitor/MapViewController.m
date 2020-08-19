@@ -314,16 +314,16 @@ void map_callback( unsigned char* frame_data, size_t data_length )
         
         if( index != NSNotFound )
         {
-            Packet* pkt = (Packet*)[weakself.mapView.annotations objectAtIndex:index];
-            MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[weakself.mapView viewForAnnotation:pkt];   // this supposedly only works for visible pins
-            if( anno )
-            {
-                // point this view to our new packet
-                anno.annotation = packet;
-                [self setupAnnotationView:anno forAnnotation:packet];
-                anno.alpha = 1.0f; // return alpha to normal as we just refreshed this pin and it may have aged
-                return;
-            }
+//            Packet* pkt = (Packet*)[weakself.mapView.annotations objectAtIndex:index];
+//            MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[weakself.mapView viewForAnnotation:pkt];   // this supposedly only works for visible pins
+//            if( anno )
+//            {
+//                // point this view to our new packet
+//                anno.annotation = packet;
+//                [self setupAnnotationView:anno forAnnotation:packet];
+//                anno.alpha = 1.0f; // return alpha to normal as we just refreshed this pin and it may have aged
+//                return;
+//            }
             
             // yank the old one, we will stick a new one in its place
             [weakself.mapView removeAnnotation:[weakself.mapView.annotations objectAtIndex:index]];
