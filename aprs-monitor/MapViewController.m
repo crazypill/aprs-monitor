@@ -326,7 +326,9 @@ void map_callback( unsigned char* frame_data, size_t data_length )
 //            }
             
             // yank the old one, we will stick a new one in its place
-            [weakself.mapView removeAnnotation:[weakself.mapView.annotations objectAtIndex:index]];
+            Packet* pkt = (Packet*)[weakself.mapView.annotations objectAtIndex:index];
+            [weakself.mapView removeAnnotation:pkt];
+//            NSLog( @"remove: %@, timestamp: %@\n", pkt.call, pkt.timeStamp );
             
             // note: for moving objects, we should be updating the paths here I think !!@
         }
@@ -336,7 +338,8 @@ void map_callback( unsigned char* frame_data, size_t data_length )
             return;
         
         [weakself.mapView addAnnotations:@[packet]];
-        
+//        NSLog( @"add: %@, timestamp: %@\n", packet.call, packet.timeStamp );
+
         if( !s_have_location )
         {
             MKCoordinateSpan span = MKCoordinateSpanMake( s_default_map_span, s_default_map_span );
@@ -364,7 +367,7 @@ void map_callback( unsigned char* frame_data, size_t data_length )
     if( deathRow )
     {
         [deathRow enumerateObjectsUsingBlock:^( Packet* pkt, NSUInteger idx, BOOL* stop ) {
-            NSLog( @"removing: %@, %@\n", pkt.call, pkt.timeStamp );
+            NSLog( @"expiring: %@, %@\n", pkt.call, pkt.timeStamp );
         }];
 
         [self.mapView removeAnnotations:deathRow];
@@ -405,10 +408,7 @@ void map_callback( unsigned char* frame_data, size_t data_length )
         
         // don't go too far back in time (nothing older than the oldest showing pins)
         if( components.hour >= kExpirePacketTimeHours )
-        {
-            *stop = YES;
             return false;
-        }
         
         return [pkt.symbol isEqualToString:@"/_"]; // really need a type field that's not a string !!@
     }];
@@ -430,21 +430,18 @@ void map_callback( unsigned char* frame_data, size_t data_length )
     // important to clear off old sh*t first otherwise we will update it... :)
     [self.mapView removeAnnotations:self.mapView.annotations];
 
-    [[PacketManager shared].items enumerateObjectsUsingBlock:^( __kindof Packet* _Nonnull pkt, NSUInteger idx, BOOL* stop )
+    [[PacketManager shared].items enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^( __kindof Packet* _Nonnull pkt, NSUInteger idx, BOOL* stop )
     {
         NSCalendarUnit units = NSCalendarUnitHour;
         NSDateComponents* components = [[NSCalendar currentCalendar] components:units fromDate:pkt.timeStamp toDate:[NSDate now] options:0];
         
         // don't go too far back in time (nothing older than the oldest showing pins)
-        if( components.hour >= kExpirePacketTimeHours )
+        if( components.hour < kExpirePacketTimeHours )
         {
-            *stop = YES;
-            return;
+            // we do this instead of adding them all at once (which is in the last checkin) so that we get the
+            // checks for existing pins (and eventually so we plot routes correctly)
+            [self plotMessage:pkt];
         }
-        
-        // we do this instead of adding them all at once (which is in the last checkin) so that we get the
-        // checks for existing pins (and eventually so we plot routes correctly)
-        [self plotMessage:pkt];
     }];
 }
 

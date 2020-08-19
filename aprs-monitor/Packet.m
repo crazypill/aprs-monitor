@@ -9,6 +9,8 @@
 #import "RemoteTNC.h"
 
 
+#define DEBUG_LOG_PACKET
+
 
 
 // eventually this will be hooked up to routines that can be called that set this from settings or prefs. !!@
@@ -107,8 +109,10 @@ static bool s_displayMmHg = false;
     {
         char addrs[AX25_MAX_ADDRS * AX25_MAX_ADDR_LEN] = {};    // Like source>dest,digi,...,digi:
         ax25_format_addrs( packet, addrs );
+
+#ifdef DEBUG_LOG_PACKET
         NSLog( @"%s%s\n", addrs, pinfo );
-        
+#endif
         decode_aprs_t decode_state = {};
         decode_aprs( &decode_state, packet, true );
         
