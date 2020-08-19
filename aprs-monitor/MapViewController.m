@@ -381,6 +381,7 @@ void map_callback( unsigned char* frame_data, size_t data_length )
             MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[self.mapView viewForAnnotation:pkt];
             if( anno )
                 anno.alpha = 0.60f;
+            NSLog( @"aging: %@, %@\n", pkt.call, pkt.timeStamp );
         }
     }];
 }
@@ -518,6 +519,7 @@ void map_callback( unsigned char* frame_data, size_t data_length )
     
     anno.displayPriority = MKFeatureDisplayPriorityRequired;
     anno.titleVisibility = MKFeatureVisibilityAdaptive;
+    anno.alpha = 1.0f; // important to reset this as we reuse the marker views and some will have aged using the alpha
 
     // this prevents a tap from selecting this item! using the detailDisclosure type causes the entire text field to also act like a button press.
     anno.rightCalloutAccessoryView = [UIButton systemButtonWithImage:[UIImage systemImageNamed:@"info.circle"] target:nil action:nil];
