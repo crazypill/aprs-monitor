@@ -1,7 +1,9 @@
 # aprs-monitor
 
-This iOS app allows you to connect to a local TNC via WiFi.  Eventually this app will also be a good candidate for MacOS X for Apple Silicon (Big Sir+).
+This iOS app allows you to connect to a local TNC via WiFi.
 I plan to extend support to the Kenwood TH-D74A via Bluetooth (once I get it--  the radio is backordered!   I thought ham radio was dead?)
+
+It currently supports both iPad and iPhones. Eventually this app will also be a good candidate for MacOS X for Apple Silicon (Big Sir+) as it will run native on your Desktop!
 
 ## Overview
 
