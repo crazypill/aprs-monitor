@@ -191,9 +191,9 @@
                         <viewLayoutGuide key="safeArea" id="A2x-cY-S2p"/>
                     </view>
                     <toolbarItems>
-                        <barButtonItem systemItem="refresh" id="rvl-Iy-U0L">
+                        <barButtonItem image="clear" catalog="system" id="rvl-Iy-U0L">
                             <connections>
-                                <action selector="objectButtonPressed:" destination="Q2x-WI-wPB" id="f4b-X9-adP"/>
+                                <action selector="clearButtonPressed:" destination="Q2x-WI-wPB" id="VK0-V4-JpW"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="2eh-Q7-Wrh"/>
@@ -551,6 +551,7 @@ Written by: Alex Lelièvre</string>
         <segue reference="5df-EM-Pfn"/>
     </inferredMetricsTieBreakers>
     <resources>
+        <image name="clear" catalog="system" width="128" height="114"/>
         <image name="envelope" catalog="system" width="128" height="93"/>
         <image name="gear" catalog="system" width="128" height="119"/>
     </resources>
