@@ -349,7 +349,7 @@ void map_callback( unsigned char* frame_data, size_t data_length )
     {
         NSCalendarUnit units = NSCalendarUnitHour;
         NSDateComponents* components = [[NSCalendar currentCalendar] components:units fromDate:pkt.timeStamp toDate:[NSDate now] options:0];
-        return (components.hour > kExpirePacketTimeHours);
+        return (components.hour >= kExpirePacketTimeHours);
     }];
     
     if( !deadPins.count )
@@ -367,7 +367,7 @@ void map_callback( unsigned char* frame_data, size_t data_length )
     {
         NSCalendarUnit units = (NSCalendarUnitHour | NSCalendarUnitMinute);
         NSDateComponents* components = [[NSCalendar currentCalendar] components:units fromDate:pkt.timeStamp toDate:[NSDate now] options:0];
-        return ((components.hour > kAgePacketTimeHours) && (components.minute > kAgePacketTimeMinutes));
+        return ((components.hour >= kAgePacketTimeHours) && (components.minute >= kAgePacketTimeMinutes));
     }];
     
     if( !dyingPins.count )
@@ -378,7 +378,7 @@ void map_callback( unsigned char* frame_data, size_t data_length )
     {
         [agingStation enumerateObjectsUsingBlock:^( Packet* pkt, NSUInteger idx, BOOL* stop ) {
             MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[self.mapView viewForAnnotation:pkt];
-            anno.alpha = 0.4f;
+            anno.alpha = 0.45f;
         }];
     }
 }
