@@ -30,9 +30,10 @@ static netStatusBlock     s_connect_completion = NULL;
 
 
 @interface MapViewController ()
-@property (strong, nonatomic) NSTimer*          timer;
-@property (strong, nonatomic) dispatch_queue_t  netQueue;
-@property (strong, nonatomic) dispatch_source_t reaper;
+@property (strong, nonatomic) NSTimer*             timer;
+@property (strong, nonatomic) dispatch_queue_t     netQueue;
+@property (strong, nonatomic) dispatch_source_t    reaper;
+@property (strong, nonatomic) NSString* __nullable filterSymbol;
 @end
 
 
@@ -250,29 +251,7 @@ void map_callback( unsigned char* frame_data, size_t data_length )
 - (IBAction)weatherButtonPressed:(id)sender
 {
     [self filterForWeather];
-//    Packet* pkt = [[Packet alloc] init];
-//    pkt.flags |= (kCoordinatesMask | kPacketFlag_Weather);
-//    pkt.coordinate = CLLocationCoordinate2DMake( 34.108, -118.335 ); // folabs hq
-//    pkt.call = @"K6TEST";
-//    pkt.weather = @"fake weather";
-//    pkt.symbol = @"/_";
-//
-//    pkt.wx = malloc( sizeof( wx_data ) );
-//    if( pkt.wx )
-//    {
-//        pkt.wx->wxflags |= (kWxDataFlag_gust | kWxDataFlag_windDir | kWxDataFlag_wind | kWxDataFlag_temp | kWxDataFlag_humidity | kWxDataFlag_pressure);
-//        pkt.wx->windGustMph = 10;
-//        pkt.wx->windSpeedMph = 2;
-//        pkt.wx->windDirection = 195;
-//
-//        pkt.wx->tempF    = 100;
-//        pkt.wx->humidity = 55;
-//        pkt.wx->pressure = 1013;
-//
-//        pkt.weather = [Packet makeWeatherString:pkt.wx];
-//        [self plotMessage:pkt];
-//    }
-//    pkt = nil;
+    _filterSymbol = @"/_";       // !!@ there needs to be a better way to do this...
 }
 
 
@@ -313,6 +292,7 @@ void map_callback( unsigned char* frame_data, size_t data_length )
 - (IBAction)allButtonPressed:(id)sender
 {
     [self filterForAll];
+    _filterSymbol = nil;
 }
 
 
@@ -347,6 +327,8 @@ void map_callback( unsigned char* frame_data, size_t data_length )
         }
         
         // check to see if we are filtering packets and if so possibly skip adding this one (unless it matches the current filter) !!@
+        if( weakself.filterSymbol && ![weakself.filterSymbol isEqualToString:packet.symbol] )
+            return;
         
         [weakself.mapView addAnnotations:@[packet]];
         
