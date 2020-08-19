@@ -393,7 +393,7 @@ void map_callback( unsigned char* frame_data, size_t data_length )
         NSDateComponents* components = [[NSCalendar currentCalendar] components:units fromDate:pkt.timeStamp toDate:[NSDate now] options:0];
         
         // don't go too far back in time (nothing older than the oldest showing pins)
-        if( components.hour > kExpirePacketTimeHours )
+        if( components.hour >= kExpirePacketTimeHours )
         {
             *stop = YES;
             return false;
@@ -422,7 +422,7 @@ void map_callback( unsigned char* frame_data, size_t data_length )
         NSDateComponents* components = [[NSCalendar currentCalendar] components:units fromDate:pkt.timeStamp toDate:[NSDate now] options:0];
         
         // don't go too far back in time (nothing older than the oldest showing pins)
-        if( components.hour > kExpirePacketTimeHours )
+        if( components.hour >= kExpirePacketTimeHours )
         {
             *stop = YES;
             return;
