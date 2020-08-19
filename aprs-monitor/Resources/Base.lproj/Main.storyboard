@@ -233,10 +233,12 @@
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="allFilter" destination="BVs-og-Y7K" id="jzN-Kf-OrM"/>
                         <outlet property="connect" destination="Rgw-9H-VhC" id="9eC-1c-pgU"/>
                         <outlet property="mapView" destination="iIg-Sb-dEy" id="7FJ-du-Z4l"/>
                         <outlet property="status" destination="Sit-M5-HgY" id="QNM-em-kYb"/>
                         <outlet property="view" destination="ar6-Fd-zen" id="o0u-Hs-3j6"/>
+                        <outlet property="weatherFilter" destination="5Gn-kw-07Q" id="YdZ-fL-HpI"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pOB-Df-ibI" userLabel="First Responder" sceneMemberID="firstResponder"/>

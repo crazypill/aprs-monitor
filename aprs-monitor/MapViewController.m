@@ -252,6 +252,7 @@ void map_callback( unsigned char* frame_data, size_t data_length )
 {
     [self filterForWeather];
     _filterSymbol = @"/_";       // !!@ there needs to be a better way to do this...
+    _weatherFilter.enabled = NO; // we do this so you know what mode you are in
 }
 
 
@@ -293,6 +294,7 @@ void map_callback( unsigned char* frame_data, size_t data_length )
 {
     [self filterForAll];
     _filterSymbol = nil;
+    _weatherFilter.enabled = YES;
 }
 
 
