@@ -319,6 +319,7 @@ void map_callback( unsigned char* frame_data, size_t data_length )
             if( anno )
             {
                 [self setupAnnotationView:anno forAnnotation:pkt];
+                anno.alpha = 1.0f; // return alpha to normal as we just refreshed this pin and it may have aged
                 return;
             }
             
@@ -380,7 +381,7 @@ void map_callback( unsigned char* frame_data, size_t data_length )
     {
         [agingStation enumerateObjectsUsingBlock:^( Packet* pkt, NSUInteger idx, BOOL* stop ) {
             MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[self.mapView viewForAnnotation:pkt];
-            anno.alpha = 0.45f;
+            anno.alpha = 0.60f;
         }];
     }
 }
