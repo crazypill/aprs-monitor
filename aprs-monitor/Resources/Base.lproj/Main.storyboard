@@ -215,7 +215,7 @@
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="QSE-7U-4Ei"/>
                         <barButtonItem systemItem="refresh" id="BVs-og-Y7K">
                             <connections>
-                                <action selector="allButtonPressed:" destination="Q2x-WI-wPB" id="n93-di-oCi"/>
+                                <action selector="reloadButtonPressed:" destination="Q2x-WI-wPB" id="oaH-Ha-br3"/>
                             </connections>
                         </barButtonItem>
                     </toolbarItems>

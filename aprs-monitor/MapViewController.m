@@ -290,7 +290,7 @@ void map_callback( unsigned char* frame_data, size_t data_length )
 }
 
 
-- (IBAction)allButtonPressed:(id)sender
+- (IBAction)reloadButtonPressed:(id)sender
 {
     [self filterForAll];
     _filterSymbol = nil;
@@ -419,6 +419,9 @@ void map_callback( unsigned char* frame_data, size_t data_length )
 
 - (void)filterForAll
 {
+    // important to clear off old sh*t first otherwise we will update it... :)
+    [self.mapView removeAnnotations:self.mapView.annotations];
+
     [[PacketManager shared].items enumerateObjectsUsingBlock:^( __kindof Packet* _Nonnull pkt, NSUInteger idx, BOOL* stop )
     {
         NSCalendarUnit units = NSCalendarUnitHour;
