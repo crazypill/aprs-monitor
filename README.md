@@ -1,3 +1,7 @@
+![](https://raw.githubusercontent.com/crazypill/aprs-monitor/master/aprs-monitor.jpg)
+
+
+
 # aprs-monitor
 
 This iOS app allows you to connect to a local TNC via WiFi.
@@ -35,4 +39,3 @@ I hope you enjoy the app-  you can purchase it on the Apple Appstore if you don'
 
 73, K6LOT
 
-![](https://raw.githubusercontent.com/crazypill/aprs-monitor/master/aprs-monitor.jpg)
