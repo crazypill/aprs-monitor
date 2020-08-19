@@ -354,53 +354,36 @@ void map_callback( unsigned char* frame_data, size_t data_length )
 }
 
 
-// this routine goes thru the currently visible annotations and finds the old ones and makes them greyer until they die (and are removed)
 - (void)expireAnnotations
 {
-    NSIndexSet* deadPins = [self.mapView.annotations indexesOfObjectsPassingTest:^BOOL ( __kindof Packet* _Nonnull pkt, NSUInteger idx, BOOL* stop )
+    [self.mapView.annotations enumerateObjectsUsingBlock:^( __kindof Packet* _Nonnull pkt, NSUInteger idx, BOOL* stop )
     {
         NSCalendarUnit units = NSCalendarUnitHour;
         NSDateComponents* components = [[NSCalendar currentCalendar] components:units fromDate:pkt.timeStamp toDate:[NSDate now] options:0];
-        return (components.hour >= kExpirePacketTimeHours);
-    }];
-    
-    if( !deadPins.count )
-        return;
-
-    NSArray* deathRow = [self.mapView.annotations objectsAtIndexes:deadPins];
-    if( deathRow )
-    {
-        [deathRow enumerateObjectsUsingBlock:^( Packet* pkt, NSUInteger idx, BOOL* stop ) {
+        
+        if( components.hour >= kExpirePacketTimeHours )
+        {
             NSLog( @"expiring: %@, %@\n", pkt.call, pkt.timeStamp );
-        }];
-
-        [self.mapView removeAnnotations:deathRow];
-    }
+            [self.mapView removeAnnotation:pkt];
+        }
+    }];
 }
 
 
 - (void)ageAnnotations
 {
-    NSIndexSet* dyingPins = [self.mapView.annotations indexesOfObjectsPassingTest:^BOOL ( __kindof Packet* _Nonnull pkt, NSUInteger idx, BOOL* stop )
+    [self.mapView.annotations enumerateObjectsUsingBlock:^( __kindof Packet* _Nonnull pkt, NSUInteger idx, BOOL* stop )
     {
         NSCalendarUnit units = (NSCalendarUnitHour | NSCalendarUnitMinute);
         NSDateComponents* components = [[NSCalendar currentCalendar] components:units fromDate:pkt.timeStamp toDate:[NSDate now] options:0];
-        return ((components.hour >= kAgePacketTimeHours) && (components.minute >= kAgePacketTimeMinutes));
-    }];
-    
-    if( !dyingPins.count )
-        return;
-
-    NSArray* agingStation = [self.mapView.annotations objectsAtIndexes:dyingPins];
-    if( agingStation )
-    {
-        [agingStation enumerateObjectsUsingBlock:^( Packet* pkt, NSUInteger idx, BOOL* stop ) {
+        if( (components.hour >= kAgePacketTimeHours) && (components.minute >= kAgePacketTimeMinutes) )
+        {
             MKMarkerAnnotationView* anno = (MKMarkerAnnotationView*)[self.mapView viewForAnnotation:pkt];
-            anno.alpha = 0.60f;
-        }];
-    }
+            if( anno )
+                anno.alpha = 0.60f;
+        }
+    }];
 }
-
 
 
 - (void)filterForWeather
