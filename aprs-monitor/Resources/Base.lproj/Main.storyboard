@@ -213,7 +213,7 @@
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="QSE-7U-4Ei"/>
-                        <barButtonItem title="All" id="BVs-og-Y7K">
+                        <barButtonItem systemItem="refresh" id="BVs-og-Y7K">
                             <connections>
                                 <action selector="allButtonPressed:" destination="Q2x-WI-wPB" id="n93-di-oCi"/>
                             </connections>
