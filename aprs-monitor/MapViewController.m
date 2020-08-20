@@ -264,6 +264,12 @@ void map_callback( unsigned char* frame_data, size_t data_length )
     pkt.call = @"K6TEST";
     pkt.weather = @"fake symbol test";
     pkt.symbol = @"/8";
+    pkt.timeStamp = [NSDate now];
+    pkt.address = @"APRS";
+    pkt.destination = @"APRS";
+    pkt.path = @"KELLER,WIDE1-1,BEER-OCLOCK*";
+    pkt.type = @"Weather Report";
+    pkt.comment = @"Fake test packet";
     
     pkt.wx = malloc( sizeof( wx_data ) );
     if( pkt.wx )
