@@ -5,15 +5,16 @@
 # aprs-monitor
 
 This iOS app allows you to connect to a local TNC via WiFi.
-I plan to extend support to the Kenwood TH-D74A via Bluetooth (once I get it--  the radio is backordered!   I thought ham radio was dead?)
+
+I plan to extend support to the Kenwood TH-D74A via a Bluetooth Bridge I developed based around an ESP32 microcontroller that bridges Bluetooth to Wifi so that the iPhone can connect to the radio.  iPhones cannot directly connect to this radio for some reason.  Code is here for the ESP32 firmware: https://github.com/crazypill/bt_to_wifi_kiss
 
 It currently supports both iPad and iPhones. Eventually this app will also be a good candidate for MacOS X for Apple Silicon (Big Sir+) as it will run native on your Desktop!
 
 ## Overview
 
-This open source project currently only supports talking to a KISS TNC.  I've only tested the code with Direwolf 1.4.  I plan on extending support to the Kenwood TH-D74A radio via bluetooth as supposedly it will output the APRS packets in KISS format.
+This open source project currently only supports talking to a KISS TNC.  I've only tested the code with Direwolf 1.4.  The app supports the Kenwood TH-D74A radio via my bluetooth bridge as it outputs the APRS packets in KISS format (when configured properly).  I plan to also make it work via a direct USB connection to the iDevice from the radio (as this seems simpler and cheaper for most folks) if I can get that to work.
 
-This code was really written for me to be able to see what my radio is hearing without having to use something like YAAC or Xastir.  I'm a Mac guy and expect a certain level of interaction and graphics quality.  They are both fine apps but are not really native iOS or MacOS X apps and they don't act like it as well.  This app aims to fix that-  No need to launch the X-Window System or the JAVA subsystem.  Ok so the APRS icons are different, but should be instantly familiar.
+This code was really written for me to be able to see what my radio is hearing without having to use something like YAAC or Xastir, mainly because I wanted something ultra-portable, that's always on me, like my iPhone.  I'm a Mac guy and expect a certain level of interaction and graphics quality.  YAAC and Xastir are both fine apps but are not really native iOS or MacOS X apps and they don't act like it as well.  This app aims to fix that-  No need to launch the X-Window System or the JAVA subsystem.  Ok so the APRS icons are different, but should be instantly familiar.
 
 There are many things that aren't complete yet.  Most noticably are the overlay symbols.  I have only implemented a few symbols mainly because I'm looking for high quality icons or I couldn't find a proper emoji or glyph to communicate the same icon as the standard APRS icon set.   I might just give up and use the standard set, but not without a fight first.  Let's move forward and stop using icons from DOS!  
 

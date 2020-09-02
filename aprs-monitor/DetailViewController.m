@@ -398,7 +398,7 @@ uint32_t get_next_on_bit( uint32_t input, uint32_t startingBit )
         {
             DetailGenericCell* cell = [tableView dequeueReusableCellWithIdentifier:@"detail.generic.field" forIndexPath:indexPath];
             cell.name.text = @"Pressure";
-            cell.data.text = [NSString stringWithFormat:@"🔻%.2f InHg", _detail.wx->pressure * millibar2inchHg];
+            cell.data.text = [NSString stringWithFormat:@"🔻%.2f inHg", _detail.wx->pressure * millibar2inchHg];
             return cell;
         }
         else if( flags & kWxDataFlag_rainHr )
