@@ -477,6 +477,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "aprs-monitor/APRS MonitorDebug.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = S555K9VRCW;
@@ -485,6 +486,7 @@
 					KISSUTIL,
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/aprs-monitor/Resources/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -493,10 +495,13 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.folabs.aprs-monitor";
 				PRODUCT_NAME = "APRS Monitor";
 				PROVISIONING_PROFILE_SPECIFIER = "APRS Monitor development";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "APRS Monitor Mac Development";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "aprs-monitor-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Debug;
 		};
@@ -507,11 +512,13 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "aprs-monitor/APRS Monitor.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = S555K9VRCW;
 				GCC_PREPROCESSOR_DEFINITIONS = KISSUTIL;
 				INFOPLIST_FILE = "$(SRCROOT)/aprs-monitor/Resources/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -520,9 +527,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.folabs.aprs-monitor";
 				PRODUCT_NAME = "APRS Monitor";
 				PROVISIONING_PROFILE_SPECIFIER = "APRS Monitor distribution";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "APRS Monitor Mac Distribution";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "aprs-monitor-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Release;
 		};

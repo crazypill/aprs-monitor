@@ -24,6 +24,7 @@
 
 static const float kPrefsTableTitleHeight       = 60.0f;
 static const float kPrefsTableAboutHeight       = 69.0f;
+static const float kPrefsTableAboutHeightMac    = 74.0f;
 static const float kPrefsTableAboutFooterHeight = 260.0f;
 
 
@@ -214,7 +215,12 @@ enum
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if( indexPath.section == kSettingsSection_About )
-        return kPrefsTableAboutHeight;
+    {
+        if( self.traitCollection.userInterfaceIdiom == UIUserInterfaceIdiomMac )
+            return kPrefsTableAboutHeightMac;
+        else
+            return kPrefsTableAboutHeight;
+    }
         
     return tableView.rowHeight;
 }
@@ -344,6 +350,13 @@ enum
             }
         }];
     }
+}
+
+
+
+- (IBAction)doneButtonPressed:(id)sender
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
