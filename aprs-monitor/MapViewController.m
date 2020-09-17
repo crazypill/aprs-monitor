@@ -318,7 +318,8 @@ void map_callback( unsigned char* frame_data, size_t data_length )
     dispatch_async( dispatch_get_main_queue(), ^{
         
         // first look to see if we already have a position plotted for this exact call sign...
-        NSInteger index = [weakself.mapView.annotations indexOfObjectPassingTest:^BOOL ( __kindof Packet* _Nonnull pkt, NSUInteger idx, BOOL* stop ) {
+        NSInteger index = [weakself.mapView.annotations indexOfObjectPassingTest:^BOOL ( id<MKAnnotation> _Nonnull __strong pkt_annotation, NSUInteger idx, BOOL* stop ) {
+            Packet* pkt = (Packet*)pkt_annotation;
             return [pkt.call isEqualToString:packet.call];
         }];
         
@@ -362,8 +363,10 @@ void map_callback( unsigned char* frame_data, size_t data_length )
 
 - (void)expireAnnotations
 {
-    [self.mapView.annotations enumerateObjectsUsingBlock:^( __kindof Packet* _Nonnull pkt, NSUInteger idx, BOOL* stop )
+    [self.mapView.annotations enumerateObjectsUsingBlock:^( id<MKAnnotation> _Nonnull __strong pkt_annotation, NSUInteger idx, BOOL* stop )
     {
+        Packet* pkt = (Packet*)pkt_annotation;
+
         NSCalendarUnit units = NSCalendarUnitHour;
         NSDateComponents* components = [[NSCalendar currentCalendar] components:units fromDate:pkt.timeStamp toDate:[NSDate now] options:0];
         
@@ -380,8 +383,10 @@ void map_callback( unsigned char* frame_data, size_t data_length )
 
 - (void)ageAnnotations
 {
-    [self.mapView.annotations enumerateObjectsUsingBlock:^( __kindof Packet* _Nonnull pkt, NSUInteger idx, BOOL* stop )
+    [self.mapView.annotations enumerateObjectsUsingBlock:^( id<MKAnnotation> _Nonnull __strong pkt_annotation, NSUInteger idx, BOOL* stop )
     {
+        Packet* pkt = (Packet*)pkt_annotation;
+        
         NSCalendarUnit units = (NSCalendarUnitHour | NSCalendarUnitMinute);
         NSDateComponents* components = [[NSCalendar currentCalendar] components:units fromDate:pkt.timeStamp toDate:[NSDate now] options:0];
         if( (components.hour >= kAgePacketTimeHours) && (components.minute >= kAgePacketTimeMinutes) )
@@ -399,15 +404,16 @@ void map_callback( unsigned char* frame_data, size_t data_length )
 
 - (void)filterForWeather
 {
-    NSIndexSet* wxPins = [self.mapView.annotations indexesOfObjectsPassingTest:^BOOL ( __kindof Packet* _Nonnull pkt, NSUInteger idx, BOOL* stop )
+    NSIndexSet* wxPins = [self.mapView.annotations indexesOfObjectsPassingTest:^BOOL ( id<MKAnnotation> _Nonnull __strong pkt_annotation, NSUInteger idx, BOOL* stop )
     {
+        Packet* pkt = (Packet*)pkt_annotation;
+
         NSCalendarUnit units = NSCalendarUnitHour;
         NSDateComponents* components = [[NSCalendar currentCalendar] components:units fromDate:pkt.timeStamp toDate:[NSDate now] options:0];
         
         // don't go too far back in time (nothing older than the oldest showing pins)
         if( components.hour >= kExpirePacketTimeHours )
             return false;
-        
         return [pkt.symbol isEqualToString:@"/_"]; // really need a type field that's not a string !!@
     }];
     
