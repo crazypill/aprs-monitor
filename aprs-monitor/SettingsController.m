@@ -22,10 +22,9 @@
 
 
 
-static const float kPrefsTableTitleHeight       = 60.0f;
 static const float kPrefsTableAboutHeight       = 69.0f;
 static const float kPrefsTableAboutHeightMac    = 74.0f;
-static const float kPrefsTableAboutFooterHeight = 260.0f;
+static const float kPrefsTableAboutFooterHeight = 200.0f;
 
 
 enum
@@ -194,31 +193,13 @@ enum
 
 
 
-- (NSString*)tableView:(UITableView*)tableView titleForHeaderInSection:(NSInteger)section
-{
-    if( section == kSettingsSection_Settings )
-        return @"Settings";
-    
-    return nil;
-}
-
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    if( section == kSettingsSection_Settings )
-        return kPrefsTableTitleHeight;
-
-    return 0.0f;
-}
-
-
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if( indexPath.section == kSettingsSection_About )
     {
-        if( self.traitCollection.userInterfaceIdiom == UIUserInterfaceIdiomMac )
-            return kPrefsTableAboutHeightMac;
-        else
+//        if( self.traitCollection.userInterfaceIdiom == UIUserInterfaceIdiomMac )
+//            return kPrefsTableAboutHeightMac;
+//        else
             return kPrefsTableAboutHeight;
     }
         

@@ -486,7 +486,7 @@
 					KISSUTIL,
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/aprs-monitor/Resources/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -518,7 +518,7 @@
 				DEVELOPMENT_TEAM = S555K9VRCW;
 				GCC_PREPROCESSOR_DEFINITIONS = KISSUTIL;
 				INFOPLIST_FILE = "$(SRCROOT)/aprs-monitor/Resources/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
