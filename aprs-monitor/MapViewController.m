@@ -148,8 +148,7 @@ void map_callback( unsigned char* frame_data, size_t data_length )
         uint64_t interval = 30;
         dispatch_source_set_timer( _reaper, dispatch_time( DISPATCH_TIME_NOW, interval * NSEC_PER_SEC ), interval * NSEC_PER_SEC, (1ull * NSEC_PER_SEC) / 10 );
         dispatch_source_set_event_handler( _reaper, ^{
-            [self expireAnnotations];
-            [self ageAnnotations];
+            [self letTimeWashOverEverything];
         });
     }
 }
@@ -301,6 +300,7 @@ void map_callback( unsigned char* frame_data, size_t data_length )
     [self filterForAll];
     _filterSymbol = nil;
     _weatherFilter.enabled = YES;
+    [self letTimeWashOverEverything]; // make sure that newly added pins get worn-down as appropriate
 }
 
 
@@ -358,6 +358,13 @@ void map_callback( unsigned char* frame_data, size_t data_length )
             s_have_location = true;
         }
     });
+}
+
+
+- (void)letTimeWashOverEverything
+{
+    [self expireAnnotations];
+    [self ageAnnotations];
 }
 
 

@@ -73,9 +73,9 @@
 {
     __weak PacketViewController* pvc = self;
     dispatch_async( dispatch_get_main_queue(), ^{
-        if( pvc.pm.items.count )
-            [pvc.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
-        else
+//        if( pvc.pm.items.count )
+//            [pvc.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+//        else
             [pvc.tableView reloadData];
     });
 }
@@ -83,7 +83,12 @@
 
 - (IBAction)trashButtonPressed:(id)sender
 {
+#if TARGET_OS_MACCATALYST
+    UIAlertController* actionSheet = [UIAlertController alertControllerWithTitle:@"Delete All Packets" message:@"Are you sure you would like to delete the packet history (you cannot undo this)?" preferredStyle:UIAlertControllerStyleAlert];
+#else
     UIAlertController* actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+#endif
+    
     __weak PacketViewController* pvc = self;
 
     [actionSheet addAction:[UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
