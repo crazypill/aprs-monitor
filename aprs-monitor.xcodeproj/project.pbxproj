@@ -479,7 +479,7 @@
 				CODE_SIGN_ENTITLEMENTS = "aprs-monitor/APRS MonitorDebug.entitlements";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = S555K9VRCW;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -514,7 +514,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = S555K9VRCW;
 				GCC_PREPROCESSOR_DEFINITIONS = KISSUTIL;
 				INFOPLIST_FILE = "$(SRCROOT)/aprs-monitor/Resources/Info.plist";
