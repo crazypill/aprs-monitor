@@ -17,7 +17,7 @@
 {
 
 //    _items = [NSKeyedUnarchiver unarchivedObjectOfClasses:[NSSet setWithArray:@[[ShowItem class], [NSMutableArray class]]] fromData:contents error:outError];
-    _items = [NSKeyedUnarchiver unarchiveObjectWithData:contents];
+    _items = [NSMutableArray arrayWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:contents]];
     if( *outError )
     {
         [[ErrorController shared] showError:[*outError localizedDescription] withTitle:kDocType inWindow:nil];
