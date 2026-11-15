@@ -15,6 +15,7 @@
 		FA2A20B324E2570E0090A087 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2A20AC24E2570E0090A087 /* main.m */; };
 		FA46CD3124E4AEFE0043B98B /* SymbolTable.m in Sources */ = {isa = PBXBuildFile; fileRef = FA46CD3024E4AEFE0043B98B /* SymbolTable.m */; };
 		FA46CD3424E7AD700043B98B /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA46CD3324E7AD700043B98B /* DetailViewController.m */; };
+		FA7BFE9430A92BAC006F7093 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7BFE9330A92BAC006F7093 /* SceneDelegate.m */; };
 		FAA7EAF124E0E47F0016674B /* RemoteTNC.c in Sources */ = {isa = PBXBuildFile; fileRef = FAA7EAF024E0E47F0016674B /* RemoteTNC.c */; };
 		FAA7EB0824E0E64E0016674B /* kiss_frame.c in Sources */ = {isa = PBXBuildFile; fileRef = FAA7EAF624E0E6450016674B /* kiss_frame.c */; };
 		FAA7EB0924E0E64E0016674B /* aprs-is.c in Sources */ = {isa = PBXBuildFile; fileRef = FAA7EAF724E0E6450016674B /* aprs-is.c */; };
@@ -55,6 +56,8 @@
 		FA46CD3024E4AEFE0043B98B /* SymbolTable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SymbolTable.m; sourceTree = "<group>"; };
 		FA46CD3224E7AD700043B98B /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
 		FA46CD3324E7AD700043B98B /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
+		FA7BFE9230A92BAC006F7093 /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
+		FA7BFE9330A92BAC006F7093 /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
 		FAA7EAEE24E0E47F0016674B /* aprs-monitor-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "aprs-monitor-Bridging-Header.h"; sourceTree = "<group>"; };
 		FAA7EAEF24E0E47F0016674B /* RemoteTNC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RemoteTNC.h; sourceTree = "<group>"; };
 		FAA7EAF024E0E47F0016674B /* RemoteTNC.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = RemoteTNC.c; sourceTree = "<group>"; };
@@ -151,6 +154,8 @@
 				FA46CD3024E4AEFE0043B98B /* SymbolTable.m */,
 				FA2A20AD24E2570E0090A087 /* AppDelegate.h */,
 				FA2A20AB24E2570E0090A087 /* AppDelegate.m */,
+				FA7BFE9230A92BAC006F7093 /* SceneDelegate.h */,
+				FA7BFE9330A92BAC006F7093 /* SceneDelegate.m */,
 				FACC8B9B24E334BA007BA389 /* ErrorController.h */,
 				FACC8B9A24E334BA007BA389 /* ErrorController.m */,
 				FACC8B9224E32FCB007BA389 /* PacketManager.h */,
@@ -302,6 +307,7 @@
 				FAA7EB0B24E0E64E0016674B /* stubs.c in Sources */,
 				FAA7EB0924E0E64E0016674B /* aprs-is.c in Sources */,
 				FACC8BAE24E3894C007BA389 /* dwgpsnmea.c in Sources */,
+				FA7BFE9430A92BAC006F7093 /* SceneDelegate.m in Sources */,
 				FAACD7C924EA171100463418 /* SettingsController.m in Sources */,
 				FACC8BB124E38978007BA389 /* dwgps.c in Sources */,
 				FA2A20B224E2570E0090A087 /* AppDelegate.m in Sources */,
@@ -481,12 +487,13 @@
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = S555K9VRCW;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = S555K9VRCW;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					KISSUTIL,
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/aprs-monitor/Resources/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -495,6 +502,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.folabs.aprs-monitor";
 				PRODUCT_NAME = "APRS Monitor";
 				PROVISIONING_PROFILE_SPECIFIER = "APRS Monitor development";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "APRS Monitor development";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "APRS Monitor Mac Development";
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -518,7 +526,7 @@
 				DEVELOPMENT_TEAM = S555K9VRCW;
 				GCC_PREPROCESSOR_DEFINITIONS = KISSUTIL;
 				INFOPLIST_FILE = "$(SRCROOT)/aprs-monitor/Resources/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
